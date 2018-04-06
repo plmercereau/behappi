@@ -11,8 +11,6 @@ before_install:
   &
 before_script:
 - sh -e /etc/init.d/xvfb start
-after_script:
-- npm run codecov
 deploy:
   provider: heroku
   app: behappi
