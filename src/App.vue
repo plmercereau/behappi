@@ -54,6 +54,11 @@
         drawer: true,
         items: [
           {
+            icon: 'home',
+            title: 'Home',
+            path: '/home'
+          },
+          {
             icon: 'map',
             title: 'Missions',
             path: '/missions'

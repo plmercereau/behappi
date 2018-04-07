@@ -3,19 +3,33 @@
     v-slide-y-transition(mode="out-in")
       v-layout(column, align-center)
         img(src="@/assets/logo.png", alt="Vuetify.js", class="mb-5")
-        blockquote &#8220;First, solve the problem. Then, write the code.&#8221;
-          footer
-            small
-              em &mdash;John Johnson
-        div(v-for="(application, idx) in applications" :key="idx") {{application.name}}
+        h1 Welcome to the Brussels eHealth Applications Initiative
+        v-btn(v-if="!isAuth", to="/login") Sign In
+        v-list
+          v-subheader Roadmap
+          v-list-tile CRUD to all concepts: Missions, Projects, Applications, Usages
+          v-list-tile Medical activities
+          v-list-tile When submitting a form, select only fields to update, not all of them (especially the ref values as they are replaced by an object)
+          v-list-tile Create links from both sides every time we save a relation between two objects
+          v-list-tile Remove all links when we delete an object
+          v-list-tile Remove links from both sides every time we break a relation between two objects
+          v-list-tile Complete the Excel exports
+          v-list-tile Define four permission levels: public (done), authenticated (done), manager (todo), superuser (todo)
+          v-list-tile Bug: the 'Sign out' button does not appear after sign up - only when we reload the page
 </template>
 <script>
   import { db } from '../main'
+  import firebase from 'firebase'
   export default {
     name: 'Home',
     data () {
       return {
         applications: []
+      }
+    },
+    computed: {
+      isAuth () {
+        return firebase.auth().currentUser
       }
     },
     firestore () {

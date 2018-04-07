@@ -20,7 +20,7 @@ let router = new Router({
     },
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/home'
     },
     {
       path: '/login',
@@ -89,7 +89,7 @@ let router = new Router({
       name: 'Home',
       component: Home,
       meta: {
-        requiresAuth: true
+        requiresAuth: false
       }
     }
   ]
@@ -99,7 +99,6 @@ router.beforeEach((to, from, next) => {
   let currentUser = firebase.auth().currentUser
   let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   if (requiresAuth && !currentUser) next('login')
-  else if (!requiresAuth && currentUser) next('home') // TODO why?
   else next()
 })
 
