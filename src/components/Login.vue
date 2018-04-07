@@ -21,8 +21,9 @@
       signIn () {
         firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(() => {
           this.$router.replace('/home')
-        }).catch(() => {
-          alert('erreur')
+        }).catch((e) => {
+          console.error(e)
+          alert('Error - you might want to use another browser than Chrome')
         })
       }
     }

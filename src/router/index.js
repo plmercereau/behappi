@@ -4,6 +4,9 @@ import Home from '@/components/Home'
 import Missions from '@/components/Missions'
 import Mission from '@/components/Mission'
 import Projects from '@/components/Projects'
+import Project from '@/components/Project'
+import Applications from '@/components/Applications'
+import Application from '@/components/Application'
 import Login from '@/components/Login'
 import firebase from 'firebase'
 
@@ -29,7 +32,8 @@ let router = new Router({
       name: 'Missions',
       component: Missions,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        keepAlive: true
       }
     },
     {
@@ -38,7 +42,8 @@ let router = new Router({
       component: Mission,
       props: true,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        keepAlive: true
       }
     },
     {
@@ -46,7 +51,37 @@ let router = new Router({
       name: 'Projects',
       component: Projects,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        keepAlive: true
+      }
+    },
+    {
+      path: '/projects/:id',
+      name: 'Project',
+      component: Project,
+      props: true,
+      meta: {
+        requiresAuth: true,
+        keepAlive: true
+      }
+    },
+    {
+      path: '/applications',
+      name: 'Applications',
+      component: Applications,
+      meta: {
+        requiresAuth: true,
+        keepAlive: true
+      }
+    },
+    {
+      path: '/applications/:id',
+      name: 'Application',
+      component: Application,
+      props: true,
+      meta: {
+        requiresAuth: true,
+        keepAlive: true
       }
     },
     {

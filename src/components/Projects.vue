@@ -2,15 +2,17 @@
   v-container(fluid)
       v-layout(row, align-center)
         v-flex(xs12)
-          v-btn(@click="excelExport") Export
+          v-btn(@click="excelExport") Export Projects list
           v-card
             v-card-title(primary-title)
               div
                 h2 Projects
             v-data-table(:headers="headers", :items="projects", hide-actions, class="elevation-1")
               template(slot="items", slot-scope="props")
-                td {{ props.item.name }}
-                td {{ props.item.mission.name }}
+                td
+                  router-link(:to="'/projects/' + props.item.id") {{ props.item.name }}
+                td
+                  router-link(:to="'/missions/' + props.item.mission.id") {{ props.item.mission.name }}
 </template>
 
 <script>
@@ -55,7 +57,7 @@
     },
     firestore () {
       return {
-        projects: db.collection('projects').orderBy('name')
+        projects: db.collection('orgUnits').where('categories.project', '==', true).orderBy('name')
       }
     }
   }

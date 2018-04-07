@@ -5,9 +5,9 @@
           v-card
             v-card-title(primary-title)
               div
-                h2 {{mission.name}}
+                h2 {{application.name}}
             form(novalidate @submit.prevent="$validator.validateAll() && save()")
-              div(v-if="!editToggle") Name: {{mission.name}}
+              div(v-if="!editToggle") Name: {{application.name}}
               v-text-field(
                 v-if="editToggle",
                 v-model="formData.name",
@@ -23,16 +23,12 @@
           v-card
             v-card-title(primary-title)
               div
-                h2 Projects
+                h2 Projects using it
             v-container(fluid ,grid-list-md)
-              v-layout(row, wrap)
-                v-flex(xs4, v-for="project in projects" :key="project.id")
-                  v-card(flat, tile, :to="'/projects/'+project.id")
-                    v-card-media(height="200px")
-                      map-image(v-if="project.location", :location="project.location", :zoom="project.zoom")
-                    v-card-title(primary-title)
-                      div
-                        h3(class="headline mb-0") {{project.name}}
+              v-list
+                v-list-tile(v-for="usage in application.applicationUsages", :key="usage.orgUnit.id", :to="'/projects/'+usage.orgUnit.id")
+                  v-list-tile-content
+                    v-list-tile-title {{usage.orgUnit.name}}
 </template>
 
 <script>
@@ -40,21 +36,21 @@
   import MapImage from './MapImage'
 
   export default {
-    name: 'Mission',
+    name: 'Application',
     props: ['id'],
     components: {MapImage},
     data () {
       return {
         editToggle: false,
         projects: [],
-        mission: {},
+        application: {},
         formData: {}
       }
     },
     methods: {
       save () {
-        let missionRef = db.collection('missions').doc(this.id)
-        missionRef.set(this.formData, { merge: true })
+        let applicationRef = db.collection('applications').doc(this.id)
+        applicationRef.set(this.formData, { merge: true })
         this.editToggle = false
       },
       edit () {
@@ -66,14 +62,12 @@
         this.editToggle = false
       },
       reset () {
-        this.formData = Object.assign({}, this.mission)
+        this.formData = Object.assign({}, this.application)
       }
     },
     firestore () {
-      let missionRef = db.collection('missions').doc(this.id)
       return {
-        mission: missionRef,
-        projects: db.collection('orgUnits').where('mission', '==', missionRef).where('categories.project', '==', true).orderBy('name')
+        application: db.collection('applications').doc(this.id)
       }
     }
   }
