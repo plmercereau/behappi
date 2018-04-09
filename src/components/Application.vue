@@ -23,17 +23,18 @@
           v-card
             v-card-title(primary-title)
               div
-                h2 Projects using it
+                h2 Projects using this application
             v-container(fluid ,grid-list-md)
               v-list
-                v-list-tile(v-for="usage in application.applicationUsages", :key="usage.orgUnit.id", :to="'/projects/'+usage.orgUnit.id")
+                v-list-tile(v-for="(usage, propertyName) in application.applicationUsages", :key="propertyName", :to="'/projects/'+(usage.orgUnit && usage.orgUnit.id)")
                   v-list-tile-content
-                    v-list-tile-title {{usage.orgUnit.name}}
+                    v-list-tile-title {{usage.orgUnit && usage.orgUnit.name}}
 </template>
 
 <script>
   import { db } from '../main'
   import MapImage from './MapImage'
+  import _ from 'lodash'
 
   export default {
     name: 'Application',
@@ -44,7 +45,24 @@
         editToggle: false,
         projects: [],
         application: {},
-        formData: {}
+        formData: {},
+        headers: [
+          {
+            text: 'Location',
+            align: 'left',
+            sortable: true,
+            value: 'orgUnit.name'
+          },
+          {
+            text: 'Usage detail',
+            align: 'left'
+          }
+        ]
+      }
+    },
+    computed: {
+      _ () {
+        return _
       }
     },
     methods: {

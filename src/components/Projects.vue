@@ -12,7 +12,7 @@
                 td
                   router-link(:to="'/projects/' + props.item.id") {{ props.item.name }}
                 td
-                  router-link(:to="'/missions/' + props.item.mission.id") {{ props.item.mission.name }}
+                  router-link(:to="'/missions/' + (props.item.mission && props.item.mission.id)") {{ props.item.mission.name }}
 </template>
 
 <script>

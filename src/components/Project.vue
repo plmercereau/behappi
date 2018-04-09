@@ -26,9 +26,9 @@
                 h2 Applications in use
             v-container(fluid ,grid-list-md)
               v-list
-                v-list-tile(v-for="usage in project.applicationUsages", :key="usage.orgUnit.id", :to="'/applications/'+usage.application.id")
+                v-list-tile(v-for="(usage, propName) in project.applicationUsages", :key="propName", :to="'/applications/'+(usage.application && usage.application.id)")
                   v-list-tile-content
-                    v-list-tile-title {{usage.application.name}}
+                    v-list-tile-title {{usage.application && usage.application.name}}
 </template>
 
 <script>

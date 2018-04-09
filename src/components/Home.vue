@@ -10,9 +10,7 @@
           v-list-tile CRUD to all concepts: Missions, Projects, Applications, Usages
           v-list-tile Medical activities
           v-list-tile When submitting a form, select only fields to update, not all of them (especially the ref values as they are replaced by an object)
-          v-list-tile Create links from both sides every time we save a relation between two objects
-          v-list-tile Remove all links when we delete an object
-          v-list-tile Remove links from both sides every time we break a relation between two objects
+          v-list-tile Remove all usages when we delete an application
           v-list-tile Complete the Excel exports
           v-list-tile Define four permission levels: public (done), authenticated (done), manager (todo), superuser (todo)
           v-list-tile Bug: the 'Sign out' button does not appear after sign up - only when we reload the page

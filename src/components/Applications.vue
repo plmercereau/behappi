@@ -11,7 +11,7 @@
             template(slot="items", slot-scope="props")
               td
                 router-link(:to="'/applications/' + props.item.id") {{ props.item.name }}
-              td {{ props.item.applicationUsages ? props.item.applicationUsages.length : 0 }}
+              td {{ props.item.applicationUsages ? Object.keys(props.item.applicationUsages).length : 0 }}
 </template>
 
 <script>
@@ -33,21 +33,21 @@
           {
             text: 'Number of usages',
             align: 'left',
-            sortable: true,
-            value: 'applicationUsages.length'
+            // sortable: true,
+            value: 'applicationUsages' // TODO how to implement this with Object.keys().length?
           }
         ]
       }
     },
     methods: {
       excelExport () {
-        const dataTable = this.applications.map((data) => {
+        const dataTable = this.applications.map((line) => {
           return {
-            name: data.name,
-            nb_applications: 'todo'
+            name: line.name,
+            nb_applications: line.applicationUsages ? Object.keys(line.applicationUsages).length : 0
           }
         })
-        const ws = XLSX.utils.json_to_sheet(dataTable, {header: ['name', 'nb_applications']})
+        const ws = XLSX.utils.json_to_sheet(dataTable, {header: ['name', 'nb_usages']})
         const wb = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(wb, ws, 'Applications')
         // TODO add another sheet with the usages and a formula for nb_applications in the first sheet

@@ -74,7 +74,7 @@
             path: '/applications'
           }
         ],
-        title: 'BeHAppI'
+        title: 'Behappi'
       }
     },
     name: 'App',

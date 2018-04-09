@@ -1,6 +1,6 @@
 {
-  "name": "behappi-vue",
-  "short_name": "behappi-vue",
+  "name": "Behappi",
+  "short_name": "Behappi",
   "icons": [
     {
       "src": "/static/img/icons/android-chrome-192x192.png",
