@@ -106,7 +106,7 @@ const webpackConfig = merge(baseWebpackConfig, {
     new SWPrecacheWebpackPlugin({
       // navigateFallbackWhitelist: [/^(?!\/__).*/],
       navigateFallbackWhitelist: [/^(?!\/auth\/)/],
-      cacheId: 'behappi-vue',
+      cacheId: 'behappi',
       filename: 'service-worker.js',
       staticFileGlobs: ['dist/**/*.{js,html,css}'],
       minify: true,
