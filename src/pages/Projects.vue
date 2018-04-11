@@ -1,28 +1,24 @@
 <template lang="pug">
-  v-container(fluid)
-      v-layout(row, align-center)
-        v-flex(xs12)
-          v-btn(@click="excelExport") Export Projects list
-          v-card
-            v-card-title(primary-title)
-              div
-                h2 Projects
-            v-data-table(:headers="headers", :items="projects", hide-actions, class="elevation-1")
-              template(slot="items", slot-scope="props")
-                td
-                  router-link(:to="'/projects/' + props.item.id") {{ props.item.name }}
-                td
-                  router-link(:to="'/missions/' + (props.item.mission && props.item.mission.id)") {{ props.item.mission.name }}
+  page
+    v-btn(@click="excelExport") Export Projects list
+    v-card
+      v-card-title(primary-title)
+        div
+          h2 Projects
+      v-data-table(:headers="headers", :items="projects", hide-actions, class="elevation-1")
+        template(slot="items", slot-scope="props")
+          td
+            router-link(:to="'/projects/' + props.item.id") {{ props.item.name }}
+          td
+            router-link(:to="'/missions/' + (props.item.mission && props.item.mission.id)") {{ props.item.mission.name }}
 </template>
 
 <script>
-  import { db } from '../main'
-  import MapImage from './MapImage'
+  import * as firebase from 'firebase'
   import XLSX from 'xlsx'
 
   export default {
     name: 'Projects',
-    components: {MapImage},
     data () {
       return {
         projects: [],
@@ -57,7 +53,7 @@
     },
     firestore () {
       return {
-        projects: db.collection('orgUnits').where('categories.project', '==', true).orderBy('name')
+        projects: firebase.firestore().collection('orgUnits').where('categories.project', '==', true).orderBy('name')
       }
     }
   }

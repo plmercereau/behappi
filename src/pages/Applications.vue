@@ -1,21 +1,19 @@
 <template lang="pug">
-  v-container(fluid)
-    v-layout(row, align-center)
-      v-flex(xs12)
-        v-btn(@click="excelExport") Export applications and their usage
-        v-card
-          v-card-title(primary-title)
-            div
-              h2 Applications
-          v-data-table(:headers="headers", :items="applications", hide-actions, class="elevation-1")
-            template(slot="items", slot-scope="props")
-              td
-                router-link(:to="'/applications/' + props.item.id") {{ props.item.name }}
-              td {{ props.item.applicationUsages ? Object.keys(props.item.applicationUsages).length : 0 }}
+  page
+    v-btn(@click="excelExport") Export applications and their usage
+    v-card
+      v-card-title(primary-title)
+        div
+          h2 Applications
+      v-data-table(:headers="headers", :items="applications", hide-actions, class="elevation-1")
+        template(slot="items", slot-scope="props")
+          td
+            router-link(:to="'/applications/' + props.item.id") {{ props.item.name }}
+          td {{ props.item.applicationUsages ? Object.keys(props.item.applicationUsages).length : 0 }}
 </template>
 
 <script>
-  import { db } from '../main'
+  import * as firebase from 'firebase'
   import XLSX from 'xlsx'
 
   export default {
@@ -56,7 +54,7 @@
     },
     firestore () {
       return {
-        applications: db.collection('applications').orderBy('name')
+        applications: firebase.firestore().collection('applications').orderBy('name')
       }
     },
     mounted () {

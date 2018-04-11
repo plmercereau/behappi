@@ -1,14 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/Home'
-import Missions from '@/components/Missions'
-import Mission from '@/components/Mission'
-import Projects from '@/components/Projects'
-import Project from '@/components/Project'
-import Applications from '@/components/Applications'
-import Application from '@/components/Application'
-import Login from '@/components/Login'
-import firebase from 'firebase'
+import Home from '@/pages/Home'
+import Missions from '@/pages/Missions'
+import Mission from '@/pages/Mission'
+import Projects from '@/pages/Projects'
+import Project from '@/pages/Project'
+import Applications from '@/pages/Applications'
+import Application from '@/pages/Application'
+import Login from '@/pages/Login'
+// import firebase from 'firebase'
+import AuthGuard from './auth-guard'
 
 Vue.use(Router)
 
@@ -32,9 +33,9 @@ let router = new Router({
       name: 'Missions',
       component: Missions,
       meta: {
-        requiresAuth: true,
         keepAlive: true
-      }
+      },
+      beforeEnter: AuthGuard
     },
     {
       path: '/missions/:id',
@@ -42,18 +43,18 @@ let router = new Router({
       component: Mission,
       props: true,
       meta: {
-        requiresAuth: true,
         keepAlive: true
-      }
+      },
+      beforeEnter: AuthGuard
     },
     {
       path: '/projects',
       name: 'Projects',
       component: Projects,
       meta: {
-        requiresAuth: true,
         keepAlive: true
-      }
+      },
+      beforeEnter: AuthGuard
     },
     {
       path: '/projects/:id',
@@ -61,18 +62,18 @@ let router = new Router({
       component: Project,
       props: true,
       meta: {
-        requiresAuth: true,
         keepAlive: true
-      }
+      },
+      beforeEnter: AuthGuard
     },
     {
       path: '/applications',
       name: 'Applications',
       component: Applications,
       meta: {
-        requiresAuth: true,
         keepAlive: true
-      }
+      },
+      beforeEnter: AuthGuard
     },
     {
       path: '/applications/:id',
@@ -80,26 +81,25 @@ let router = new Router({
       component: Application,
       props: true,
       meta: {
-        requiresAuth: true,
         keepAlive: true
-      }
+      },
+      beforeEnter: AuthGuard
     },
     {
       path: '/home',
       name: 'Home',
-      component: Home,
-      meta: {
-        requiresAuth: false
-      }
+      component: Home
     }
   ]
 })
 
-router.beforeEach((to, from, next) => {
-  let currentUser = firebase.auth().currentUser
-  let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  if (requiresAuth && !currentUser) next('login')
-  else next()
-})
+// router.beforeEach((to, from, next) => {
+// let currentUser = firebase.auth().currentUser
+// console.log(currentUser)
+// let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+// if (requiresAuth && !currentUser) next('login')
+// else next()
+// console.log(requiresAuth)
+// })
 
 export default router

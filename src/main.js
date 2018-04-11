@@ -9,6 +9,22 @@ import VueFire from 'vuefire'
 import firebase from 'firebase'
 import 'firebase/firestore'
 import VeeValidate from 'vee-validate'
+import { store } from './store'
+import upperFirst from 'lodash/upperFirst'
+import camelCase from 'lodash/camelCase'
+
+// https://github.com/chrisvfritz/vue-enterprise-boilerplate/blob/master/src/components/_globals.js
+const requireComponent = require.context(
+  './components', // The relative path of the components folder
+  false, // Whether or not to look in subfolders
+  /[A-Z]\w+\.(vue|js)$/ // The regular expression used to match base component filenames
+)
+
+requireComponent.keys().forEach(fileName => {
+  const componentConfig = requireComponent(fileName)
+  const componentName = upperFirst(camelCase(fileName.replace(/^\.\/(.*)\.\w+$/, '$1')))
+  Vue.component(componentName, componentConfig.default || componentConfig)
+})
 
 Vue.use(VeeValidate)
 
@@ -19,7 +35,6 @@ Vue.config.productionTip = false
 Vue.use(VueFire)
 
 let app
-// TODO move into config file
 let config = {
   apiKey: 'AIzaSyCfj8achA-ffNGdvIvAwz7xIzVq-Q20nXo',
   authDomain: 'behappi-ocb.firebaseapp.com',
@@ -28,15 +43,19 @@ let config = {
   storageBucket: 'behappi-ocb.appspot.com',
   messagingSenderId: '248401610335'
 }
+
 firebase.initializeApp(config)
-firebase.auth().onAuthStateChanged(() => {
+firebase.auth().onAuthStateChanged((user) => {
   if (!app) {
-    /* eslint-disable no-new */
+    if (user) {
+      store.dispatch('autoSignIn', user)
+    }
     app = new Vue({
       el: '#app',
       router,
-      components: { App },
-      template: '<App/>'
+      store,
+      template: '<App/>',
+      components: {App}
     })
   }
 })
@@ -58,4 +77,4 @@ firebase.auth().onAuthStateChanged(() => {
 //       console.log('unimplemented')
 //     }
 //   })
-export const db = firebase.firestore()
+// export const db = firebase.firestore()
