@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Mission",
+  "titleCreate": "Create a mission",
+  "properties": {
+    "name": {
+      "type": "string",
+      "attrs": {
+        "placeholder": "Name",
+        "title": "Please enter the name of the mission"
+      },
+      "validation": "required|min:3"
+    }
+  },
+  "additionalProperties": false,
+  "required": ["name"],
+  "requiredCreate": ["name"]
+}

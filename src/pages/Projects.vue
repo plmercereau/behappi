@@ -1,16 +1,17 @@
 <template lang="pug">
   page
-    v-btn(@click="excelExport") Export Projects list
-    v-card
-      v-card-title(primary-title)
-        div
-          h2 Projects
-      v-data-table(:headers="headers", :items="projects", hide-actions, class="elevation-1")
-        template(slot="items", slot-scope="props")
-          td
-            router-link(:to="'/projects/' + props.item.id") {{ props.item.name }}
-          td
-            router-link(:to="'/missions/' + (props.item.mission && props.item.mission.id)") {{ props.item.mission.name }}
+    tool-bar(title="Projects", search, v-model="search")
+    card-list
+      template(slot="title-content")
+        v-btn(@click="excelExport") Export Projects list
+      v-flex(d-flex xs12 sm6 md4, v-for="project in filteredList" :key="project .id")
+        v-card(:to="'/projects/'+project.id")
+          v-card-media(height="200px")
+            map-image(v-if="project.location", :location="project.location", :zoom="project.zoom")
+          v-card-title(primary-title)
+            div
+              div(class="headline") {{project.name}}
+              div {{project.mission && project.mission.name}}
 </template>
 
 <script>
@@ -34,7 +35,8 @@
             sortable: true,
             value: 'mission.name'
           }
-        ]
+        ],
+        search: ''
       }
     },
     methods: {
@@ -49,6 +51,15 @@
         const wb = XLSX.utils.book_new()
         XLSX.utils.book_append_sheet(wb, ws, 'Projects')
         XLSX.writeFile(wb, 'projects.xlsx')
+      }
+    },
+    computed: {
+      filteredList () {
+        if (this.projects) {
+          return this.projects.filter(item => {
+            return item.name.toLowerCase().includes(this.search.toLowerCase())
+          })
+        } else return []
       }
     },
     firestore () {

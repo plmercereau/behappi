@@ -7,18 +7,17 @@
             v-icon(v-html="item.icon")
           v-list-tile-content
             v-list-tile-title(v-text="item.title")
-    v-toolbar(app)
-      v-toolbar-side-icon(v-if="userIsAuthenticated", @click.stop="toggleDrawer")
-      v-toolbar-title(v-text="title")
-      v-spacer
-      v-btn(v-if="userIsAuthenticated", icon, @click="signOut")
-        v-icon exit_to_app
+        v-list-tile(v-if="userIsAuthenticated", @click="signOut")
+          v-list-tile-action
+            v-icon exit_to_app
+          v-list-tile-content
+            v-list-tile-title Sign out
     v-content
         keep-alive
           router-view(:key="$route.fullPath", v-if="$route.meta.keepAlive")
         router-view(:key="$route.fullPath", v-if="!$route.meta.keepAlive")
-    v-footer(app)
-      span &copy; 2018
+    <!--v-footer(app)-->
+      <!--span &copy; 2018-->
 </template>
 
 <script>
@@ -49,8 +48,7 @@
             title: 'Applications',
             path: '/applications'
           }
-        ],
-        title: 'Behappi'
+        ]
       }
     },
     name: 'App',
@@ -63,16 +61,6 @@
       signOut () {
         this.$store.dispatch('logout')
         this.$router.push('/')
-        // firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(() => {
-        //   this.$router.replace('/home')
-        // }).catch((e) => {
-        //   console.error(firebase)
-        //   console.error(e)
-        //   alert('erreur')
-        // })
-      },
-      toggleDrawer () {
-        this.$store.commit('toggleDrawer')
       }
     },
     created () {

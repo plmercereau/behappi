@@ -1,0 +1,26 @@
+{
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        {
+          "text": "Published",
+          "value": "published"
+        },
+        {
+          "text": "Submitted",
+          "value": "submitted"
+        },
+        {
+          "text": "Draft",
+          "value": "draft"
+        }
+      ],
+      "attrs": {
+        "placeholder": "Status",
+        "title": "Status of the document"
+      }
+    }
+  },
+  "required": ["status"]
+}

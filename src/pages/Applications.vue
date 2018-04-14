@@ -1,10 +1,8 @@
 <template lang="pug">
   page
+    tool-bar(title="Applications")
     v-btn(@click="excelExport") Export applications and their usage
     v-card
-      v-card-title(primary-title)
-        div
-          h2 Applications
       v-data-table(:headers="headers", :items="applications", hide-actions, class="elevation-1")
         template(slot="items", slot-scope="props")
           td

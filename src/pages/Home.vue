@@ -1,5 +1,6 @@
 <template lang="pug">
   v-container(fluid)
+    tool-bar(title="home")
     v-slide-y-transition(mode="out-in")
       v-layout(column, align-center)
         img(src="@/assets/logo.png", alt="Vuetify.js", class="mb-5")

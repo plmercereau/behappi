@@ -10,6 +10,7 @@ import firebase from 'firebase'
 import 'firebase/firestore'
 import VeeValidate from 'vee-validate'
 import { store } from './store'
+import Vue2Filters from 'vue2-filters'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 
@@ -25,6 +26,8 @@ requireComponent.keys().forEach(fileName => {
   const componentName = upperFirst(camelCase(fileName.replace(/^\.\/(.*)\.\w+$/, '$1')))
   Vue.component(componentName, componentConfig.default || componentConfig)
 })
+
+Vue.use(Vue2Filters)
 
 Vue.use(VeeValidate)
 
