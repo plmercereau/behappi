@@ -2,7 +2,7 @@
   v-card
     v-card-title(primary-title)
       div
-        h2 {{data[schema.title]}}
+        h2 {{(schema.titleProperty && data[schema.titleProperty]) || schema.title || 'Item'}}
     v-card-text
       v-container
         v-container(v-if="editToggle")
