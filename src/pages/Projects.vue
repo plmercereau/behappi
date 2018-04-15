@@ -7,7 +7,7 @@
       v-flex(d-flex xs12 sm6 md4, v-for="project in filteredList" :key="project .id")
         v-card(:to="'/projects/'+project.id")
           v-card-media(height="200px")
-            map-image(v-if="project.location", :location="project.location", :zoom="project.zoom")
+            map-image(v-if="project.location", :location="project.location", :zoom="project.zoom", :markers="[project.location]")
           v-card-title(primary-title)
             div
               div(class="headline") {{project.name}}

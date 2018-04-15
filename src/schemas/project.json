@@ -1,23 +1,23 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "titleProperty": "mission",
-  "title": "Mission",
-  "titleCreate": "Create a mission",
+  "titleProperty": "project",
+  "title": "Project",
+  "titleCreate": "Create a project",
   "properties": {
     "name": {
       "type": "string",
       "attrs": {
         "placeholder": "Name",
-        "title": "Please enter the name of the mission"
+        "title": "Please enter the name of the project"
       },
       "validation": "required|min:3"
     },
     "location": {
-      "type": "area",
+      "type": "point",
       "attrs": {
-        "placeholder": "Area of the mission",
-        "title": "Please give the area of the mission"
+        "placeholder": "Location of the project",
+        "title": "TODO distinction betwwen placeholder and title"
       },
       "zoomProperty": "zoom"
     }

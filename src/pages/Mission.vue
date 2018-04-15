@@ -6,7 +6,7 @@
       v-flex(d-flex xs12 sm6 md4, v-for="(project, projectId) in mission.projects" :key="projectId")
         v-card(flat, tile, :to="'/projects/'+project.id")
           v-card-media(height="200px")
-            map-image(v-if="project.location", :location="project.location", :zoom="project.zoom")
+            map-image(v-if="project.location", :location="project.location", :zoom="project.zoom", :markers="[project.location]")
           v-card-title(primary-title)
             div
               h3(class="headline mb-0") {{project.name}}
@@ -23,16 +23,6 @@
     data () {
       return {
         mission: {},
-        params: {
-          titleAttribute: 'name',
-          fields: [
-            {
-              attribute: 'name',
-              label: 'Name',
-              validation: 'required|min:3'
-            }
-          ]
-        },
         schema: _.merge(schema, defaultSchema)
       }
     },

@@ -1,8 +1,8 @@
 <template lang="pug">
   page
     tool-bar(:title="project.name")
-    item-details(collection="orgUnits", :id="id", :params="params")
-    card-list(title="Applications in use")
+    item-details(collection="orgUnits", :id="id", :schema="schema")
+    card-list(title="Applications in use" v-if="project.applicationUsages")
       inline-item-detail(v-for="(usage, propName) in project.applicationUsages", :key="propName")
         template(slot="title")
           h3 {{usage.application && usage.application.name}}
@@ -14,23 +14,16 @@
 
 <script>
   import * as firebase from 'firebase'
-
+  import defaultSchema from '@/schemas/default'
+  import schema from '@/schemas/project'
+  import _ from 'lodash'
   export default {
     name: 'Project',
     props: ['id'],
     data () {
       return {
         project: {},
-        params: {
-          titleAttribute: 'name',
-          fields: [
-            {
-              attribute: 'name',
-              label: 'Name',
-              validation: 'required|min:3'
-            }
-          ]
-        }
+        schema: _.merge(schema, defaultSchema)
       }
     },
     firestore () {

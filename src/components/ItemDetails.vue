@@ -6,7 +6,7 @@
     v-card-text
       v-container
         v-container(v-if="editToggle")
-          form(novalidate @submit.prevent="save")
+          form(novalidate @submit.prevent="saveItem")
             template(v-for="(field, name) in schema.properties")
               v-text-field(
                 autofocus
@@ -24,23 +24,69 @@
                 :items="field.enum"
                 :label="field.attrs.placeholder",
                 single-line)
-        v-list(v-if="!editToggle")
-          v-list-tile(v-for="(field, name) in schema.properties" :key="name")
-            v-list-tile-content
-              v-list-tile-sub-title {{field.attrs.placeholder}}
-              v-list-tile-title(v-if="!field.enum") {{data[name]}}
-              v-list-tile-title(v-if="field.enum") {{getLabel(data[name], field.enum)}}
-              v-divider
+              v-container(v-if="field.type==='area' || field.type==='point'", fluid ,grid-list-md)
+                v-layout(row, wrap)
+                  v-flex(d-flex xs12 sm6 md4)
+                    v-container(fluid)
+                      v-layout(row)
+                        v-flex
+                          div(class="caption") {{field.attrs.placeholder}}
+                          v-text-field(
+                          autofocus
+                          type="number"
+                          v-model.number="form['reported'+name].lat",
+                          :id="'form-' + name + '-latitude'",
+                          label="Latitude",
+                          v-validate="",
+                          @change="updateMapCenter(name)",
+                          :data-vv-name="'form-' + name + '-latitude'")
+                          v-text-field(
+                          autofocus
+                          type="number"
+                          v-model.number="form['reported'+name].lng",
+                          :id="'form-' + name + '-latitude'",
+                          label="Longitude",
+                          v-validate="",
+                          @change="updateMapCenter(name)",
+                          :data-vv-name="'form-' + name + '-latitude'")
+                          v-slider(label="Zoom" :max="20" v-model="form[schema.properties[name].zoomProperty]")
+                  v-flex(d-flex xs12 sm6 md8)
+                    gmap-map(
+                    :center="form[name]"
+                    @center_changed="updateCenter(name, $event)"
+                    :zoom="form[schema.properties[name].zoomProperty]"
+                    @zoom_changed="updateField(field.zoomProperty, $event)"
+                    :map-type-id="mapType"
+                    style="width: 320px; height: 200px")
+                      gmap-marker(v-if="field.type==='point'" :position="form['reported'+name]")
+        v-container(v-if="!editToggle")
+          div(v-for="(field, name) in schema.properties" :key="name")
+            div(class="caption" v-if="data[name]") {{field.attrs.placeholder}}
+            h3(class="subheading" v-if="data[name] && field.type === 'string' && !field.enum") {{data[name]}}
+            h3(class="subheading" v-if="data[name] && field.type === 'string' && field.enum") {{getLabel(data[name], field.enum)}}
+            map-image(v-if="data[name] && field.type === 'area'" :location="data[name]", :zoom="data[field.zoomProperty]")
+            map-image(v-if="data[name] && field.type === 'point'" :location="data[name]", :zoom="data[field.zoomProperty]", :markers="[data[name]]")
+            v-divider
     v-card-actions
-      v-btn(v-show="editToggle && !errors.any()" @click="$validator.validateAll() && save()") Save
-      v-btn(v-if="editToggle" @click="reset") Reset
-      v-btn(v-if="editToggle" @click="cancel") Cancel
-      v-btn(v-if="!editToggle" @click="edit") Edit
+      v-btn(color="primary" v-show="editToggle && !errors.any()" @click="saveItem()") Save
+      v-btn(color="primary" v-if="editToggle" @click="reset") Reset
+      v-btn(color="primary" v-if="editToggle" @click="cancel") Cancel
+      v-btn(color="primary" v-if="!loading && !editToggle" @click="edit") Edit
+      v-btn(color="primary" v-if="!loading && !editToggle" @click="") New version
+      v-btn(color="primary" v-if="!loading && !editToggle" @click="deleteDialogToggle = !deleteDialogToggle") Delete
+      v-dialog(v-model="deleteDialogToggle" max-width="500px")
+        v-card
+          v-card-title Are you sure you want to delete this {{((schema.titleProperty && data[schema.titleProperty]) || schema.title || 'Item') | lowercase}}?
+          v-card-actions
+            v-btn(color="error" flat @click.stop="deleteItem") Delete
+            v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
 
 </template>
 
 <script>
+  import {MAP_TYPE, DEFAULT_LOCATION, DEFAULT_ZOOM} from '../main'
   import * as firebase from 'firebase'
+  import _ from 'lodash'
   export default {
     props: ['collection', 'id', 'schema'],
     name: 'ItemDetails',
@@ -48,20 +94,55 @@
       return {
         form: {},
         data: {},
-        editToggle: false
+        editToggle: false,
+        deleteDialogToggle: false,
+        loading: true
       }
     },
     methods: {
-      save () {
+      updateMapCenter (fieldName) {
+        this.form[fieldName] = _.clone(this.form[`reported${fieldName}`])
+      },
+      updateCenter (field, event) {
+        this.form[`reported${field}`] = {
+          lat: event.lat(),
+          lng: event.lng()
+        }
+      },
+      updateField (field, event) {
+        this.$set(this.form, field, event)
+      },
+      saveItem () { // TODO form action instead of $validator.validateAll() && saveItem()
         let docRef = firebase.firestore().collection(this.collection).doc(this.id)
-        let diff = {}
+        let form = {}
         Object.keys(this.form).map((key, index) => {
-          if (this.form[key] !== this.data[key]) {
-            diff[key] = this.form[key]
+          if (this.schema.properties[key]) {
+            let val = this.data[key]
+            if (this.schema.properties[key].type === 'area' || this.schema.properties[key].type === 'point') {
+              val = {
+                latitude: this.form[`reported${key}`].lat,
+                longitude: this.form[`reported${key}`].lng
+              }
+              form[this.schema.properties[key].zoomProperty] = this.form[this.schema.properties[key].zoomProperty]
+            } else {
+              val = this.form[key]
+            }
+            if (!_.isEqual(this.data[key], val)) {
+              form[key] = val
+            }
           }
         })
-        docRef.set(diff, { merge: true })
+        if (!_.isEmpty(form)) {
+          docRef.set(form, { merge: true })
+        }
         this.editToggle = false
+      },
+      deleteItem () {
+        firebase.firestore().collection(this.collection).doc(this.id).delete().then(() => {
+          this.$router.go(-1)
+        }).catch((error) => {
+          console.log(error)
+        })
       },
       edit () {
         this.reset()
@@ -72,7 +153,24 @@
         this.editToggle = false
       },
       reset () {
-        this.form = Object.assign({}, this.data)
+        let form = Object.assign({}, this.data)
+        Object.keys(this.schema.properties).map(key => {
+          if (this.schema.properties[key].type === 'area' || this.schema.properties[key].type === 'point') {
+            let googleLocation = DEFAULT_LOCATION
+            if (form[key]) {
+              googleLocation = {
+                lat: form[key].latitude,
+                lng: form[key].longitude
+              }
+            }
+            if (!form[this.schema.properties[key].zoomProperty]) {
+              form[this.schema.properties[key].zoomProperty] = DEFAULT_ZOOM
+            }
+            form[key] = googleLocation
+            form[`reported${key}`] = googleLocation
+          }
+        })
+        this.form = Object.assign({}, this.form, form)
       },
       getLabel (value, enumeration) { // TODO convert into a pipeline/filter
         if (value) {
@@ -83,6 +181,18 @@
         } else {
           return ''
         }
+      }
+    },
+    watch: {
+      data (newValue) {
+        if (newValue.id) {
+          this.loading = false
+        }
+      }
+    },
+    computed: {
+      mapType () {
+        return MAP_TYPE
       }
     },
     firestore () {

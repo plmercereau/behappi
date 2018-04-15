@@ -34,7 +34,7 @@
   import * as firebase from 'firebase'
   export default {
     props: ['collection', 'schema', 'to'],
-    name: 'CreateDialog',
+    name: 'CreateButton',
     data () {
       return {
         form: {},

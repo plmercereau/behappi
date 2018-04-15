@@ -10,6 +10,7 @@ import firebase from 'firebase'
 import 'firebase/firestore'
 import VeeValidate from 'vee-validate'
 import { store } from './store'
+import * as VueGoogleMaps from 'vue2-google-maps'
 import Vue2Filters from 'vue2-filters'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
@@ -36,6 +37,25 @@ Vue.use(Vuetify)
 Vue.config.productionTip = false
 
 Vue.use(VueFire)
+
+export const GOOGLE_API_KEY = 'AIzaSyAzTKuGAzcoIwJ31pCktzJ2I8hcqwHOPJs'
+export const MAP_TYPE = 'terrain' // https://developers.google.com/maps/documentation/javascript/maptypes?hl=fr
+export const DEFAULT_LOCATION = {
+  latitude: 50.833349,
+  longitude: 4.364177
+}
+export const DEFAULT_ZOOM = 5
+export const MARKER_COLOR = 'brown'
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: GOOGLE_API_KEY,
+    libraries: 'places' // This is required if you use the Autocomplete plugin
+    // OR: libraries: 'places,drawing'
+    // OR: libraries: 'places,drawing,visualization'
+    // (as you require)
+  }
+})
 
 let app
 let config = {

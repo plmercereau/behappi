@@ -2,11 +2,11 @@
   page
     tool-bar(title="Missions", search, v-model="search")
     card-list
-      create-dialog(collection="missions", :schema="schema", to="/missions")
+      create-button(collection="missions", :schema="schema", to="/missions")
       v-flex(d-flex xs12 sm6 md4, v-for="mission in filteredList" :key="mission.id")
         v-card(:to="'/missions/'+mission.id")
           v-card-media(height="200px")
-            map-image(v-if="mission.location", :location="mission.location", :zoom="mission.zoom")
+            map-image(v-if="mission.location", :location="mission.location", :zoom="mission.zoom", :markers="markersProjects(mission)")
           v-card-title(primary-title)
             div
               div(class="headline") {{mission.name}}
@@ -31,6 +31,18 @@
     methods: {
       nbProjects (mission) {
         return mission.projects && Object.keys(mission.projects).length
+      },
+      markersProjects (mission) {
+        if (mission && mission.projects) {
+          let res = Object.keys(mission.projects).filter(key => {
+            return (mission.projects[key].location)
+          }).map(key => {
+            return mission.projects[key].location
+          })
+          return res
+        } else {
+          return []
+        }
       }
     },
     computed: {
