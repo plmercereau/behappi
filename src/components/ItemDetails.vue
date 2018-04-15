@@ -156,7 +156,10 @@
         let form = Object.assign({}, this.data)
         Object.keys(this.schema.properties).map(key => {
           if (this.schema.properties[key].type === 'area' || this.schema.properties[key].type === 'point') {
-            let googleLocation = DEFAULT_LOCATION
+            let googleLocation = {
+              lat: DEFAULT_LOCATION.latitude,
+              lng: DEFAULT_LOCATION.longitude
+            }
             if (form[key]) {
               googleLocation = {
                 lat: form[key].latitude,
