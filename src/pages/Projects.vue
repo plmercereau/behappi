@@ -55,7 +55,9 @@
       filteredList () {
         if (this.projects) {
           return this.projects.filter(item => {
-            return item.name.toLowerCase().includes(this.search.toLowerCase())
+            return (
+              (item.name.toLowerCase().includes(this.search.toLowerCase())) ||
+              (item.mission && item.mission.name.toLowerCase().includes(this.search.toLowerCase())))
           })
         } else return []
       }
