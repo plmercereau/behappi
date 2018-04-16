@@ -24,7 +24,7 @@
       return {
         projects: [],
         application: {},
-        schemaMission: _.merge(schema, defaultSchema)
+        schema: _.merge(schema, defaultSchema)
       }
     },
     firestore () {

@@ -8,7 +8,7 @@
       v-btn(color="primary" v-if="editToggle" @click="reset") Reset
       v-btn(color="primary" v-if="editToggle" @click="cancel") Cancel
       v-btn(color="primary" v-if="!loading && !editToggle" @click="edit") Edit
-      v-btn(color="primary" v-if="!loading && !editToggle" @click="") New version
+      v-btn(color="primary" v-if="!loading && !editToggle && schema.versionable" @click="") New version
       v-btn(color="primary" v-if="!loading && !editToggle" @click="deleteDialogToggle = !deleteDialogToggle") Delete
       v-dialog(v-model="deleteDialogToggle" max-width="500px")
         v-card

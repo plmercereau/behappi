@@ -4,6 +4,7 @@
   "titleProperty": "name",
   "title": "Application",
   "titleCreate": "Create an application",
+  "versionable": "true",
   "properties": {
     "name": {
       "type": "string",
