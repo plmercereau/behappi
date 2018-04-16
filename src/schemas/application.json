@@ -2,24 +2,16 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "titleProperty": "name",
-  "title": "Project",
-  "titleCreate": "Create a project",
+  "title": "Application",
+  "titleCreate": "Create an application",
   "properties": {
     "name": {
       "type": "string",
       "attrs": {
         "placeholder": "Name",
-        "title": "Please enter the name of the project"
+        "title": "Please enter the name of the application"
       },
       "validation": "required|min:3"
-    },
-    "location": {
-      "type": "point",
-      "attrs": {
-        "placeholder": "Location of the project",
-        "title": "TODO distinction betwwen placeholder and title"
-      },
-      "zoomProperty": "zoom"
     }
   },
   "additionalProperties": false,

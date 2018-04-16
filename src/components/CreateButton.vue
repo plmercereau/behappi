@@ -1,7 +1,8 @@
 <template lang="pug">
   div
-    v-btn(fixed dark fab bottom left color="orange" @click.stop="toggleDialog = !toggleDialog")
-      v-icon add
+    v-btn(:fab="isFab" :fixed="isFab" :dark="isFab" :bottom="isFab" :left="isFab" :color="isFab ? 'orange': 'primary'" @click.stop="toggleDialog = !toggleDialog")
+      v-icon(v-if="isFab") add
+      slot
     v-dialog(v-model="toggleDialog" max-width="500px")
       v-card
         v-card-title {{ schema.titleCreate || schema.title || 'Create'}}
@@ -32,8 +33,9 @@
 
 <script>
   import * as firebase from 'firebase'
+  import _ from 'lodash'
   export default {
-    props: ['collection', 'schema', 'to'],
+    props: ['collection', 'schema', 'default', 'to', 'fab'],
     name: 'CreateButton',
     data () {
       return {
@@ -43,7 +45,8 @@
     },
     methods: {
       create () { // TODO submit action, rather than $validator.validateAll() && create()
-        firebase.firestore().collection(this.collection).add(this.form).then((docRef) => {
+        let values = _.merge(this.default || {}, this.form)
+        firebase.firestore().collection(this.collection).add(values).then((docRef) => {
           this.$router.push(`${this.to}/${docRef.id}`) // TODO add / if not in the base url
         }).catch(error => {
           console.log(error)
@@ -63,6 +66,11 @@
         } else {
           return ''
         }
+      }
+    },
+    computed: {
+      isFab () {
+        return Boolean(this.fab)
       }
     }
   }

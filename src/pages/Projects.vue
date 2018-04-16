@@ -2,6 +2,7 @@
   page
     tool-bar(title="Projects", search, v-model="search")
     card-list
+      create-button(fab collection="orgUnits", :schema="schema", :default="defaultValues" to="/projects")
       template(slot="title-content")
         v-btn(@click="excelExport") Export Projects list
       v-flex(d-flex xs12 sm6 md4, v-for="project in filteredList" :key="project .id")
@@ -17,26 +18,23 @@
 <script>
   import * as firebase from 'firebase'
   import XLSX from 'xlsx'
+  import defaultSchema from '@/schemas/default'
+  import schema from '@/schemas/project'
+  import _ from 'lodash'
 
   export default {
     name: 'Projects',
     data () {
       return {
         projects: [],
-        headers: [
-          {
-            text: 'Project Name',
-            align: 'left',
-            sortable: true,
-            value: 'name'
-          },
-          {
-            text: 'Mission',
-            sortable: true,
-            value: 'mission.name'
+        search: '',
+        defaultValues: {
+          status: 'draft',
+          categories: {
+            project: true
           }
-        ],
-        search: ''
+        },
+        schema: _.merge(schema, defaultSchema)
       }
     },
     methods: {

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "titleProperty": "mission",
+  "titleProperty": "name",
   "title": "Mission",
   "titleCreate": "Create a mission",
   "properties": {

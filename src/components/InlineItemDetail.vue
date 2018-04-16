@@ -11,6 +11,7 @@
 <script>
   export default {
     name: 'InlineItemDetail'
+    // TODO remove component - too basic => useless
   }
 </script>
 

@@ -60,6 +60,21 @@ function createDocumentVersion(snapshot) {
   }
 }
 
+function deleteOneToManyDocuments(snapshot, oneToManyAttribute) {
+  try {
+    const arrayObject = snapshot.data()[oneToManyAttribute]
+    if (arrayObject) {
+      Object.keys(arrayObject).map(key => {
+        if (arrayObject[key]) {
+          arrayObject[key].delete()
+        }
+      })
+    }
+  } catch (e) {
+   console.error(e)
+  }
+}
+
 exports.writeApplicationUsage = functions.firestore
   .document('applicationUsages/{applicationUsageId}')
   .onWrite((snap) => { // TODO test infinite loop (when we will be able to update on both sides of the relation)
@@ -75,9 +90,30 @@ exports.writeOrgUnit = functions.firestore
     return 0
   });
 
+exports.deleteApplication = functions.firestore
+  .document('applications/{applicationId}')
+  .onDelete((snap) => {
+    deleteOneToManyDocuments(snap, 'applicationUsages')
+    return 0
+  });
+
+exports.deleteOrgUnit = functions.firestore
+  .document('orgUnits/{orgUnitId}')
+  .onDelete((snap) => {
+    deleteOneToManyDocuments(snap, 'applicationUsages')
+    return 0
+  });
+
 exports.updateMission = functions.firestore
   .document('missions/{missionId}') // TODO make is work for every doc of every collection
   .onUpdate((snap) => {
     createDocumentVersion(snap);
+    return 0
+  });
+
+exports.deleteMission = functions.firestore
+  .document('missions/{missionId}')
+  .onDelete((snap) => {
+    deleteOneToManyDocuments(snap, 'projects')
     return 0
   });

@@ -2,7 +2,7 @@
   page
     tool-bar(title="Missions", search, v-model="search")
     card-list
-      create-button(collection="missions", :schema="schema", to="/missions")
+      create-button(fab, collection="missions", :schema="schema", to="/missions")
       v-flex(d-flex xs12 sm6 md4, v-for="mission in filteredList" :key="mission.id")
         v-card(:to="'/missions/'+mission.id")
           v-card-media(height="200px")

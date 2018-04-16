@@ -3,6 +3,19 @@
     v-card-title(primary-title)
       div
         h2 {{(schema.titleProperty && data[schema.titleProperty]) || schema.title || 'Item'}}
+    v-card-actions
+      v-btn(color="primary" v-show="editToggle && !errors.any()" @click="saveItem()") Save
+      v-btn(color="primary" v-if="editToggle" @click="reset") Reset
+      v-btn(color="primary" v-if="editToggle" @click="cancel") Cancel
+      v-btn(color="primary" v-if="!loading && !editToggle" @click="edit") Edit
+      v-btn(color="primary" v-if="!loading && !editToggle" @click="") New version
+      v-btn(color="primary" v-if="!loading && !editToggle" @click="deleteDialogToggle = !deleteDialogToggle") Delete
+      v-dialog(v-model="deleteDialogToggle" max-width="500px")
+        v-card
+          v-card-title Are you sure you want to delete this {{((schema.titleProperty && data[schema.titleProperty]) || schema.title || 'Item') | lowercase}}?
+          v-card-actions
+            v-btn(color="error" flat @click.stop="deleteItem") Delete
+            v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
     v-card-text
       v-container
         v-container(v-if="editToggle")
@@ -67,20 +80,6 @@
             map-image(v-if="data[name] && field.type === 'area'" :location="data[name]", :zoom="data[field.zoomProperty]")
             map-image(v-if="data[name] && field.type === 'point'" :location="data[name]", :zoom="data[field.zoomProperty]", :markers="[data[name]]")
             v-divider
-    v-card-actions
-      v-btn(color="primary" v-show="editToggle && !errors.any()" @click="saveItem()") Save
-      v-btn(color="primary" v-if="editToggle" @click="reset") Reset
-      v-btn(color="primary" v-if="editToggle" @click="cancel") Cancel
-      v-btn(color="primary" v-if="!loading && !editToggle" @click="edit") Edit
-      v-btn(color="primary" v-if="!loading && !editToggle" @click="") New version
-      v-btn(color="primary" v-if="!loading && !editToggle" @click="deleteDialogToggle = !deleteDialogToggle") Delete
-      v-dialog(v-model="deleteDialogToggle" max-width="500px")
-        v-card
-          v-card-title Are you sure you want to delete this {{((schema.titleProperty && data[schema.titleProperty]) || schema.title || 'Item') | lowercase}}?
-          v-card-actions
-            v-btn(color="error" flat @click.stop="deleteItem") Delete
-            v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
-
 </template>
 
 <script>
