@@ -8,16 +8,25 @@
     "name": {
       "type": "string",
       "attrs": {
-        "placeholder": "Name",
-        "title": "Please enter the name of the project"
+        "title": "Name",
+        "placeholder": "Please enter the name of the project"
       },
       "validation": "required|min:3"
+    },
+    "mission": {
+      "type": "ref",
+      "attrs": {
+        "title": "Mission",
+        "placeholder": "Enter the mission of the project"
+      },
+      "collectionRef": "missions",
+      "titleProperty": "name"
     },
     "location": {
       "type": "point",
       "attrs": {
-        "placeholder": "Location of the project",
-        "title": "TODO distinction betwwen placeholder and title"
+        "title": "Location",
+        "placeholder": "Enter the location of the project"
       },
       "zoomProperty": "zoom"
     }

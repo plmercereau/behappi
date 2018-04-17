@@ -7,10 +7,10 @@
             v-icon(v-html="item.icon")
           v-list-tile-content
             v-list-tile-title(v-text="item.title")
-        v-list-tile(v-if="userIsAuthenticated", @click="signOut")
-          v-list-tile-action
+        v-list-tile(class="footer" v-if="userIsAuthenticated", @click="signOut")
+          v-list-tile-action(class="large")
             v-icon exit_to_app
-          v-list-tile-content
+          v-list-tile-content(class="large")
             v-list-tile-title Sign out
     v-content
         keep-alive
@@ -22,33 +22,12 @@
 
 <script>
   import firebase from 'firebase'
-
+  import {MENU} from './main'
   export default {
     data () {
       return {
         drawer: true,
-        items: [
-          {
-            icon: 'home',
-            title: 'Home',
-            path: '/home'
-          },
-          {
-            icon: 'map',
-            title: 'Missions',
-            path: '/missions'
-          },
-          {
-            icon: 'local_hospital',
-            title: 'Projects',
-            path: '/projects'
-          },
-          {
-            icon: 'apps',
-            title: 'Applications',
-            path: '/applications'
-          }
-        ]
+        items: MENU
       }
     },
     name: 'App',
@@ -72,3 +51,12 @@
     }
   }
 </script>
+<style scoped>
+  .footer {
+    position: fixed;
+    bottom: 0;
+  }
+  .large {
+    width: 100%;
+  }
+</style>

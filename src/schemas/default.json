@@ -17,8 +17,8 @@
         }
       ],
       "attrs": {
-        "placeholder": "Status",
-        "title": "Status of the document"
+        "placeholder": "Status of the document",
+        "title": "Status"
       }
     }
   },

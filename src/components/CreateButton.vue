@@ -34,6 +34,7 @@
 <script>
   import * as firebase from 'firebase'
   import _ from 'lodash'
+  import {getFinalData} from '../helpers'
   export default {
     props: ['collection', 'schema', 'default', 'to', 'fab'],
     name: 'CreateButton',
@@ -46,7 +47,7 @@
     methods: {
       create () { // TODO submit action, rather than $validator.validateAll() && create()
         let values = _.merge(this.default || {}, this.form)
-        firebase.firestore().collection(this.collection).add(values).then((docRef) => {
+        firebase.firestore().collection(this.collection).add(getFinalData(values)).then((docRef) => {
           this.$router.push(`${this.to}/${docRef.id}`) // TODO add / if not in the base url
         }).catch(error => {
           console.log(error)

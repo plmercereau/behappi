@@ -46,7 +46,28 @@ export const DEFAULT_LOCATION = {
 }
 export const DEFAULT_ZOOM = 5
 export const MARKER_COLOR = 'brown'
-
+export const MENU = [
+  {
+    icon: 'home',
+    title: 'Home',
+    path: '/home'
+  },
+  {
+    icon: 'map',
+    title: 'Missions',
+    path: '/missions'
+  },
+  {
+    icon: 'local_hospital',
+    title: 'Projects',
+    path: '/projects'
+  },
+  {
+    icon: 'apps',
+    title: 'Applications',
+    path: '/applications'
+  }
+]
 Vue.use(VueGoogleMaps, {
   load: {
     key: GOOGLE_API_KEY,

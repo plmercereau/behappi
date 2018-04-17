@@ -8,16 +8,16 @@
     "name": {
       "type": "string",
       "attrs": {
-        "placeholder": "Name",
-        "title": "Please enter the name of the mission"
+        "placeholder": "Please enter the name of the mission",
+        "title": "Name"
       },
       "validation": "required|min:3"
     },
     "location": {
       "type": "area",
       "attrs": {
-        "placeholder": "Area of the mission",
-        "title": "Please give the area of the mission"
+        "placeholder": "Please give the area of the mission",
+        "title": "Area of the mission"
       },
       "zoomProperty": "zoom"
     }

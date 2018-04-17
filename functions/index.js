@@ -53,7 +53,7 @@ function updateOneToManyRevertRelation(snapshot, originAttributeName, destinatio
 function createDocumentVersion(snapshot) {
   try {
     // TODO
-    console.log('TODO')
+    console.log(snapshot)
 
   } catch (e) {
     console.error(e)
@@ -62,12 +62,13 @@ function createDocumentVersion(snapshot) {
 
 function deleteOneToManyDocuments(snapshot, oneToManyAttribute) {
   try {
-    const arrayObject = snapshot.data()[oneToManyAttribute]
+    const arrayObject = snapshot.data()[oneToManyAttribute];
     if (arrayObject) {
       Object.keys(arrayObject).map(key => {
         if (arrayObject[key]) {
           arrayObject[key].delete()
         }
+        return 0
       })
     }
   } catch (e) {
@@ -93,14 +94,14 @@ exports.writeOrgUnit = functions.firestore
 exports.deleteApplication = functions.firestore
   .document('applications/{applicationId}')
   .onDelete((snap) => {
-    deleteOneToManyDocuments(snap, 'applicationUsages')
+    deleteOneToManyDocuments(snap, 'applicationUsages');
     return 0
   });
 
 exports.deleteOrgUnit = functions.firestore
   .document('orgUnits/{orgUnitId}')
   .onDelete((snap) => {
-    deleteOneToManyDocuments(snap, 'applicationUsages')
+    deleteOneToManyDocuments(snap, 'applicationUsages');
     return 0
   });
 
@@ -114,6 +115,35 @@ exports.updateMission = functions.firestore
 exports.deleteMission = functions.firestore
   .document('missions/{missionId}')
   .onDelete((snap) => {
-    deleteOneToManyDocuments(snap, 'projects')
+    deleteOneToManyDocuments(snap, 'projects');
     return 0
+  });
+
+exports.createDocument = functions.firestore
+  .document('{collection}/{docId}')
+  .onCreate((snap) => {
+    const user = snap.data().user;
+    if (user) {
+      let data = {
+        createdBy: user,
+        createdAt: FieldValue.serverTimestamp(),
+        user: FieldValue.delete()
+      };
+      if (!snap.data().owner) data['owner'] = user;
+      return snap.ref.set(data, {merge: true})
+    } else return 0
+  });
+
+exports.updateDocument = functions.firestore
+  .document('{collection}/{docId}')
+  .onUpdate((snap) => {
+    let user = snap.after.data().user;
+    let data = {
+      updatedBy: user,
+      updatedAt: FieldValue.serverTimestamp(),
+      user: FieldValue.delete()
+    };
+    if (!snap.after.data().owner) data['owner'] = user;
+    if (user) return snap.after.ref.set(data, {merge: true});
+    else return 0
   });
