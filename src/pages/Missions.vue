@@ -12,7 +12,7 @@
               div(class="headline") {{mission.name}}
               div(v-if="nbProjects(mission)") {{nbProjects(mission)}} {{nbProjects(mission) | pluralize('project')}}
             v-spacer
-            i(v-if="$store.getters.user") {{mission.status}}
+            i {{mission.status}}
 </template>
 
 <script>

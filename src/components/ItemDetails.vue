@@ -16,81 +16,79 @@
           v-card-actions
             v-btn(color="error" flat @click.stop="deleteItem") Delete
             v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
-    v-card-text
-      v-container
-        v-container(v-if="editToggle")
-          form(novalidate @submit.prevent="saveItem")
-            template(v-for="(field, name) in schema.properties")
-              div(v-if="field.type==='string' && !field.enum" class="caption")
-                v-text-field(
-                  autofocus,
-                  autocomplete,
-                  v-model="form[name]",
-                  :id="'form-' + name",
-                  :label="field.attrs.placeholder",
-                  v-validate="field.validation",
-                  :data-vv-name="'form-' + name")
-                <!--TODO required, data-vv-name-->
-              div(v-if="field.type==='string' && field.enum") {{field.attrs.title}}
-                v-select(
-                  autofocus,
-                  autocomplete,
-                  v-model="form[name]",
-                  :items="field.enum",
-                  :label="field.attrs.placeholder",
-                  single-line)
-              div(v-if="field.type==='ref'") {{field.attrs.title}}
-                v-select(
-                  autofocus,
-                  autocomplete,
-                  v-model="form[name]",
-                  :items="form[name+'Collection']"
-                  :label="field.attrs.title",
-                  single-line)
-              v-container(v-if="field.type==='area' || field.type==='point'", fluid ,grid-list-md)
-                v-layout(row, wrap)
-                  v-flex(d-flex xs12 sm6 md4)
-                    v-container(fluid)
-                      v-layout(row)
-                        v-flex
-                          div(class="caption") {{field.attrs.placeholder}}
-                          v-text-field(
-                          autofocus
-                          type="number"
-                          v-model.number="form['reported'+name].lat",
-                          :id="'form-' + name + '-latitude'",
-                          label="Latitude",
-                          v-validate="",
-                          @change="updateMapCenter(name)",
-                          :data-vv-name="'form-' + name + '-latitude'")
-                          v-text-field(
-                          autofocus
-                          type="number"
-                          v-model.number="form['reported'+name].lng",
-                          :id="'form-' + name + '-latitude'",
-                          label="Longitude",
-                          v-validate="",
-                          @change="updateMapCenter(name)",
-                          :data-vv-name="'form-' + name + '-latitude'")
-                          v-slider(label="Zoom" :max="20" v-model="form[schema.properties[name].zoomProperty]")
-                  v-flex(d-flex xs12 sm6 md8)
-                    gmap-map(
-                    :center="form[name]"
-                    @center_changed="updateCenter(name, $event)"
-                    :zoom="form[schema.properties[name].zoomProperty]"
-                    @zoom_changed="updateField(field.zoomProperty, $event)"
-                    :map-type-id="mapType"
-                    style="width: 320px; height: 200px")
-                      gmap-marker(v-if="field.type==='point'" :position="form['reported'+name]")
-        v-container(v-if="!editToggle")
-          div(v-for="(field, name) in schema.properties" :key="name")
-            div(class="caption" v-if="data[name]") {{field.attrs.title}}
-            h3(class="subheading" v-if="data[name]")
-              div(v-if="field.type === 'string'") {{!field.enum ? data[name]: getLabel(data[name], field.enum)}}
-              div(v-else-if="field.type === 'ref'") {{data[name][field.titleProperty]}}
-            map-image(v-if="data[name] && field.type === 'area'" :location="data[name]", :zoom="data[field.zoomProperty]")
-            map-image(v-if="data[name] && field.type === 'point'" :location="data[name]", :zoom="data[field.zoomProperty]", :markers="[data[name]]")
-            v-divider
+    v-card-text(v-if="editToggle")
+      form(novalidate @submit.prevent="saveItem")
+        template(v-for="(field, name) in schema.properties")
+          div(v-if="field.type==='string' && !field.enum" class="caption")
+            v-text-field(
+              autofocus,
+              autocomplete,
+              v-model="form[name]",
+              :id="'form-' + name",
+              :label="field.attrs.placeholder",
+              v-validate="field.validation",
+              :data-vv-name="'form-' + name")
+            <!--TODO required, data-vv-name-->
+          div(v-if="field.type==='string' && field.enum") {{field.attrs.title}}
+            v-select(
+              autofocus,
+              autocomplete,
+              v-model="form[name]",
+              :items="field.enum",
+              :label="field.attrs.placeholder",
+              single-line)
+          div(v-if="field.type==='ref'") {{field.attrs.title}}
+            v-select(
+              autofocus,
+              autocomplete,
+              v-model="form[name]",
+              :items="form[name+'Collection']"
+              :label="field.attrs.title",
+              single-line)
+          v-container(v-if="field.type==='area' || field.type==='point'", fluid ,grid-list-md)
+            v-layout(row, wrap)
+              v-flex(d-flex xs12 sm6 md4)
+                v-container(fluid)
+                  v-layout(row)
+                    v-flex
+                      div(class="caption") {{field.attrs.placeholder}}
+                      v-text-field(
+                      autofocus
+                      type="number"
+                      v-model.number="form['reported'+name].lat",
+                      :id="'form-' + name + '-latitude'",
+                      label="Latitude",
+                      v-validate="",
+                      @change="updateMapCenter(name)",
+                      :data-vv-name="'form-' + name + '-latitude'")
+                      v-text-field(
+                      autofocus
+                      type="number"
+                      v-model.number="form['reported'+name].lng",
+                      :id="'form-' + name + '-latitude'",
+                      label="Longitude",
+                      v-validate="",
+                      @change="updateMapCenter(name)",
+                      :data-vv-name="'form-' + name + '-latitude'")
+                      v-slider(label="Zoom" :max="20" v-model="form[schema.properties[name].zoomProperty]")
+              v-flex(d-flex xs12 sm6 md8)
+                gmap-map(
+                :center="form[name]"
+                @center_changed="updateCenter(name, $event)"
+                :zoom="form[schema.properties[name].zoomProperty]"
+                @zoom_changed="updateField(field.zoomProperty, $event)"
+                :map-type-id="mapType"
+                style="width: 320px; height: 200px")
+                  gmap-marker(v-if="field.type==='point'" :position="form['reported'+name]")
+    v-card-text(v-if="!editToggle")
+      div(v-for="(field, name) in schema.properties" :key="name")
+        div(class="caption" v-if="data[name]") {{field.attrs.title}}
+        h3(class="subheading" v-if="data[name]")
+          div(v-if="field.type === 'string'") {{!field.enum ? data[name]: getLabel(data[name], field.enum)}}
+          div(v-else-if="field.type === 'ref'") {{data[name][field.titleProperty]}}
+        map-image(v-if="data[name] && field.type === 'area'" :location="data[name]", :zoom="data[field.zoomProperty]")
+        map-image(v-if="data[name] && field.type === 'point'" :location="data[name]", :zoom="data[field.zoomProperty]", :markers="[data[name]]")
+        v-divider
 </template>
 
 <script>

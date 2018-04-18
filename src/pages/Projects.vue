@@ -14,7 +14,7 @@
               div(class="headline") {{project.name}}
               div {{project.mission && project.mission.name}}
             v-spacer
-            i(v-if="$store.getters.user") {{project.status}}
+            i {{project.status}}
 </template>
 
 <script>
