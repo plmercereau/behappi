@@ -1,25 +1,17 @@
 <template lang="pug">
   page
-    tool-bar(title="Missions", search, v-model="search")
+    tool-bar(:title="schema.collectionTitle", search, v-model="search")
     card-list
-      create-button(fab, collection="missions", :schema="schema", to="/missions")
-      v-flex(d-flex xs12 sm6 md4, v-for="mission in filteredList" :key="mission.id")
-        v-card(:to="'/missions/'+mission.id")
-          v-card-media(height="200px")
-            map-image(v-if="mission.location", :location="mission.location", :zoom="mission.zoom", :markers="markersProjects(mission)")
-          v-card-title(primary-title)
-            div
-              div(class="headline") {{mission.name}}
-              div(v-if="nbProjects(mission)") {{nbProjects(mission)}} {{nbProjects(mission) | pluralize('project')}}
-            v-spacer
-            i {{mission.status}}
+      v-card-actions(slot="actions")
+        create-button(fab, :schema="schema", to="/missions")
+      v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
+        inline-item-detail(:doc="doc", :schema="schema")
+          div(v-if="nbProjects(doc)") {{nbProjects(doc)}} {{nbProjects(doc) | pluralize('project')}}
 </template>
 
 <script>
   import * as firebase from 'firebase'
-  import defaultSchema from '@/schemas/default'
-  import schema from '@/schemas/mission'
-  import _ from 'lodash'
+  import {getSchema} from '../schemas'
 
   export default {
     name: 'Missions',
@@ -27,7 +19,7 @@
       return {
         missions: [],
         search: '',
-        schema: _.merge(schema, defaultSchema)
+        schema: getSchema('mission')
       }
     },
     methods: {

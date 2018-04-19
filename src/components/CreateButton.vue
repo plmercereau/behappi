@@ -5,25 +5,25 @@
       slot
     v-dialog(v-model="toggleDialog" max-width="500px")
       v-card
-        v-card-title {{ schema.titleCreate || schema.title || 'Create'}}
+        v-card-title {{ schema.createTitle || schema.title || 'Create'}}
         v-card-text
           form(novalidate @submit.prevent="create")
-            template(v-for="(field, name) in schema.properties")
+            template(v-for="(name) in schema.create")
               v-text-field(
               autofocus
-              v-if="field.type==='string' && !field.enum && (schema.requiredCreate ? schema.requiredCreate.indexOf(name) > -1 : true)"
+              v-if="schema.properties[name].type==='string' && !schema.properties[name].enum"
               v-model="form[name]",
               :id="'form-' + name",
-              :label="field.attrs.placeholder",
-              v-validate="field.validation",
+              :label="schema.properties[name].placeholder",
+              v-validate="schema.properties[name].validation",
               :data-vv-name="'form-' + name")
               <!--TODO required, data-vv-name-->
               v-select(
               autofocus
-              v-if="field.type==='string' && field.enum && (schema.requiredCreate ? schema.requiredCreate.indexOf(name) > -1 : true)"
+              v-if="schema.properties[name].type==='string' && schema.properties[name].enum"
               v-model="form[name]",
-              :items="field.enum"
-              :label="field.attrs.placeholder",
+              :items="schema.properties[name].enum"
+              :label="schema.properties[name].placeholder",
               single-line)
         v-card-actions
           v-btn(color="primary" flat @click.stop="$validator.validateAll() && create()") Create
@@ -32,11 +32,9 @@
 </template>
 
 <script>
-  import * as firebase from 'firebase'
-  import _ from 'lodash'
-  import {getFinalData} from '../helpers'
+  import {addDocument} from '../schemas'
   export default {
-    props: ['collection', 'schema', 'default', 'to', 'fab'],
+    props: ['schema', 'parentData', 'to', 'fab'],
     name: 'CreateButton',
     data () {
       return {
@@ -46,9 +44,20 @@
     },
     methods: {
       create () { // TODO submit action, rather than $validator.validateAll() && create()
-        let values = _.merge(this.default || {}, this.form)
-        firebase.firestore().collection(this.collection).add(getFinalData(values)).then((docRef) => {
-          this.$router.push(`${this.to}/${docRef.id}`) // TODO add / if not in the base url
+        // TODO add parent ref
+        if (this.schema.inheritedProperties) {
+          const parentProperties = this.schema.inheritedProperties.properties
+          const filteredParentData = parentProperties.reduce((obj, name) => {
+            obj[name] = this.parentData[name]
+            return obj
+          }, {})
+          this.form['_parentData'] = {
+            id: this.parentData.id,
+            ...filteredParentData
+          }
+        }
+        addDocument(this.schema, this.form).then((docRef) => {
+          this.$router.push(this.schema.uri.replace('{id}', docRef.id))
         }).catch(error => {
           console.log(error)
         })
@@ -57,16 +66,6 @@
       cancel () {
         this.form = {} // Object.assign({}, this.data)
         this.toggleDialog = false
-      },
-      getLabel (value, enumeration) { // TODO convert into a pipeline/filter
-        if (value) {
-          let index = enumeration.findIndex((el) => {
-            return (el.value === value)
-          })
-          return enumeration[index].text
-        } else {
-          return ''
-        }
       }
     },
     computed: {

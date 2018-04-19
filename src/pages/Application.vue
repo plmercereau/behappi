@@ -8,8 +8,9 @@
           h3 {{usage.orgUnit && usage.orgUnit.name}}
           i description of the application usage
         template(slot="actions")
-          v-btn(flat color="orange" :to="'/'") See configuration
-          v-btn(flat color="orange" :to="'/projects/' + (usage.orgUnit && usage.orgUnit.id)") See project
+          v-card-actions
+            v-btn(flat color="orange" :to="'/'") See configuration
+            v-btn(flat color="orange" :to="'/projects/' + (usage.orgUnit && usage.orgUnit.id)") See project
 </template>
 
 <script>

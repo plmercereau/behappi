@@ -1,0 +1,54 @@
+{
+  "name": "mission",
+  "type": "object",
+  "uri": "/missions/{id}",
+  "title": "Mission",
+  "titleProperty": "name",
+  "media": {
+    "type": "map",
+    "property": "location",
+    "attributes": {
+      "zoom": "zoom"
+    }
+  },
+  "collection": "missions",
+  "collectionTitle": "Missions",
+  "createTitle": "Create a mission",
+  "versionable": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name",
+      "placeholder": "Please enter the name of the mission",
+      "validation": "required|min:3"
+    },
+    "location": {
+      "type": "area",
+      "title": "Area of the mission",
+      "placeholder": "Please give the area of the mission",
+      "zoomProperty": "zoom"
+    },
+    "projects" : {
+      "type": "refCollection",
+      "schemaName": "project",
+      "title": "Projects of the mission",
+      "placeholder": ""
+    }
+  },
+  "create": ["name"],
+  "details": [
+    {
+      "type": "properties",
+      "titleProperty": "name",
+      "read": ["name", "location", "status", "owner"],
+      "edit": ["name", "location", "status"]
+    },
+    {
+      "type": "refCollection",
+      "property": "projects",
+      "edit": true
+    }
+  ],
+  "nestedBadge": "TODO",
+  "badge": "TODO"
+}

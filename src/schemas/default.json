@@ -16,10 +16,16 @@
           "value": "draft"
         }
       ],
-      "attrs": {
-        "placeholder": "Status of the document",
-        "title": "Status"
-      }
+      "default": "draft",
+      "title": "Status",
+      "placeholder": "Status of the document"
+    },
+    "owner": {
+      "type": "userId",
+      "title": "Owner",
+      "placeholder": "Enter the owner",
+      "collectionRef": "users",
+      "titleProperty": "name"
     }
   },
   "required": ["status"]

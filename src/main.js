@@ -88,6 +88,17 @@ let config = {
   messagingSenderId: '248401610335'
 }
 
+Vue.filter('labelEnum', function (value, enumeration) {
+  if (value && enumeration) {
+    let index = enumeration.findIndex((el) => {
+      return (el.value === value)
+    })
+    return enumeration[index].text
+  } else {
+    return value || ''
+  }
+})
+
 firebase.initializeApp(config)
 firebase.auth().onAuthStateChanged((user) => {
   if (!app) {

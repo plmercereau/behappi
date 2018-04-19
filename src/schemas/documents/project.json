@@ -1,0 +1,60 @@
+{
+  "name": "project",
+  "type": "object",
+  "uri": "/projects/{id}",
+  "title": "Project",
+  "titleProperty": "name",
+  "media": {
+    "type": "map",
+    "property": "location",
+    "attributes": {
+      "zoom": "zoom"
+    }
+  },
+  "collection": "orgUnits",
+  "collectionTitle": "Projects",
+  "createTitle": "New project",
+  "versionable": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name",
+      "placeholder": "Please enter the name of the project",
+      "validation": "required|min:3"
+    },
+    "mission": {
+      "type": "ref",
+      "schemaName": "mission",
+      "title": "Mission",
+      "placeholder": "Enter the mission of the project"
+    },
+    "location": {
+      "type": "point",
+      "title": "Location",
+      "placeholder": "Enter the location of the project",
+      "zoomProperty": "zoom"
+    },
+    "categories": {
+      "type": "collection",
+      "title": "Categories",
+      "default": {
+        "project": true
+      }
+    }
+  },
+  "create": ["name"],
+  "inheritedProperties": {
+    "parentProperty": "mission",
+    "properties": ["location", "zoom"]
+  },
+  "details": [
+    {
+      "type": "properties",
+      "titleProperty": "name",
+      "read": ["name", "location", "status", "owner"],
+      "edit": ["name", "location", "status"]
+    }
+  ],
+  "nestedBadge": "TODO",
+  "badge": "TODO"
+}

@@ -1,47 +1,32 @@
 <template lang="pug">
   page
-    tool-bar(title="Projects", search, v-model="search")
+    tool-bar(:title="schema.collectionTitle", search, v-model="search")
     card-list
-      create-button(fab collection="orgUnits", :schema="schema", :default="defaultValues" to="/projects")
-      template(slot="title-content")
+      v-card-actions(slot="actions")
+        create-button(fab, :schema="schema", to="/projects/{id}")
         v-btn(@click="excelExport") Export Projects list
-      v-flex(d-flex xs12 sm6 md4, v-for="project in filteredList" :key="project .id")
-        v-card(:to="'/projects/'+project.id")
-          v-card-media(height="200px")
-            map-image(v-if="project.location", :location="project.location", :zoom="project.zoom", :markers="[project.location]")
-          v-card-title(primary-title)
-            div
-              div(class="headline") {{project.name}}
-              div {{project.mission && project.mission.name}}
-            v-spacer
-            i {{project.status}}
+      v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
+        inline-item-detail(:doc="doc", :schema="schema")
+          div {{doc.mission && doc.mission.name}} <!-- TODO set as a configuration element -->
 </template>
 
 <script>
   import * as firebase from 'firebase'
   import XLSX from 'xlsx'
-  import defaultSchema from '@/schemas/default'
-  import schema from '@/schemas/project'
-  import _ from 'lodash'
+  import {getSchema} from '../schemas'
 
   export default {
     name: 'Projects',
     data () {
       return {
-        projects: [],
+        collection: [],
         search: '',
-        defaultValues: {
-          status: 'draft',
-          categories: {
-            project: true
-          }
-        },
-        schema: _.merge(schema, defaultSchema)
+        schema: getSchema('project')
       }
     },
     methods: {
       excelExport () {
-        const dataTable = this.projects.map((data) => {
+        const dataTable = this.collection.map((data) => {
           return {
             name: data.name,
             mission: data.mission.name
@@ -54,9 +39,9 @@
       }
     },
     computed: {
-      filteredList () {
-        if (this.projects) {
-          return this.projects.filter(item => {
+      filteredList () { // TODO put in a mixin
+        if (this.collection) {
+          return this.collection.filter(item => {
             return (
               (item.name.toLowerCase().includes(this.search.toLowerCase())) ||
               (item.mission && item.mission.name.toLowerCase().includes(this.search.toLowerCase())))
@@ -66,7 +51,7 @@
     },
     firestore () {
       return {
-        projects: firebase.firestore().collection('orgUnits').where('categories.project', '==', true).orderBy('name')
+        collection: firebase.firestore().collection('orgUnits').where('categories.project', '==', true).orderBy('name')
       }
     }
   }

@@ -3,10 +3,8 @@
     v-card-title(v-if="title" primary-title)
       div
         h2 {{title}}
-        slot(name="title-content")
-    v-card-actions
-      slot(name="actions")
-    v-card-text(fluid ,grid-list-md)
+    slot(name="actions")
+    v-card-text(fluid, grid-list-md)
       v-layout(row, wrap)
         slot
 </template>
