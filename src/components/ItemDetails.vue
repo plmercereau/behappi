@@ -88,8 +88,8 @@
             h3(class="subheading" v-if="data[name]")
               div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? data[name]: data[name] | labelEnum(schema.properties[name].enum)}}
               div(v-else-if="schema.properties[name].type === 'ref'") {{data[name][schema.properties[name].titleProperty]}}
-            map-image(v-if="data[name] && schema.properties[name].type === 'area'" :location="data[name]", :zoom="data[schema.properties[name].zoomProperty]")
-            map-image(v-if="data[name] && schema.properties[name].type === 'point'" :location="data[name]", :zoom="data[schema.properties[name].zoomProperty]", :markers="[data[name]]")
+            map-image(v-if="data[name] && schema.properties[name].type === 'area'", :schema="schema", :doc="data", :locationProperty="name")
+            map-image(v-if="data[name] && schema.properties[name].type === 'point'", :schema="schema", :doc="data",  :locationProperty="name")
             v-divider
       card-list(v-if="section.type ==='refCollection'" :title="schema.properties[section.property].schema.collectionTitle")
         v-card-actions(v-if="section.edit && !editToggle" slot="actions")
