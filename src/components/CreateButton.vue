@@ -64,8 +64,14 @@
         this.toggleDialog = false
       },
       cancel () {
-        this.form = {} // Object.assign({}, this.data)
         this.toggleDialog = false
+      }
+    },
+    watch: {
+      toggleDialog (newValue) {
+        if (!newValue) {
+          this.form = {}
+        }
       }
     },
     computed: {

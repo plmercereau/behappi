@@ -224,6 +224,9 @@
         return MAP_TYPE
       }
     },
+    deactivated () {
+      this.editToggle = false
+    },
     firestore () {
       return {
         data: firebase.firestore().collection(this.schema.collection).doc(this.id)
