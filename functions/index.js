@@ -12,19 +12,15 @@ admin.initializeApp();
 const FieldValue = require('firebase-admin').firestore.FieldValue;
 
 function addOneToManyRevertRelation(snapshot, originAttributeName, destinationAttributeName) {
-  const id = snapshot.id;
   const originAttributeRef = snapshot.data()[originAttributeName];
-  if (originAttributeRef) {
-    originAttributeRef.set({[destinationAttributeName]: {[id]: snapshot.ref}}, {merge: true})
-  } // else { console.log(`The attribute ${originAttributeName} was not found in the snapshot ${snapshot}`) }
+  originAttributeRef.set({[destinationAttributeName]: {[snapshot.id]: snapshot.ref}}, {merge: true})
 }
 
 function removeOneToManyRevertRelation(snapshot, originAttributeName, destinationAttributeName) {
   try {
-    const id = snapshot.id;
     const originAttributeRef = snapshot.data()[originAttributeName];
     if (originAttributeRef) {
-      originAttributeRef.set({[destinationAttributeName]: {[id]: FieldValue.delete()}}, {merge: true})
+      originAttributeRef.set({[destinationAttributeName]: {[snapshot.id]: FieldValue.delete()}}, {merge: true})
     } // else console.log(`The attribute ${originAttributeName} was not found in the snapshot ${snapshot}`)
   } catch (e) {
     console.error(e)
