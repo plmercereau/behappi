@@ -1,23 +1,23 @@
 <template lang="pug">
   v-flex(xs12)
+    v-card-actions
+      v-btn(color="primary" v-show="editToggle && !errors.any()" @click="saveItem()") Save
+      v-btn(color="primary" v-if="editToggle" @click="reset") Reset
+      v-btn(color="primary" v-if="editToggle" @click="cancel") Cancel
+      v-btn(color="primary" v-if="!loading && !editToggle" @click="edit") Edit
+      v-btn(color="primary" v-if="!loading && !editToggle && schema.versionable" @click="") New version
+      v-btn(color="primary" v-if="!loading && !editToggle" @click="deleteDialogToggle = !deleteDialogToggle") Delete
+      v-dialog(v-model="deleteDialogToggle" max-width="500px")
+        v-card
+          v-card-title Are you sure you want to delete this document?
+          v-card-actions
+            v-btn(color="error" flat @click.stop="deleteItem") Delete
+            v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
     template(v-for="(section, key) in schema.details")
-      v-card(v-if="section.type ==='properties'")
+      v-card(v-if="section.type ==='properties' && (!editToggle || section.edit)")
         v-card-title(primary-title)
           div
             h2 {{(section.titleProperty && data[section.titleProperty]) || section.title || (schema.titleProperty && data[schema.titleProperty]) || schema.title || 'Item'}}
-        v-card-actions(v-if="section.edit")
-          v-btn(color="primary" v-show="editToggle && !errors.any()" @click="saveItem()") Save
-          v-btn(color="primary" v-if="editToggle" @click="reset") Reset
-          v-btn(color="primary" v-if="editToggle" @click="cancel") Cancel
-          v-btn(color="primary" v-if="!loading && !editToggle" @click="edit") Edit
-          v-btn(color="primary" v-if="!loading && !editToggle && schema.versionable" @click="") New version
-          v-btn(color="primary" v-if="!loading && !editToggle" @click="deleteDialogToggle = !deleteDialogToggle") Delete
-          v-dialog(v-model="deleteDialogToggle" max-width="500px")
-            v-card
-              v-card-title Are you sure you want to delete this document?
-              v-card-actions
-                v-btn(color="error" flat @click.stop="deleteItem") Delete
-                v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
         v-card-text(v-if="editToggle")
           form(novalidate @submit.prevent="saveItem")
             template(v-for="name in section.edit")
@@ -87,6 +87,7 @@
             div(class="caption" v-if="data[name]") {{schema.properties[name].title}}
             h3(class="subheading" v-if="data[name]")
               div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? data[name]: data[name] | labelEnum(schema.properties[name].enum)}}
+              div(v-if="schema.properties[name].type === 'date'") {{data[name] | moment('DD-MM-YYYY HH:mm:ss')}}
               div(v-else-if="schema.properties[name].type === 'ref'") {{data[name][schema.properties[name].schema.titleProperty]}}
               map-image(v-else-if="schema.properties[name].type === 'area' || schema.properties[name].type === 'point'",
                 :schema="schema",

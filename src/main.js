@@ -14,6 +14,7 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 import Vue2Filters from 'vue2-filters'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
+import VueMoment from 'vue-moment'
 
 // https://github.com/chrisvfritz/vue-enterprise-boilerplate/blob/master/src/components/_globals.js
 const requireComponent = require.context(
@@ -29,6 +30,8 @@ requireComponent.keys().forEach(fileName => {
 })
 
 Vue.use(Vue2Filters)
+
+Vue.use(VueMoment)
 
 Vue.use(VeeValidate)
 
