@@ -20,6 +20,7 @@
     },
     "mission": {
       "type": "ref",
+      "autocomplete": true,
       "schemaName": "mission",
       "title": "Mission",
       "placeholder": "Enter the mission of the project"
@@ -47,8 +48,8 @@
     {
       "type": "properties",
       "titleProperty": "name",
-      "read": ["name", "location", "status", "owner"],
-      "edit": ["name", "location", "status"]
+      "read": ["name", "mission", "location", "status", "owner"],
+      "edit": ["name", "mission", "location", "status"]
     }
   ],
   "nestedBadge": "TODO",

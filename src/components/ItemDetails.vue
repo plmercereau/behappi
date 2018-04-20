@@ -24,7 +24,6 @@
               div(v-if="schema.properties[name].type==='string' && !schema.properties[name].enum" class="caption")
                 v-text-field(
                   autofocus,
-                  autocomplete,
                   v-model="form[name]",
                   :id="'form-' + name",
                   :label="schema.properties[name].placeholder",
@@ -34,7 +33,7 @@
               div(v-if="schema.properties[name].type==='string' && schema.properties[name].enum") {{schema.properties[name].title}}
                 v-select(
                   autofocus,
-                  autocomplete,
+                  :autocomplete="schema.properties[name].autocomplete",
                   v-model="form[name]",
                   :items="schema.properties[name].enum",
                   :label="schema.properties[name].placeholder",
@@ -42,7 +41,7 @@
               div(v-if="schema.properties[name].type==='ref'") {{schema.properties[name].title}}
                 v-select(
                   autofocus,
-                  autocomplete,
+                  :autocomplete="schema.properties[name].autocomplete",
                   v-model="form[name]",
                   :items="form[name+'Collection']"
                   :label="schema.properties[name].title",
@@ -203,7 +202,7 @@
                 snapshot.forEach(doc => {
                   form[`${key}Collection`].push({
                     value: doc.id,
-                    text: doc.data()[this.schema.properties[key].titleProperty]
+                    text: doc.data()[this.schema.properties[key].schema.titleProperty]
                   })
                 })
               })
