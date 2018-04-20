@@ -5,11 +5,7 @@
   "title": "Mission",
   "titleProperty": "name",
   "media": {
-    "type": "map",
-    "property": "location",
-    "attributes": {
-      "zoom": "zoom"
-    }
+    "property": "location"
   },
   "collection": "missions",
   "collectionTitle": "Missions",
@@ -42,8 +38,13 @@
     {
       "type": "properties",
       "titleProperty": "name",
-      "read": ["name", "location", "status", "owner"],
+      "read": ["name", "location", "status"],
       "edit": ["name", "location", "status"]
+    },
+    {
+      "type": "properties",
+      "title": "Administration",
+      "read": ["owner"]
     },
     {
       "type": "refCollection",

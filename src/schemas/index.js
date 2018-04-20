@@ -17,7 +17,7 @@ const schemas = requireSchemas.keys().reduce((obj, item) => {
 
 function getSystemData (data) {
   let initialData = {
-    user: store.getters.user.id
+    userId: store.getters.user.id
   }
   return _.merge(initialData, data)
 }

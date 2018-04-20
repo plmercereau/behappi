@@ -5,11 +5,7 @@
   "title": "Project",
   "titleProperty": "name",
   "media": {
-    "type": "map",
-    "property": "location",
-    "attributes": {
-      "zoom": "zoom"
-    }
+    "property": "location"
   },
   "collection": "orgUnits",
   "collectionTitle": "Projects",

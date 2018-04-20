@@ -21,12 +21,10 @@
       "placeholder": "Status of the document"
     },
     "owner": {
-      "type": "userId",
+      "type": "ref",
       "title": "Owner",
       "placeholder": "Enter the owner",
-      "collectionRef": "users",
-      "titleProperty": "name"
+      "schemaName": "user"
     }
-  },
-  "required": ["status"]
+  }
 }

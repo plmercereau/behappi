@@ -87,9 +87,11 @@
             div(class="caption" v-if="data[name]") {{schema.properties[name].title}}
             h3(class="subheading" v-if="data[name]")
               div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? data[name]: data[name] | labelEnum(schema.properties[name].enum)}}
-              div(v-else-if="schema.properties[name].type === 'ref'") {{data[name][schema.properties[name].titleProperty]}}
-            map-image(v-if="data[name] && schema.properties[name].type === 'area'", :schema="schema", :doc="data", :locationProperty="name")
-            map-image(v-if="data[name] && schema.properties[name].type === 'point'", :schema="schema", :doc="data",  :locationProperty="name")
+              div(v-else-if="schema.properties[name].type === 'ref'") {{data[name][schema.properties[name].schema.titleProperty]}}
+              map-image(v-else-if="schema.properties[name].type === 'area' || schema.properties[name].type === 'point'",
+                :schema="schema",
+                :doc="data",
+                :locationProperty="name")
             v-divider
       card-list(v-if="section.type ==='refCollection'" :title="schema.properties[section.property].schema.collectionTitle")
         v-card-actions(v-if="section.edit && !editToggle" slot="actions")
@@ -116,7 +118,7 @@
       }
     },
     methods: {
-      updateMapCenter (fieldName) {
+      updateMapCenter (fieldName) { // TODO move map editor into a dedicated component
         this.form[fieldName] = _.clone(this.form[`reported${fieldName}`])
       },
       updateCenter (field, event) {

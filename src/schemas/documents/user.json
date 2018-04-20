@@ -1,0 +1,37 @@
+{
+  "name": "user",
+  "type": "object",
+  "uri": "/users/{id}",
+  "title": "User",
+  "titleProperty": "email",
+  "media": {
+    "property": "location"
+  },
+  "collection": "users",
+  "collectionTitle": "Users",
+  "createTitle": "Create an user",
+  "versionable": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name",
+      "placeholder": "Please enter the name of the user",
+      "validation": "required|min:3"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email",
+      "placeholder": "Please enter the email of the mission",
+      "validation": "required|min:3"
+    }
+  },
+  "create": ["email"],
+  "details": [
+    {
+      "type": "properties",
+      "titleProperty": "name",
+      "read": ["name", "email", "status"],
+      "edit": ["name", "email", "status"]
+    }
+  ]
+}

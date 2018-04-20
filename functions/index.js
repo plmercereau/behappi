@@ -122,12 +122,14 @@ exports.deleteMission = functions.firestore
 exports.createDocument = functions.firestore
   .document('{collection}/{docId}')
   .onCreate((snap) => {
-    const user = snap.data().user;
-    if (user) {
+    const firestore = admin.firestore()
+    const userId = snap.data().userId
+    if (userId) {
+      const user = firestore.doc(`/users/${userId}`);
       let data = {
         createdBy: user,
         createdAt: FieldValue.serverTimestamp(),
-        user: FieldValue.delete()
+        userId: FieldValue.delete()
       };
       if (!snap.data().owner) data['owner'] = user;
       return snap.ref.set(data, {merge: true})
@@ -137,13 +139,22 @@ exports.createDocument = functions.firestore
 exports.updateDocument = functions.firestore
   .document('{collection}/{docId}')
   .onUpdate((snap) => {
-    let user = snap.after.data().user;
+    const firestore = admin.firestore()
+    const userId = snap.after.data().userId
+    const user = firestore.doc(`/users/${userId}`);
     let data = {
       updatedBy: user,
       updatedAt: FieldValue.serverTimestamp(),
-      user: FieldValue.delete()
+      userId: FieldValue.delete()
     };
     if (!snap.after.data().owner) data['owner'] = user;
-    if (user) return snap.after.ref.set(data, {merge: true});
+    if (userId) return snap.after.ref.set(data, {merge: true});
     else return 0
   });
+
+exports.createUser = functions.auth.user().onCreate((user) => { // TODO implement the delete trigger as well
+  const firestore = admin.firestore()
+  const userProfile = firestore.doc(`/users/${user.uid}`);
+  userProfile.set({email: user.email})
+  return 0
+});
