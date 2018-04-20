@@ -55,7 +55,7 @@
       "type": "properties",
       "title": "Administration",
       "read": ["owner", "createdBy", "createdAt", "updatedBy", "updatedAt"]
-    },
+    }
   ],
   "nestedBadge": "TODO",
   "badge": "TODO"
