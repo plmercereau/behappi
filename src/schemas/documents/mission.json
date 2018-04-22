@@ -1,15 +1,10 @@
 {
   "name": "mission",
   "type": "object",
-  "uri": "/missions/{id}",
-  "title": "Mission",
-  "titleProperty": "name",
-  "media": {
-    "property": "location"
-  },
   "collection": "missions",
-  "collectionTitle": "Missions",
-  "createTitle": "Create a mission",
+  "title": {
+    "property": "name"
+  },
   "versionable": true,
   "properties": {
     "name": {
@@ -33,25 +28,43 @@
       "placeholder": ""
     }
   },
-  "create": ["name"],
-  "details": [
-    {
-      "type": "properties",
-      "titleProperty": "name",
-      "read": ["name", "location", "status"],
-      "edit": ["name", "location", "status"]
-    },
-    {
-      "type": "properties",
-      "title": "Administration",
-      "read": ["owner", "createdBy", "createdAt", "updatedBy", "updatedAt"]
-    },
-    {
-      "type": "refCollection",
-      "property": "projects",
-      "edit": true
+  "itemViews": {
+    "default": {
+      "sectionsOrder": ["main", "administration", "projects"],
+      "sections": {
+        "main": {
+          "type": "properties",
+          "title": {
+            "property": "name"
+          },
+          "read": ["name", "location", "status"],
+          "edit": ["name", "location", "status"]
+        },
+        "projects": {
+          "type": "refCollection",
+          "property": "projects",
+          "edit": true
+        }
+      }
     }
-  ],
-  "nestedBadge": "TODO",
-  "badge": "TODO"
+  },
+  "listViews": {
+    "default" : {
+      "type": "badge",
+      "title": "Missions",
+      "item": {
+        "uri": "/missions/{id}",
+        "title": {
+          "property": "name"
+        },
+        "media": {
+          "property": "location"
+        }
+      },
+      "create": {
+        "title": "New mission",
+        "properties": ["name"]
+      }
+    }
+  }
 }

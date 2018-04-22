@@ -13,14 +13,13 @@
           v-card-actions
             v-btn(color="error" flat @click.stop="deleteItem") Delete
             v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
-    template(v-for="(section, key) in schema.details")
-      v-card(v-if="section.type ==='properties' && (!editToggle || section.edit)")
+    template(v-for="sectionName in view.sectionsOrder")
+      v-card(v-if="view.sections[sectionName].type ==='properties' && (!editToggle || view.sections[sectionName].edit)")
         v-card-title(primary-title)
-          div
-            h2 {{(section.titleProperty && data[section.titleProperty]) || section.title || (schema.titleProperty && data[schema.titleProperty]) || schema.title || 'Item'}}
+          h2 {{title(doc, view.sections[sectionName].title)}}
         v-card-text(v-if="editToggle")
           form(novalidate @submit.prevent="saveItem")
-            template(v-for="name in section.edit")
+            template(v-for="name in view.sections[sectionName].edit")
               div(v-if="schema.properties[name].type==='string' && !schema.properties[name].enum" class="caption")
                 v-text-field(
                   autofocus,
@@ -28,8 +27,8 @@
                   :id="'form-' + name",
                   :label="schema.properties[name].placeholder",
                   v-validate="schema.properties[name].validation",
-                  :data-vv-name="'form-' + name")
-                <!--TODO required, data-vv-name-->
+                  :doc-vv-name="'form-' + name")
+                <!--TODO required, doc-vv-name-->
               div(v-if="schema.properties[name].type==='string' && schema.properties[name].enum") {{schema.properties[name].title}}
                 v-select(
                   autofocus,
@@ -61,7 +60,7 @@
                           label="Latitude",
                           v-validate="",
                           @change="updateMapCenter(name)",
-                          :data-vv-name="'form-' + name + '-latitude'")
+                          :doc-vv-name="'form-' + name + '-latitude'")
                           v-text-field(
                           autofocus
                           type="number"
@@ -70,7 +69,7 @@
                           label="Longitude",
                           v-validate="",
                           @change="updateMapCenter(name)",
-                          :data-vv-name="'form-' + name + '-latitude'")
+                          :doc-vv-name="'form-' + name + '-latitude'")
                           v-slider(label="Zoom" :max="20" v-model="form[schema.properties[name].zoomProperty]")
                   v-flex(d-flex xs12 sm6 md8)
                     gmap-map(
@@ -82,39 +81,40 @@
                     style="width: 320px; height: 200px")
                       gmap-marker(v-if="schema.properties[name].type==='point'" :position="form['reported'+name]")
         v-card-text(v-if="!editToggle")
-          div(v-for="name in section.read" :key="name")
-            div(class="caption" v-if="data[name]") {{schema.properties[name].title}}
-            h3(class="subheading" v-if="data[name]")
-              div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? data[name]: data[name] | labelEnum(schema.properties[name].enum)}}
-              div(v-if="schema.properties[name].type === 'date'") {{data[name] | moment('DD-MM-YYYY HH:mm:ss')}}
-              div(v-else-if="schema.properties[name].type === 'ref'") {{data[name][schema.properties[name].schema.titleProperty]}}
+          div(v-for="name in view.sections[sectionName].read" :key="name")
+            div(class="caption" v-if="doc[name]") {{schema.properties[name].title}}
+            h3(class="subheading" v-if="doc[name]")
+              div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? doc[name]: doc[name] | labelEnum(schema.properties[name].enum)}}
+              div(v-if="schema.properties[name].type === 'date'") {{doc[name] | moment('DD-MM-YYYY HH:mm:ss')}}
+              div(v-else-if="schema.properties[name].type === 'ref'") {{title(doc[name], schema.properties[name].schema.title)}}
               map-image(v-else-if="schema.properties[name].type === 'area' || schema.properties[name].type === 'point'",
                 :schema="schema",
-                :doc="data",
+                :doc="doc",
                 :locationProperty="name")
             v-divider
-      card-list(v-if="section.type ==='refCollection'" :title="schema.properties[section.property].schema.collectionTitle")
-        v-card-actions(v-if="section.edit && !editToggle" slot="actions")
-          create-button(:schema="schema.properties[section.property].schema", :parentData="data") {{schema.properties[section.property].schema.createTitle}}
-        v-flex(d-flex xs12 sm6 md4, v-for="(doc, docId) in data[section.property]" :key="docId")
-          inline-item-detail(:schema="schema.properties[section.property].schema", :doc="doc")
+      card-list(v-if="view.sections[sectionName].type ==='refCollection'" :title="title(doc, schema.properties[view.sections[sectionName].property].title)")
+        v-card-actions(v-if="view.sections[sectionName].edit && !editToggle" slot="actions")
+          create-button(:schema="schema.properties[view.sections[sectionName].property].schema", :parentData="doc") {{title(doc, schema.properties[view.sections[sectionName].property].schema.listViews.default.create.title)}}
+        v-flex(d-flex xs12 sm6 md4, v-for="(doc, docId) in doc[view.sections[sectionName].property]" :key="docId")
+          inline-item-detail(:schema="schema.properties[view.sections[sectionName].property].schema", :doc="doc")
 </template>
 
 <script>
   import {MAP_TYPE, DEFAULT_LOCATION, DEFAULT_ZOOM} from '../main'
   import * as firebase from 'firebase'
   import _ from 'lodash'
+  import {schemaMixin} from '../mixins'
   import {updateDocument} from '../schemas'
+
   export default {
-    props: ['id', 'schema'],
+    props: ['id', 'schema', 'viewName'],
     name: 'ItemDetails',
+    mixins: [schemaMixin],
     data () {
       return {
         form: {},
-        data: {},
         editToggle: false,
-        deleteDialogToggle: false,
-        loading: true
+        deleteDialogToggle: false
       }
     },
     methods: {
@@ -135,7 +135,7 @@
         let form = {}
         Object.keys(this.form).map((key, index) => {
           if (this.schema.properties[key]) {
-            let val = this.data[key] // TODO revoir pour les references
+            let val = this.doc[key] // TODO revoir pour les references
             if (this.schema.properties[key].type === 'area' || this.schema.properties[key].type === 'point') {
               val = {
                 latitude: this.form[`reported${key}`].lat,
@@ -147,7 +147,8 @@
             } else {
               val = this.form[key]
             }
-            if (!_.isEqual(this.data[key], val)) {
+            // TODO do not put refs when they haven't changed! check if the id ref changed
+            if (!_.isEqual(this.doc[key], val)) {
               form[key] = val
             }
           }
@@ -173,7 +174,7 @@
         this.editToggle = false
       },
       reset () {
-        let form = Object.assign({}, this.data)
+        let form = Object.assign({}, this.doc)
         Object.keys(this.schema.properties)
           .filter(key => {
             return (this.schema.properties[key].type !== 'refCollection')
@@ -202,7 +203,7 @@
                 snapshot.forEach(doc => {
                   form[`${key}Collection`].push({
                     value: doc.id,
-                    text: doc.data()[this.schema.properties[key].schema.titleProperty]
+                    text: this.title(doc.data(), this.schema.properties[key].schema.title)
                   })
                 })
               })
@@ -211,17 +212,12 @@
         this.form = Object.assign({}, this.form, form)
       }
     },
-    watch: {
-      data (newValue) {
-        // if (newValue.location) this.defaultProject.location = newValue.location // TODO garder? generaliser?
-        if (newValue.id) {
-          this.loading = false
-        }
-      }
-    },
     computed: {
       mapType () {
         return MAP_TYPE
+      },
+      view () {
+        return this.schema.itemViews[this.viewName || 'default']
       }
     },
     deactivated () {
@@ -229,7 +225,7 @@
     },
     firestore () {
       return {
-        data: firebase.firestore().collection(this.schema.collection).doc(this.id)
+        doc: firebase.firestore().collection(this.schema.collection).doc(this.id)
       }
     }
   }

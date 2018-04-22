@@ -1,15 +1,10 @@
 {
   "name": "user",
   "type": "object",
-  "uri": "/users/{id}",
-  "title": "User",
-  "titleProperty": "email",
-  "media": {
-    "property": "location"
-  },
   "collection": "users",
-  "collectionTitle": "Users",
-  "createTitle": "Create an user",
+  "title": {
+    "property": "email"
+  },
   "versionable": true,
   "properties": {
     "name": {
@@ -21,17 +16,39 @@
     "email": {
       "type": "string",
       "title": "Email",
-      "placeholder": "Please enter the email of the mission",
+      "placeholder": "Please enter the email of the user",
       "validation": "required|min:3"
     }
   },
-  "create": ["email"],
-  "details": [
-    {
-      "type": "properties",
-      "titleProperty": "name",
-      "read": ["name", "email", "status"],
-      "edit": ["name", "email", "status"]
+  "itemViews": {
+    "default": {
+      "sectionsOrder": ["main", "administration"],
+      "sections": {
+        "main": {
+          "type": "properties",
+          "title": {
+            "property": "name"
+          },
+          "read": ["name", "email"],
+          "edit": ["name", "email"]
+        }
+      }
     }
-  ]
+  },
+  "listViews": {
+    "default" : {
+      "type": "badge",
+      "title": "Users",
+      "item": {
+        "uri": "/users/{id}",
+        "title": {
+          "property": "email"
+        }
+      },
+      "create": {
+        "title": "New user",
+        "properties": ["email"]
+      }
+    }
+  }
 }

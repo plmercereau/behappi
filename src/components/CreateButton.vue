@@ -5,10 +5,10 @@
       slot
     v-dialog(v-model="toggleDialog" max-width="500px")
       v-card
-        v-card-title {{ schema.createTitle || schema.title || 'Create'}}
+        v-card-title {{ view.create.title || schema.title || 'Create'}}
         v-card-text
           form(novalidate @submit.prevent="create")
-            template(v-for="(name) in schema.create")
+            template(v-for="(name) in view.create.properties")
               v-text-field(
               autofocus
               v-if="schema.properties[name].type==='string' && !schema.properties[name].enum"
@@ -33,9 +33,11 @@
 
 <script>
   import {addDocument} from '../schemas'
+  import {listMixin, schemaMixin} from '../mixins'
   export default {
-    props: ['schema', 'parentData', 'to', 'fab'],
+    props: ['schema', 'parentData', 'fab'],
     name: 'CreateButton',
+    mixins: [listMixin, schemaMixin],
     data () {
       return {
         form: {},
@@ -44,9 +46,8 @@
     },
     methods: {
       create () { // TODO submit action, rather than $validator.validateAll() && create()
-        // TODO add parent ref
-        if (this.schema.inheritedProperties) {
-          const parentProperties = this.schema.inheritedProperties.properties
+        if (this.view.create.inheritedProperties) {
+          const parentProperties = this.view.create.inheritedProperties
           const filteredParentData = parentProperties.reduce((obj, name) => {
             obj[name] = this.parentData[name]
             return obj
@@ -57,7 +58,7 @@
           }
         }
         addDocument(this.schema, this.form).then((docRef) => {
-          this.$router.push(this.schema.uri.replace('{id}', docRef.id))
+          this.$router.push(this.view.item.uri.replace('{id}', docRef.id))
         }).catch(error => {
           console.log(error)
         })

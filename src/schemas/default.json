@@ -16,7 +16,6 @@
           "value": "draft"
         }
       ],
-      "default": "draft",
       "title": "Status",
       "placeholder": "Status of the document"
     },
@@ -43,6 +42,28 @@
     "updatedAt": {
       "type": "date",
       "title": "Updated at"
+    }
+  },
+  "listViews": {
+    "default" : {
+      "create": {
+        "default": {
+          "status": "draft"
+        }
+      }
+    }
+  },
+  "itemViews": {
+    "default": {
+      "sections": {
+        "administration": {
+          "type": "properties",
+          "title": {
+            "text": "Administration"
+          },
+          "read": ["owner", "createdBy", "createdAt", "updatedBy", "updatedAt"]
+        }
+      }
     }
   }
 }

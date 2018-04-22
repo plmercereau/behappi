@@ -22,12 +22,13 @@ function getSystemData (data) {
   return _.merge(initialData, data)
 }
 
-function getInitialDefaultData (schema, data) {
+function getInitialDefaultData (schema, data, view = 'default') {
   let res = getSystemData(data)
   if (res._parentData) {
-    const parentSchema = getSchema(schema.inheritedProperties.parentProperty)
+    const parentProperty = schema.listViews[view].create.parentProperty
+    const parentSchema = getSchema(parentProperty)
     let parentRef = firebase.firestore().collection(parentSchema.collection).doc(data._parentData.id)
-    res[schema.inheritedProperties.parentProperty] = parentRef
+    res[parentProperty] = parentRef
     delete res._parentData.id
     Object.keys(res._parentData).map(attrName => {
       res[attrName] = data._parentData[attrName]
@@ -38,15 +39,15 @@ function getInitialDefaultData (schema, data) {
     .filter(propName => { return (!res[propName]) })
     .map(propName => {
       if (schema.properties[propName].type === 'area' || schema.properties[propName].type === 'point') {
-        if (schema.properties[propName].default) {
-          res[propName] = schema.properties[propName].default.coordinates
-          res[schema.properties[propName].zoomProperty] = schema.properties[propName].default.zoom
-        } else {
-          res[propName] = DEFAULT_LOCATION
-          res[schema.properties[propName].zoomProperty] = DEFAULT_ZOOM
-        }
-      } else if (schema.properties[propName].default) {
-        res[propName] = schema.properties[propName].default
+        // if (schema.listViews[view].create.default[propName]) {
+        //   res[propName] = schema.properties[propName].default.coordinates
+        //   res[schema.properties[propName].zoomProperty] = schema.properties[propName].default.zoom
+        // } else {
+        res[propName] = DEFAULT_LOCATION
+        res[schema.properties[propName].zoomProperty] = DEFAULT_ZOOM
+        // }
+      } else if (schema.listViews[view].create.default[propName]) {
+        res[propName] = schema.listViews[view].create.default[propName]
       }
     })
   return res

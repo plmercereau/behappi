@@ -32,6 +32,7 @@ function updateOneToManyRevertRelation(snapshot, originAttributeName, destinatio
     const before = snapshot.before;
     const after = snapshot.after;
     if (before.exists && after.exists) { // Update
+      // TODO do update refs when they haven't changed! check if the id ref changed
       if (before.data()[originAttributeName] !== after.data()[originAttributeName]) {
           removeOneToManyRevertRelation(before, originAttributeName, destinationAttributeName);
           addOneToManyRevertRelation(after, originAttributeName, destinationAttributeName)

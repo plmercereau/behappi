@@ -1,9 +1,9 @@
 <template lang="pug">
   page
-    tool-bar(:title="schema.collectionTitle", search, v-model="search")
+    tool-bar(:title="view.title", search, v-model="search")
     card-list
       v-card-actions(slot="actions")
-        create-button(fab, :schema="schema", to="/projects/{id}")
+        create-button(fab, :schema="schema")
         v-btn(@click="excelExport") Export Projects list
       v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
         inline-item-detail(:doc="doc", :schema="schema")
@@ -14,13 +14,13 @@
   import * as firebase from 'firebase'
   import XLSX from 'xlsx'
   import {getSchema} from '../schemas'
+  import {listMixin} from '../mixins'
 
   export default {
     name: 'Projects',
+    mixins: [listMixin],
     data () {
       return {
-        collection: [],
-        search: '',
         schema: getSchema('project')
       }
     },

@@ -1,15 +1,10 @@
 {
   "name": "project",
   "type": "object",
-  "uri": "/projects/{id}",
-  "title": "Project",
-  "titleProperty": "name",
-  "media": {
-    "property": "location"
-  },
   "collection": "orgUnits",
-  "collectionTitle": "Projects",
-  "createTitle": "New project",
+  "title": {
+    "property": "name"
+  },
   "versionable": true,
   "properties": {
     "name": {
@@ -33,30 +28,48 @@
     },
     "categories": {
       "type": "collection",
-      "title": "Categories",
-      "default": {
-        "project": true
+      "title": "Categories"
+    }
+  },
+  "itemViews": {
+    "default": {
+      "sectionsOrder": ["main", "administration"],
+      "sections": {
+        "main": {
+          "type": "properties",
+          "title": {
+            "property": "name"
+          },
+          "read": ["name", "mission", "location", "status"],
+          "edit": ["name", "mission", "location", "status"]
+        }
       }
     }
   },
-  "create": ["name"],
-  "inheritedProperties": {
-    "parentProperty": "mission",
-    "properties": ["location", "zoom"]
-  },
-  "details": [
-    {
-      "type": "properties",
-      "titleProperty": "name",
-      "read": ["name", "mission", "location", "status"],
-      "edit": ["name", "mission", "location", "status"]
-    },
-    {
-      "type": "properties",
-      "title": "Administration",
-      "read": ["owner", "createdBy", "createdAt", "updatedBy", "updatedAt"]
+  "listViews": {
+    "default" : {
+      "type": "badge",
+      "title": "Projects",
+      "item": {
+        "uri": "/projects/{id}",
+        "title": {
+          "property": "name"
+        },
+        "media": {
+          "property": "location"
+        }
+      },
+      "create": {
+        "title": "New project",
+        "default": {
+          "categories": {
+            "project": true
+          }
+        },
+        "properties": ["name"],
+        "parentProperty": "mission",
+        "inheritedProperties": ["location", "zoom"]
+      }
     }
-  ],
-  "nestedBadge": "TODO",
-  "badge": "TODO"
+  }
 }
