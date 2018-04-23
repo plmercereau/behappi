@@ -33,9 +33,12 @@ function updateOneToManyRevertRelation(snapshot, originAttributeName, destinatio
     const after = snapshot.after;
     if (before.exists && after.exists) { // Update
       // TODO do update refs when they haven't changed! check if the id ref changed
-      if (before.data()[originAttributeName] !== after.data()[originAttributeName]) {
-          removeOneToManyRevertRelation(before, originAttributeName, destinationAttributeName);
-          addOneToManyRevertRelation(after, originAttributeName, destinationAttributeName)
+      if (
+        (before.data()[originAttributeName] !== after.data()[originAttributeName]) &&
+        (before.data()[originAttributeName].id !== after.data()[originAttributeName].id)
+      ) {
+        removeOneToManyRevertRelation(before, originAttributeName, destinationAttributeName);
+        addOneToManyRevertRelation(after, originAttributeName, destinationAttributeName)
       }
     } else if (after.exists) { // Create
       addOneToManyRevertRelation(after, originAttributeName, destinationAttributeName)
@@ -50,7 +53,7 @@ function updateOneToManyRevertRelation(snapshot, originAttributeName, destinatio
 function createDocumentVersion(snapshot) {
   try {
     // TODO
-    console.log(snapshot)
+    console.error(snapshot)
 
   } catch (e) {
     console.error(e)

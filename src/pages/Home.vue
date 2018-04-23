@@ -17,7 +17,6 @@
 <script>
   import {MENU} from '../main'
   import _ from 'lodash'
-  import {getSchema} from '../schemas'
   export default {
     name: 'Home',
     computed: {
@@ -29,9 +28,6 @@
         m.splice(0, 1)
         return m
       }
-    },
-    mounted () {
-      console.log(getSchema('project'))
     }
   }
 </script>

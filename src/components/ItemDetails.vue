@@ -135,20 +135,24 @@
         let form = {}
         Object.keys(this.form).map((key, index) => {
           if (this.schema.properties[key]) {
-            let val = this.doc[key] // TODO revoir pour les references
+            let val = this.doc[key]
             if (this.schema.properties[key].type === 'area' || this.schema.properties[key].type === 'point') {
               val = {
                 latitude: this.form[`reported${key}`].lat,
                 longitude: this.form[`reported${key}`].lng
               }
-              form[this.schema.properties[key].zoomProperty] = this.form[this.schema.properties[key].zoomProperty]
+              const zoomProp = this.schema.properties[key].zoomProperty
+              if (!_.isEqual(this.doc[zoomProp], this.form[zoomProp])) {
+                form[zoomProp] = this.form[zoomProp]
+              }
             } else if (this.schema.properties[key].type === 'ref') {
               val = firebase.firestore().collection(this.schema.properties[key].schema.collection).doc(this.form[key])
             } else {
               val = this.form[key]
             }
-            // TODO do not put refs when they haven't changed! check if the id ref changed
-            if (!_.isEqual(this.doc[key], val)) {
+            if (
+              (this.schema.properties[key].type !== 'ref' && !_.isEqual(this.doc[key], val)) ||
+              (this.schema.properties[key].type === 'ref' && !_.isEqual(val.id, this.doc[key].id))) {
               form[key] = val
             }
           }
