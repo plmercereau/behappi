@@ -1,6 +1,7 @@
 {
   "name": "project",
-  "type": "object",
+  "type": "document",
+  "mixins": ["timestamp", "workflow"],
   "collection": "orgUnits",
   "title": {
     "property": "name"

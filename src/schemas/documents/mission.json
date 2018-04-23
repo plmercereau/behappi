@@ -1,6 +1,7 @@
 {
   "name": "mission",
-  "type": "object",
+  "type": "document",
+  "mixins": ["timestamp", "workflow"],
   "collection": "missions",
   "title": {
     "property": "name"

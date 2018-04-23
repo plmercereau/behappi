@@ -1,0 +1,34 @@
+{
+  "name": "workflow",
+  "type": "mixin",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        {
+          "text": "Published",
+          "value": "published"
+        },
+        {
+          "text": "Submitted",
+          "value": "submitted"
+        },
+        {
+          "text": "Draft",
+          "value": "draft"
+        }
+      ],
+      "title": "Status",
+      "placeholder": "Status of the document"
+    }
+  },
+  "listViews": {
+    "default" : {
+      "create": {
+        "default": {
+          "status": "draft"
+        }
+      }
+    }
+  }
+}

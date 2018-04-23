@@ -1,0 +1,37 @@
+{
+  "name": "timestamp",
+  "type": "mixin",
+  "properties": {
+    "createdBy": {
+      "type": "ref",
+      "title": "Created by",
+      "schemaName": "user"
+    },
+    "createdAt": {
+      "type": "date",
+      "title": "Created at"
+    },
+    "updatedBy": {
+      "type": "ref",
+      "title": "Updated by",
+      "schemaName": "user"
+    },
+    "updatedAt": {
+      "type": "date",
+      "title": "Updated at"
+    }
+  },
+  "itemViews": {
+    "default": {
+      "sections": {
+        "administration": {
+          "type": "properties",
+          "title": {
+            "text": "Administration"
+          },
+          "read": ["createdBy", "createdAt", "updatedBy", "updatedAt"]
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "name": "user",
-  "type": "object",
+  "type": "document",
   "collection": "users",
   "title": {
     "property": "email"

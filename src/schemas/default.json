@@ -1,69 +1,10 @@
 {
   "properties": {
-    "status": {
-      "type": "string",
-      "enum": [
-        {
-          "text": "Published",
-          "value": "published"
-        },
-        {
-          "text": "Submitted",
-          "value": "submitted"
-        },
-        {
-          "text": "Draft",
-          "value": "draft"
-        }
-      ],
-      "title": "Status",
-      "placeholder": "Status of the document"
-    },
     "owner": {
       "type": "ref",
       "title": "Owner",
       "placeholder": "Enter the owner",
       "schemaName": "user"
-    },
-    "createdBy": {
-      "type": "ref",
-      "title": "Created by",
-      "schemaName": "user"
-    },
-    "createdAt": {
-      "type": "date",
-      "title": "Created at"
-    },
-    "updatedBy": {
-      "type": "ref",
-      "title": "Updated by",
-      "schemaName": "user"
-    },
-    "updatedAt": {
-      "type": "date",
-      "title": "Updated at"
-    }
-  },
-  "listViews": {
-    "default" : {
-      "create": {
-        "default": {
-          "status": "draft"
-        }
-      }
-    }
-  },
-  "itemViews": {
-    "default": {
-      "sections": {
-        "administration": {
-          "type": "properties",
-          "title": {
-            "text": "Administration"
-          },
-          "read": ["owner", "createdBy", "createdAt", "updatedBy", "updatedAt"]
-        }
-      }
     }
   }
 }
