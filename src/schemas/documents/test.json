@@ -1,0 +1,92 @@
+{
+  "name": "test",
+  "type": "mixin",
+  "properties": {
+    "testStatus": {
+      "type": "collection",
+      "component": "select",
+      "title": "Test de collection de type 'select' e.g. status",
+      "unique": true,
+      "create": false,
+      "options": {
+        "draft": "Draft",
+        "published": "Published"
+      }
+    },
+    "testTagCollection": {
+      "type": "collection",
+      "component": "chip",
+      "title": "Test de collection de type 'tag collection'",
+      "unique": false,
+      "create": true,
+      "optionCollection": {
+        "schema": "tag",
+        "where": ["owner", "==", "{user}"]
+      }
+    },
+    "testTagAdHoc": {
+      "type": "collection",
+      "component": "chip",
+      "title": "Test de collection de type 'tag ad hoc'",
+      "unique": false,
+      "create": true
+    },
+    "testSingleRef": {
+      "type": "collection",
+      "component": "select",
+      "title": "Test de collection de type 'single select' e.g. la mission d'un projet",
+      "unique": true,
+      "create": false,
+      "optionCollection": {
+        "schema": "application",
+        "where": ["status.published", "==", true]
+      }
+    },
+    "testMultipleRef": {
+      "type": "collection",
+      "component": "select",
+      "title": "Test de collection de type 'liste parmi une collection fixe existante'",
+      "unique": false,
+      "create": false,
+      "optionCollection": {
+        "schema": "applications",
+        "where": ["status.published", "==", true]
+      }
+    },
+    "testMultipleValue": {
+      "type": "collection",
+      "component": "select",
+      "title": "Test de collection de type 'multiple select'",
+      "unique": false,
+      "create": false,
+      "options": {
+        "option1": "Option number one",
+        "option2": "Option number two",
+        "option3": "Option number three"
+      }
+    }
+  },
+  "itemViews": {
+    "default": {
+      "sectionsOrder": ["testA", "testB", "testC"],
+      "sections": {
+        "testA": {
+          "type": "properties",
+          "title": "Test A",
+          "read": ["testStatus", "testTagCollection", "testTagAdHoc", "testSingleRef", "testMultipleRef", "testMultipleValue"],
+          "edit": ["testStatus", "testTagCollection", "testTagAdHoc", "testSingleRef", "testMultipleRef", "testMultipleValue"]
+        },
+        "testB": {
+          "type": "collection",
+          "title": "Test B - collection - TODO",
+          "property": "projects",
+          "edit": true
+        },
+        "testC": {
+          "type": "properties",
+          "title": "Test C - collection of aggregates - TODO"
+        }
+      }
+    }
+  }
+}

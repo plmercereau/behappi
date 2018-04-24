@@ -14,7 +14,7 @@
             v-btn(color="error" flat @click.stop="deleteItem") Delete
             v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
     template(v-for="sectionName in view.sectionsOrder")
-      v-card(v-if="view.sections[sectionName].type ==='properties' && (!editToggle || view.sections[sectionName].edit)")
+      v-card(v-if="view.sections[sectionName].type ==='properties' && view.sections[sectionName].read && (!editToggle || view.sections[sectionName].edit)")
         v-card-title(primary-title)
           h2 {{title(doc, view.sections[sectionName].title)}}
         v-card-text(v-if="editToggle")

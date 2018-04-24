@@ -55,12 +55,13 @@ function getInitialDefaultData (schema, data, view = 'default') {
 
 export function getSchema (schemaName) {
   if (schemaName && schemas[schemaName]) {
-    let schema = _.merge({}, defaultSchema, schemas[schemaName])
-    if (schema.mixins) {
-      schema.mixins.map(mixinName => {
+    let schema = _.clone(defaultSchema)
+    if (schemas[schemaName].mixins) {
+      schemas[schemaName].mixins.map(mixinName => {
         _.merge(schema, getSchema(mixinName))
       })
     }
+    _.merge(schema, schemas[schemaName])
     Object.keys(schema.properties).map(propName => {
       let prop = schema.properties[propName]
       if (prop && (prop.type === 'ref' || prop.type === 'refCollection')) {
