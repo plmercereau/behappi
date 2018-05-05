@@ -6,7 +6,7 @@
         create-button(fab, :schema="schema")
         v-btn(@click="excelExport") Export Projects list
       v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
-        inline-item-detail(:doc="doc", :schema="schema")
+        card-item(:doc="doc", :schema="schema", component="card")
           div {{doc.mission && doc.mission.name}} <!-- TODO set as a configuration element -->
 </template>
 

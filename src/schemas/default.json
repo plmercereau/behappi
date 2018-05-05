@@ -1,10 +1,20 @@
 {
   "properties": {
     "owner": {
-      "type": "ref",
+      "type": "collection",
+      "component": "select",
+      "schemaName": "user",
       "title": "Owner",
       "placeholder": "Enter the owner",
-      "schemaName": "user"
+      "autocomplete": true,
+      "unique": true,
+      "create": false
     }
+  },
+  "itemView": {},
+  "collectionView": {
+    "default" : {},
+    "card": {},
+    "select": {}
   }
 }

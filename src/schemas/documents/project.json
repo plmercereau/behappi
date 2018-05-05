@@ -15,29 +15,42 @@
       "validation": "required|min:3"
     },
     "mission": {
-      "type": "ref",
-      "autocomplete": true,
+      "type": "collection",
+      "component": "select",
       "schemaName": "mission",
       "title": "Mission",
-      "placeholder": "Enter the mission of the project"
+      "placeholder": "Enter the mission of the project",
+      "autocomplete": true,
+      "unique": true,
+      "create": false
     },
     "location": {
-      "type": "point",
+      "type": "location",
       "title": "Location",
       "placeholder": "Enter the location of the project",
-      "zoomProperty": "zoom"
+      "zoom": "zoom",
+      "markers": {
+        "self": true
+      }
     },
     "categories": {
       "type": "collection",
-      "title": "Categories"
+      "component": "select",
+      "title": "Categories",
+      "placeholder": "Category of the org unit",
+      "unique": false,
+      "create": false,
+      "options": {
+        "project": "Project",
+        "mission": "Mission"
+      }
     }
   },
-  "itemViews": {
+  "itemView": {
     "default": {
       "sectionsOrder": ["main", "administration"],
       "sections": {
         "main": {
-          "type": "properties",
           "title": {
             "property": "name"
           },
@@ -47,19 +60,10 @@
       }
     }
   },
-  "listViews": {
-    "default" : {
-      "type": "badge",
+  "collectionView": {
+    "default": {
       "title": "Projects",
-      "item": {
-        "uri": "/projects/{id}",
-        "title": {
-          "property": "name"
-        },
-        "media": {
-          "property": "location"
-        }
-      },
+      "uri": "/projects/{id}",
       "create": {
         "title": "New project",
         "default": {
@@ -70,6 +74,11 @@
         "properties": ["name"],
         "parentProperty": "mission",
         "inheritedProperties": ["location", "zoom"]
+      }
+    },
+    "card" : {
+      "media": {
+        "property": "location"
       }
     }
   }

@@ -4,25 +4,23 @@
   "properties": {
     "testStatus": {
       "type": "collection",
-      "component": "select",
+      "component": "list",
       "title": "Test de collection de type 'select' e.g. status",
       "unique": true,
       "create": false,
       "options": {
-        "draft": "Draft",
-        "published": "Published"
+        "option1": "Option 1",
+        "option2": "Option 2"
       }
     },
     "testTagCollection": {
       "type": "collection",
       "component": "chip",
+      "schemaName": "tag",
       "title": "Test de collection de type 'tag collection'",
+      "autocomplete": true,
       "unique": false,
-      "create": true,
-      "optionCollection": {
-        "schema": "tag",
-        "where": ["owner", "==", "{user}"]
-      }
+      "create": true
     },
     "testTagAdHoc": {
       "type": "collection",
@@ -33,29 +31,25 @@
     },
     "testSingleRef": {
       "type": "collection",
-      "component": "select",
+      "component": "list",
+      "schemaName": "mission",
+      "filters": [[":status", "==", "published"]],
       "title": "Test de collection de type 'single select' e.g. la mission d'un projet",
       "unique": true,
-      "create": false,
-      "optionCollection": {
-        "schema": "application",
-        "where": ["status.published", "==", true]
-      }
+      "create": false
     },
     "testMultipleRef": {
       "type": "collection",
-      "component": "select",
+      "component": "chip",
+      "schemaName": "mission",
+      "filters": [[":owner.id", "==", "{userId}"]],
       "title": "Test de collection de type 'liste parmi une collection fixe existante'",
       "unique": false,
-      "create": false,
-      "optionCollection": {
-        "schema": "applications",
-        "where": ["status.published", "==", true]
-      }
+      "create": false
     },
     "testMultipleValue": {
       "type": "collection",
-      "component": "select",
+      "component": "list",
       "title": "Test de collection de type 'multiple select'",
       "unique": false,
       "create": false,
@@ -66,25 +60,14 @@
       }
     }
   },
-  "itemViews": {
+  "itemView": {
     "default": {
       "sectionsOrder": ["testA", "testB", "testC"],
       "sections": {
         "testA": {
-          "type": "properties",
           "title": "Test A",
           "read": ["testStatus", "testTagCollection", "testTagAdHoc", "testSingleRef", "testMultipleRef", "testMultipleValue"],
           "edit": ["testStatus", "testTagCollection", "testTagAdHoc", "testSingleRef", "testMultipleRef", "testMultipleValue"]
-        },
-        "testB": {
-          "type": "collection",
-          "title": "Test B - collection - TODO",
-          "property": "projects",
-          "edit": true
-        },
-        "testC": {
-          "type": "properties",
-          "title": "Test C - collection of aggregates - TODO"
         }
       }
     }

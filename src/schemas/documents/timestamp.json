@@ -3,25 +3,35 @@
   "type": "mixin",
   "properties": {
     "createdBy": {
-      "type": "ref",
+      "type": "collection",
+      "component": "select",
+      "schemaName": "user",
       "title": "Created by",
-      "schemaName": "user"
+      "placeholder": "Enter the owner",
+      "autocomplete": true,
+      "unique": true,
+      "create": false
     },
     "createdAt": {
       "type": "date",
       "title": "Created at"
     },
     "updatedBy": {
-      "type": "ref",
+      "type": "collection",
+      "component": "select",
+      "schemaName": "user",
       "title": "Updated by",
-      "schemaName": "user"
+      "placeholder": "Enter the owner",
+      "autocomplete": true,
+      "unique": true,
+      "create": false
     },
     "updatedAt": {
       "type": "date",
       "title": "Updated at"
     }
   },
-  "itemViews": {
+  "itemView": {
     "default": {
       "sections": {
         "administration": {

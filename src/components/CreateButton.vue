@@ -58,7 +58,7 @@
           }
         }
         addDocument(this.schema, this.form).then((docRef) => {
-          this.$router.push(this.view.item.uri.replace('{id}', docRef.id))
+          this.$router.push(this.view.uri.replace('{id}', docRef.id))
         }).catch(error => {
           console.log(error)
         })

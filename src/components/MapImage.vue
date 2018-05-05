@@ -14,16 +14,17 @@
       getMarkers () {
         let markers = []
         let locationProp = this.schema.properties[this.locationProperty]
-        if (locationProp.markersRefCollectionName && this.doc[locationProp.markersRefCollectionName]) {
-          let refCollection = this.doc[locationProp.markersRefCollectionName]
+        let markerProp = locationProp.markers
+        if (markerProp && markerProp.collection && this.doc[markerProp.collection]) {
+          let refCollection = this.doc[markerProp.collection]
           Object.keys(refCollection).map(key => {
-            let location = refCollection[key][locationProp.markersLocationPropertyName]
-            if (location) {
-              markers.push(location)
+            if (refCollection[key]) {
+              let location = refCollection[key][markerProp.property]
+              if (location) markers.push(location)
             }
           })
         }
-        if (locationProp.type === 'point' && this.doc[this.locationProperty]) {
+        if (markerProp && markerProp.self) {
           markers.push(this.doc[this.locationProperty])
         }
         return markers
@@ -31,7 +32,7 @@
       url () {
         let lat = this.doc[this.locationProperty] ? this.doc[this.locationProperty].latitude || DEFAULT_LOCATION.longitude : DEFAULT_LOCATION.longitude
         let lng = this.doc[this.locationProperty] ? this.doc[this.locationProperty].longitude || DEFAULT_LOCATION.longitude : DEFAULT_LOCATION.longitude
-        let zoom = this.doc[this.schema.properties[this.locationProperty].zoomProperty] || DEFAULT_ZOOM
+        let zoom = this.doc[this.schema.properties[this.locationProperty].zoom] || DEFAULT_ZOOM
         let markers = this.getMarkers()
         let markersStr = (!_.isEmpty(markers)) ? `&markers=color:${MARKER_COLOR}|` + markers.map(m => { return `${m.latitude},${m.longitude}` }).join('|') : ''
         return `${googleMapsBaseUrl}?center=${lat},${lng}&zoom=${zoom}&size=320x200&maptype=${MAP_TYPE}&key=${GOOGLE_API_KEY}` + markersStr

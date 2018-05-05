@@ -5,7 +5,7 @@
       v-card-actions(slot="actions")
         create-button(fab, :schema="schema")
       v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
-        inline-item-detail(:doc="doc", :schema="schema")
+        card-item(:doc="doc", :schema="schema", component="card")
           div(v-if="nbProjects(doc)") {{nbProjects(doc)}} {{nbProjects(doc) | pluralize('project')}}
 </template>
 

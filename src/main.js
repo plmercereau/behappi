@@ -71,6 +71,7 @@ export const MENU = [
     path: '/applications'
   }
 ]
+export const DEFAULT_CHIP_PROPERTY = 'name'
 Vue.use(VueGoogleMaps, {
   load: {
     key: GOOGLE_API_KEY,

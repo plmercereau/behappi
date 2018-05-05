@@ -3,7 +3,7 @@
     tool-bar(:title="application.name")
     item-details(collection="applications", :id="id", :schema="schema")
     card-list(:title="'Projects using ' + application.name")
-      inline-item-detail(v-for="(usage, propName) in application.applicationUsages", :key="propName")
+      card-item(v-for="(usage, propName) in application.applicationUsages", :key="propName")
         template(slot="title")
           h3 {{usage.orgUnit && usage.orgUnit.name}}
           i description of the application usage

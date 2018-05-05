@@ -1,0 +1,43 @@
+{
+  "name": "tag",
+  "type": "document",
+  "mixins": ["timestamp"],
+  "collection": "tags",
+  "title": {
+    "property": "name"
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name"
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection name of the tag"
+    }
+  },
+  "itemView": {
+    "default": {
+      "sectionsOrder": ["main", "administration"],
+      "sections": {
+        "main": {
+          "title": {
+            "property": "name"
+          },
+          "read": ["name", "collection"],
+          "edit": ["name", "collection"]
+        }
+      }
+    }
+  },
+  "collectionView": {
+    "default": {
+      "title": "Tags",
+      "uri": "/tags/{id}",
+      "create": {
+        "title": "New tag",
+        "properties": ["name"]
+      }
+    }
+  }
+}

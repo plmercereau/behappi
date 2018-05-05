@@ -1,5 +1,6 @@
 {
   "name": "user",
+  "mixins": ["timestamp"],
   "type": "document",
   "collection": "users",
   "title": {
@@ -20,12 +21,11 @@
       "validation": "required|min:3"
     }
   },
-  "itemViews": {
+  "itemView": {
     "default": {
       "sectionsOrder": ["main", "administration"],
       "sections": {
         "main": {
-          "type": "properties",
           "title": {
             "property": "name"
           },
@@ -35,16 +35,10 @@
       }
     }
   },
-  "listViews": {
+  "collectionView": {
     "default" : {
-      "type": "badge",
       "title": "Users",
-      "item": {
-        "uri": "/users/{id}",
-        "title": {
-          "property": "email"
-        }
-      },
+      "uri": "/users/{id}",
       "create": {
         "title": "New user",
         "properties": ["email"]

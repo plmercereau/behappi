@@ -3,26 +3,20 @@
   "type": "mixin",
   "properties": {
     "status": {
-      "type": "string",
-      "enum": [
-        {
-          "text": "Published",
-          "value": "published"
-        },
-        {
-          "text": "Submitted",
-          "value": "submitted"
-        },
-        {
-          "text": "Draft",
-          "value": "draft"
-        }
-      ],
+      "type": "collection",
+      "component": "select",
       "title": "Status",
-      "placeholder": "Status of the document"
+      "placeholder": "Status of the document",
+      "unique": true,
+      "create": false,
+      "options": {
+        "draft": "Draft",
+        "submitted": "Submitted",
+        "published": "Published"
+      }
     }
   },
-  "listViews": {
+  "collectionView": {
     "default" : {
       "create": {
         "default": {

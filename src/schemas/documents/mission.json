@@ -15,56 +15,53 @@
       "validation": "required|min:3"
     },
     "location": {
-      "type": "area",
+      "type": "location",
       "title": "Area of the mission",
       "placeholder": "Please give the area of the mission",
-      "zoomProperty": "zoom",
-      "markersRefCollectionName": "projects",
-      "markersLocationPropertyName": "location"
+      "zoom": "zoom",
+      "markers": {
+        "self": false,
+        "collection": "projects",
+        "property": "location"
+      }
     },
     "projects" : {
-      "type": "refCollection",
+      "type": "collection",
+      "component": "card",
       "schemaName": "project",
       "title": "Projects of the mission",
-      "placeholder": ""
+      "sort": [["name", "ASC"]],
+      "placeholder": "",
+      "unique": false,
+      "create": true
     }
   },
-  "itemViews": {
+  "itemView": {
     "default": {
-      "sectionsOrder": ["main", "administration", "projects"],
+      "sectionsOrder": ["main", "administration"],
       "sections": {
         "main": {
-          "type": "properties",
           "title": {
             "property": "name"
           },
-          "read": ["name", "location", "status"],
+          "subtitles": ["projects"],
+          "read": ["name", "location",  "status", "projects"],
           "edit": ["name", "location", "status"]
-        },
-        "projects": {
-          "type": "refCollection",
-          "property": "projects",
-          "edit": true
         }
       }
     }
   },
-  "listViews": {
-    "default" : {
-      "type": "badge",
+  "collectionView": {
+    "default": {
       "title": "Missions",
-      "item": {
-        "uri": "/missions/{id}",
-        "title": {
-          "property": "name"
-        },
-        "media": {
-          "property": "location"
-        }
-      },
+      "uri": "/missions/{id}",
       "create": {
-        "title": "New mission",
-        "properties": ["name"]
+        "title": "New mission"
+      }
+    },
+    "card" : {
+      "media": {
+        "property": "location"
       }
     }
   }
