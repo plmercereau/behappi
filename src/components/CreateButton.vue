@@ -46,7 +46,7 @@
     },
     methods: {
       create () { // TODO submit action, rather than $validator.validateAll() && create()
-        if (this.view.create.inheritedProperties) {
+        if (this.view.create.inheritedProperties && this.parentData) {
           const parentProperties = this.view.create.inheritedProperties
           const filteredParentData = parentProperties.reduce((obj, name) => {
             obj[name] = this.parentData[name]

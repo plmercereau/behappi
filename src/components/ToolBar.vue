@@ -4,6 +4,12 @@
     v-toolbar-title {{title}}
     v-spacer
     v-text-field(v-if="search" prepend-icon="search" v-model="searchInput" hide-details single-line)
+    v-menu(v-if="actions" bottom left)
+      v-btn(icon slot="activator")
+        v-icon more_vert
+      v-list
+        v-list-tile(v-for="(action, index) in actions" :key="index" @click="action.method")
+          v-list-tile-title {{action.title}}
 </template>
 
 <script>
@@ -14,7 +20,7 @@
         searchInput: this.value
       }
     },
-    props: ['value', 'search', 'title'],
+    props: ['value', 'search', 'title', 'actions'],
     computed: {
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined

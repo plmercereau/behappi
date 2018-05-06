@@ -56,7 +56,8 @@
       "title": "Missions",
       "uri": "/missions/{id}",
       "create": {
-        "title": "New mission"
+        "title": "New mission",
+        "properties": ["name"]
       }
     },
     "card" : {
