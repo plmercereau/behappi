@@ -1,7 +1,5 @@
 <template lang="pug">
-  v-container(fluid)
-    v-layout(row, align-center)
-      item-details(:id="id", :schema="schema")
+  item-details(:id="id", :schema="schema")
 </template>
 
 <script>

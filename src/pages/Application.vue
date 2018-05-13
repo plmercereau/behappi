@@ -1,36 +1,15 @@
 <template lang="pug">
-  page
-    tool-bar(:title="application.name")
-    item-details(collection="applications", :id="id", :schema="schema")
-    card-list(:title="'Projects using ' + application.name")
-      card-item(v-for="(usage, propName) in application.applicationUsages", :key="propName")
-        template(slot="title")
-          h3 {{usage.orgUnit && usage.orgUnit.name}}
-          i description of the application usage
-        template(slot="actions")
-          v-card-actions
-            v-btn(flat color="orange" :to="'/'") See configuration
-            v-btn(flat color="orange" :to="'/projects/' + (usage.orgUnit && usage.orgUnit.id)") See project
+  item-details(:id="id", :schema="schema")
 </template>
 
 <script>
-  import * as firebase from 'firebase'
-  import defaultSchema from '@/schemas/default'
-  import schema from '@/schemas/application'
-  import _ from 'lodash'
+  import {getSchema} from '../schemas'
   export default {
     name: 'Application',
     props: ['id'],
     data () {
       return {
-        projects: [],
-        application: {},
-        schema: _.merge(schema, defaultSchema)
-      }
-    },
-    firestore () {
-      return {
-        application: firebase.firestore().collection('applications').doc(this.id)
+        schema: getSchema('application')
       }
     }
   }
