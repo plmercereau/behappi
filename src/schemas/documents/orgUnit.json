@@ -1,0 +1,88 @@
+{
+  "name": "orgUnit",
+  "type": "document",
+  "mixins": ["timestamp"],
+  "collection": "orgUnits",
+  "title": {
+    "property": "name"
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name",
+      "placeholder": "Please enter the name of the organisation unit",
+      "validation": "required|min:3"
+    },
+    "parent": {
+      "type": "collection",
+      "component": "select",
+      "schemaName": "orgUnit",
+      "title": "Parent",
+      "placeholder": "Enter the parent organisation unit",
+      "autocomplete": true,
+      "unique": true,
+      "create": false
+    },
+    "children" : {
+      "type": "collection",
+      "component": "card",
+      "schemaName": "orgUnit",
+      "title": "Children organisation units",
+      "sort": [["name", "ASC"]],
+      "placeholder": "",
+      "unique": false,
+      "create": true
+    },
+    "location": {
+      "type": "location",
+      "title": "Location",
+      "placeholder": "Enter the location of the org Unit",
+      "zoom": "zoom",
+      "markers": {
+        "self": true
+      }
+    },
+    "category": {
+      "type": "collection",
+      "component": "select",
+      "title": "Categories",
+      "placeholder": "Category of the org unit",
+      "unique": true,
+      "create": false,
+      "options": {
+        "hq": "Headquarter",
+        "project": "Project",
+        "mission": "Mission"
+      }
+    }
+  },
+  "itemView": {
+    "default": {
+      "sectionsOrder": ["main", "administration"],
+      "sections": {
+        "main": {
+          "title": "General",
+          "read": ["name", "location"],
+          "edit": ["name", "location"]
+        }
+      }
+    }
+  },
+  "collectionView": {
+    "default": {
+      "title": "Org Units",
+      "uri": "/orgUnits/{id}",
+      "create": {
+        "title": "New org Unit",
+        "properties": ["name"],
+        "parentProperty": "parent",
+        "inheritedProperties": ["location", "zoom"]
+      }
+    },
+    "card" : {
+      "media": {
+        "property": "location"
+      }
+    }
+  }
+}

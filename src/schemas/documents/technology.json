@@ -1,0 +1,43 @@
+{
+  "name": "technology",
+  "type": "document",
+  "mixins": ["timestamp"],
+  "collection": "technologies",
+  "title": {
+    "property": "name"
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    }
+  },
+  "itemView": {
+    "default": {
+      "sectionsOrder": ["main", "administration"],
+      "sections": {
+        "main": {
+          "title": {
+            "property": "name"
+          },
+          "read": ["name", "description"],
+          "edit": ["name", "description"]
+        }
+      }
+    }
+  },
+  "collectionView": {
+    "default": {
+      "title": "Technologies",
+      "uri": "/technologies/{id}",
+      "create": {
+        "title": "New technology",
+        "properties": ["name"]
+      }
+    }
+  }
+}

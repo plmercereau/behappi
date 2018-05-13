@@ -1,0 +1,214 @@
+{
+  "name": "application",
+  "type": "document",
+  "mixins": ["timestamp", "workflow"],
+  "collection": "applications",
+  "title": {
+    "property": "name"
+  },
+  "versionable": true,
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name",
+      "placeholder": "Name of the application",
+      "validation": "required|min:3"
+    },
+    "primaryPurpose": {
+      "type": "collection",
+      "component": "chip",
+      "schemaName": "purpose",
+      "title": "Primary purpose",
+      "placeholder": "Primary purpose of the application",
+      "autocomplete": true,
+      "unique": false,
+      "create": true
+    },
+    "linkTool": {
+      "type": "link",
+      "title": "Link to the tool",
+      "external": true
+    },
+    "userGuide": {
+      "type": "link",
+      "title": "User guide",
+      "external": true
+    },
+    "technicalDocumentation": {
+      "type": "link",
+      "title": "Technical documentation",
+      "external": true
+    },
+    "dataStructure": {
+      "type": "collection",
+      "component": "chip",
+      "title": "Data structure",
+      "placeholder": "Data structure: (more than one possible)",
+      "unique": false,
+      "create": false,
+      "options": {
+        "aggregated": "Aggregated data",
+        "lineList": "Line list",
+        "longitudinal": "Longitudinal data"
+      }
+    },
+    "personalIdentifiableInformation": {
+      "type": "collection",
+      "component": "select",
+      "title": "Person Identifier",
+      "placeholder": "Person Identifier (pick one)",
+      "unique": true,
+      "create": false,
+      "options": {
+        "none": "None",
+        "pseudonymised": "Pseudonymised",
+        "indentifiableExportProtected": "Yes, with pseudonymisation in export",
+        "indentifiable": "Yes, without auto pseudonymisation in export"
+      }
+    },
+    "analytics": {
+      "type": "collection",
+      "component": "select",
+      "title": "Analytic capacity",
+      "placeholder": "Analytic capacity (pick one)",
+      "unique": true,
+      "create": false,
+      "options": {
+        "complicated": "Complicated",
+        "balanced": "Well balanced",
+        "acceptable": "Acceptable",
+        "poor": "Poor",
+        "none": "None"
+      }
+    },
+    "sharing": {
+      "type": "collection",
+      "component": "select",
+      "title": "Data sharing",
+      "placeholder": "Data sharing (pick one)",
+      "unique": true,
+      "create": false,
+      "options": {
+        "mature": "Very mature",
+        "acceptable": "Acceptable",
+        "poor": "Poor",
+        "unacceptable": "Unacceptable"
+      }
+    },
+    "contentStandardisationLevel": {
+      "type": "collection",
+      "component": "select",
+      "title": "Standardization content",
+      "placeholder": "Standardization content (pick one)",
+      "unique": true,
+      "create": false,
+      "options": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "medium": "Medium",
+        "outdated": "Outdated",
+        "nonStandard": "Not standardized"
+      }
+    },
+    "languages": {
+      "type": "collection",
+      "component": "chip",
+      "schemaName": "language",
+      "title": "Languages",
+      "placeholder": "Available languages",
+      "autocomplete": true,
+      "unique": false,
+      "create": false
+    },
+    "technologies": {
+      "type": "collection",
+      "component": "chip",
+      "schemaName": "technology",
+      "title": "Platform / program language",
+      "placeholder": "Platform / program language",
+      "autocomplete": true,
+      "unique": false,
+      "create": true
+    },
+    "comment": {
+      "type": "string",
+      "title": "Remark"
+    },
+    "applicationStatus": {
+      "type": "collection",
+      "component": "select",
+      "title": "Status",
+      "placeholder": "Status",
+      "unique": true,
+      "create": false,
+      "options": {
+        "active": "Active",
+        "obsolete": "Obsolete",
+        "decommissioned": "Decommissioned"
+      }
+    },
+    "supported": {
+      "type": "collection",
+      "component": "boolean",
+      "title": "Supported by OCB ",
+      "placeholder": "Currently supported by OCB (Ehealth or other, see contact)"
+    },
+    "supportOrgUnit": {
+      "type": "collection",
+      "component": "select",
+      "schemaName": "orgUnit",
+      "visible": [[":supported", "==", true]],
+      "title": "Support contact",
+      "placeholder": "Support contact",
+      "autocomplete": true,
+      "unique": true,
+      "create": true
+    },
+    "medicalActivities": {
+      "type": "collection",
+      "component": "chip",
+      "schemaName": "medicalActivity",
+      "title": "Medical activities",
+      "placeholder": "Medical activities",
+      "autocomplete": true,
+      "unique": false,
+      "create": true
+    }
+  },
+  "itemView": {
+    "default": {
+      "sectionsOrder": ["main", "administration"],
+      "sections": {
+        "main": {
+          "title": {
+            "property": "name"
+          },
+          "read": ["name", "mission", "location", "status"],
+          "edit": ["name", "mission", "location", "status"]
+        }
+      }
+    }
+  },
+  "collectionView": {
+    "default": {
+      "title": "Projects",
+      "uri": "/projects/{id}",
+      "create": {
+        "title": "New project",
+        "default": {
+          "categories": {
+            "project": true
+          }
+        },
+        "properties": ["name"],
+        "parentProperty": "mission",
+        "inheritedProperties": ["location", "zoom"]
+      }
+    },
+    "card" : {
+      "media": {
+        "property": "location"
+      }
+    }
+  }
+}

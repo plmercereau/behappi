@@ -1,0 +1,43 @@
+{
+  "name": "purpose",
+  "type": "document",
+  "mixins": ["timestamp"],
+  "collection": "languages",
+  "title": {
+    "property": "name"
+  },
+  "properties": {
+    "code": {
+      "type": "string",
+      "title": "Name"
+    },
+    "name": {
+      "type": "string",
+      "title": "Name"
+    }
+  },
+  "itemView": {
+    "default": {
+      "sectionsOrder": ["main", "administration"],
+      "sections": {
+        "main": {
+          "title": {
+            "property": "name"
+          },
+          "read": ["code", "name"],
+          "edit": ["code", "name"]
+        }
+      }
+    }
+  },
+  "collectionView": {
+    "default": {
+      "title": "Languages",
+      "uri": "/languages/{id}",
+      "create": {
+        "title": "New language",
+        "properties": ["code", "name"]
+      }
+    }
+  }
+}

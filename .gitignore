@@ -16,3 +16,4 @@ selenium-debug.log
 *.sln
 
 firebase-debug.log
+backup/

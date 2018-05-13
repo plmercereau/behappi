@@ -1,0 +1,43 @@
+{
+  "name": "medicalActivity",
+  "type": "document",
+  "mixins": ["timestamp"],
+  "collection": "medicalActivities",
+  "title": {
+    "property": "name"
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    }
+  },
+  "itemView": {
+    "default": {
+      "sectionsOrder": ["main", "administration"],
+      "sections": {
+        "main": {
+          "title": {
+            "property": "name"
+          },
+          "read": ["name", "description"],
+          "edit": ["name", "description"]
+        }
+      }
+    }
+  },
+  "collectionView": {
+    "default": {
+      "title": "Medical activities",
+      "uri": "/medicalActivities/{id}",
+      "create": {
+        "title": "New medical activity",
+        "properties": ["name"]
+      }
+    }
+  }
+}

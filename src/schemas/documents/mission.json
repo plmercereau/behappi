@@ -1,52 +1,40 @@
 {
   "name": "mission",
   "type": "document",
-  "mixins": ["timestamp", "workflow"],
-  "collection": "missions",
-  "title": {
-    "property": "name"
-  },
-  "versionable": true,
+  "mixins": ["orgUnit"],
   "properties": {
     "name": {
-      "type": "string",
-      "title": "Name",
-      "placeholder": "Please enter the name of the mission",
-      "validation": "required|min:3"
+      "placeholder": "Please enter the name of the mission"
     },
     "location": {
-      "type": "location",
       "title": "Area of the mission",
       "placeholder": "Please give the area of the mission",
-      "zoom": "zoom",
       "markers": {
         "self": false,
-        "collection": "projects",
+        "collection": "children",
         "property": "location"
       }
     },
-    "projects" : {
-      "type": "collection",
-      "component": "card",
+    "children" : {
       "schemaName": "project",
-      "title": "Projects of the mission",
-      "sort": [["name", "ASC"]],
-      "placeholder": "",
-      "unique": false,
-      "create": true
+      "title": false,
+      "placeholder": "Projects of the mission",
+      "filters": [[":category", "==", "project}"]]
     }
   },
   "itemView": {
     "default": {
-      "sectionsOrder": ["main", "administration"],
+      "sectionsOrder": ["main", "projects"],
       "sections": {
         "main": {
-          "title": {
-            "property": "name"
-          },
-          "subtitles": ["projects"],
-          "read": ["name", "location",  "status", "projects"],
-          "edit": ["name", "location", "status"]
+          "subtitles": ["children"],
+          "read": ["name", "location"],
+          "edit": ["name", "location"]
+        },
+        "projects": {
+          "title": "Projects",
+          "read": ["children"],
+          "edit": ["children"]
         }
       }
     }
@@ -57,10 +45,12 @@
       "uri": "/missions/{id}",
       "create": {
         "title": "New mission",
-        "properties": ["name"]
+        "default": {
+          "category": "mission"
+        }
       }
     },
-    "card" : {
+    "card": {
       "media": {
         "property": "location"
       }

@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-toolbar(app)
+  v-toolbar(app, :extended="edit")
     v-toolbar-side-icon(v-if="userIsAuthenticated", @click.stop="toggleDrawer")
     v-toolbar-title {{title}}
     v-spacer
@@ -10,6 +10,8 @@
       v-list
         v-list-tile(v-for="(action, index) in actions" :key="index" @click="action.method")
           v-list-tile-title {{action.title}}
+    div(slot="extension", v-if="edit")
+      slot
 </template>
 
 <script>
@@ -20,7 +22,7 @@
         searchInput: this.value
       }
     },
-    props: ['value', 'search', 'title', 'actions'],
+    props: ['value', 'search', 'title', 'actions', 'edit'],
     computed: {
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined

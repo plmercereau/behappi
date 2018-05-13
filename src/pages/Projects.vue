@@ -51,7 +51,7 @@
     },
     firestore () {
       return {
-        collection: firebase.firestore().collection('orgUnits').where('categories.project', '==', true).orderBy('name')
+        collection: firebase.firestore().collection('orgUnits').where('category', '==', 'project').orderBy('name')
       }
     }
   }

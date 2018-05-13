@@ -1,13 +1,6 @@
 {
   "indexes": [
     {
-      "collectionId": "projects",
-      "fields": [
-        { "fieldPath": "mission", "mode": "ASCENDING"},
-        { "fieldPath": "name", "mode": "ASCENDING"}
-      ]
-    },
-    {
       "collectionId": "orgUnits",
       "fields": [
         { "fieldPath": "mission", "mode": "ASCENDING"},
@@ -17,7 +10,7 @@
     {
       "collectionId": "orgUnits",
       "fields": [
-        { "fieldPath": "categories.project", "mode": "ASCENDING"},
+        { "fieldPath": "category", "mode": "ASCENDING"},
         { "fieldPath": "name", "mode": "ASCENDING"}
       ]
     }

@@ -87,7 +87,7 @@ exports.writeApplicationUsage = functions.firestore
 exports.writeOrgUnit = functions.firestore
   .document('orgUnits/{orgUnitId}')
   .onWrite((snap) => { // TODO test infinite loop (when we will be able to update on both sides of the relation)
-    updateOneToManyRevertRelation(snap, 'mission', 'projects');
+    updateOneToManyRevertRelation(snap, 'parent', 'children');
     return 0
   });
 
@@ -105,17 +105,10 @@ exports.deleteOrgUnit = functions.firestore
     return 0
   });
 
-exports.updateMission = functions.firestore
-  .document('missions/{missionId}') // TODO make is work for every doc of every collection
+exports.updateOrgUnit = functions.firestore
+  .document('orgUnits/{missionId}') // TODO make is work for every doc of every collection
   .onUpdate((snap) => {
     createDocumentVersion(snap);
-    return 0
-  });
-
-exports.deleteMission = functions.firestore
-  .document('missions/{missionId}')
-  .onDelete((snap) => {
-    deleteOneToManyDocuments(snap, 'projects');
     return 0
   });
 

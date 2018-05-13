@@ -1,49 +1,20 @@
 {
   "name": "project",
   "type": "document",
-  "mixins": ["timestamp", "workflow", "test"],
-  "collection": "orgUnits",
-  "title": {
-    "property": "name"
-  },
-  "versionable": true,
+  "mixins": ["orgUnit"],
   "properties": {
     "name": {
-      "type": "string",
-      "title": "Name",
-      "placeholder": "Please enter the name of the project",
-      "validation": "required|min:3"
+      "placeholder": "Please enter the name of the project"
     },
-    "mission": {
-      "type": "collection",
-      "component": "select",
+    "parent": {
       "schemaName": "mission",
       "title": "Mission",
-      "placeholder": "Enter the mission of the project",
-      "autocomplete": true,
-      "unique": true,
-      "create": false
+      "placeholder": "Enter the mission of the project"
     },
     "location": {
       "type": "location",
       "title": "Location",
-      "placeholder": "Enter the location of the project",
-      "zoom": "zoom",
-      "markers": {
-        "self": true
-      }
-    },
-    "categories": {
-      "type": "collection",
-      "component": "select",
-      "title": "Categories",
-      "placeholder": "Category of the org unit",
-      "unique": false,
-      "create": false,
-      "options": {
-        "project": "Project",
-        "mission": "Mission"
-      }
+      "placeholder": "Enter the location of the project"
     }
   },
   "itemView": {
@@ -51,11 +22,8 @@
       "sectionsOrder": ["main", "administration"],
       "sections": {
         "main": {
-          "title": {
-            "property": "name"
-          },
-          "read": ["name", "mission", "location", "status"],
-          "edit": ["name", "mission", "location", "status"]
+          "read": ["name", "parent", "location"],
+          "edit": ["name", "parent", "location"]
         }
       }
     }
@@ -67,18 +35,8 @@
       "create": {
         "title": "New project",
         "default": {
-          "categories": {
-            "project": true
-          }
-        },
-        "properties": ["name"],
-        "parentProperty": "mission",
-        "inheritedProperties": ["location", "zoom"]
-      }
-    },
-    "card" : {
-      "media": {
-        "property": "location"
+          "category": "project"
+        }
       }
     }
   }

@@ -51,7 +51,7 @@
     },
     firestore () {
       return {
-        collection: firebase.firestore().collection('missions').orderBy('name')
+        collection: firebase.firestore().collection('orgUnits').where('category', '==', 'mission').orderBy('name')
       }
     }
   }

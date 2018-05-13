@@ -111,9 +111,22 @@ function getSystemData (data) {
 
 function getInitialDefaultData (schema, data, view = 'default') {
   let res = getSystemData(data)
+  Object.keys(schema.properties)
+    .filter(propName => {
+      return (!res[propName])
+    })
+    .map(propName => {
+      if (schema.properties[propName].type === 'location') {
+        res[propName] = DEFAULT_LOCATION
+        res[schema.properties[propName].zoom] = DEFAULT_ZOOM
+      }
+    })
+  if (schema.collectionView[view].create.default) {
+    _.mergeWith(res, schema.collectionView[view].create.default, mergeCustomizer)
+  }
   if (res._parentData) {
     const parentProperty = schema.collectionView[view].create.parentProperty
-    const parentSchema = getSchema(parentProperty)
+    const parentSchema = schema.properties[parentProperty].schema
     let parentRef = firebase.firestore().collection(parentSchema.collection).doc(data._parentData.id)
     res[parentProperty] = parentRef
     delete res._parentData.id
@@ -122,21 +135,6 @@ function getInitialDefaultData (schema, data, view = 'default') {
     })
     delete res._parentData
   }
-  Object.keys(schema.properties)
-    .filter(propName => { return (!res[propName]) })
-    .map(propName => {
-      if (schema.properties[propName].type === 'area' || schema.properties[propName].type === 'point') {
-        // if (schema.listViews[view].create.default[propName]) {
-        //   res[propName] = schema.properties[propName].default.coordinates
-        //   res[schema.properties[propName].zoomProperty] = schema.properties[propName].default.zoom
-        // } else {
-        res[propName] = DEFAULT_LOCATION
-        res[schema.properties[propName].zoomProperty] = DEFAULT_ZOOM
-        // }
-      } else if (schema.collectionView[view].create.default[propName]) {
-        res[propName] = schema.collectionView[view].create.default[propName]
-      }
-    })
   return res
 }
 
