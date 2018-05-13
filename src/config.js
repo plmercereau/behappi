@@ -18,7 +18,7 @@ export const MENU = [
     path: '/missions'
   },
   {
-    icon: 'local_hospital',
+    icon: 'local_activity',
     title: 'Projects',
     path: '/projects'
   },
@@ -26,6 +26,31 @@ export const MENU = [
     icon: 'apps',
     title: 'Applications',
     path: '/applications'
+  },
+  {
+    icon: 'build',
+    title: 'Technologies',
+    path: '/technologies'
+  },
+  {
+    icon: 'local_hospital',
+    title: 'Medical activities',
+    path: '/medicalActivities'
+  },
+  {
+    icon: 'bookmark',
+    title: 'Purposes',
+    path: '/purposes'
+  },
+  {
+    icon: 'language',
+    title: 'Languages',
+    path: '/languages'
+  },
+  {
+    icon: 'person',
+    title: 'Users',
+    path: '/users'
   }
 ]
 export const DEFAULT_CHIP_PROPERTY = 'name'

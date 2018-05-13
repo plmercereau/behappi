@@ -88,8 +88,10 @@
                             gmap-marker(v-if="schema.properties[name].markers && schema.properties[name].markers.self" :position="form['reported'+name]")
               v-card-text(v-if="!editToggle")
                 create-button(v-for="name in view.sections[sectionName].read",
+                  fab,
                   v-if="schema.properties[name].component ==='card'",
-                  :schema="schema.properties[name].schema", :parentData="doc") {{title(doc, schema.properties[name].schema.collectionView.card.create.title)}}
+                  :schema="schema.properties[name].schema", :parentData="doc")
+                <!--title(doc, schema.properties[name].schema.collectionView.card.create.title)-->
                 div(v-for="name in view.sections[sectionName].read" v-if="doc[name]" :key="name")
                   div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].title ? schema.properties[name].title : '' }}
                   div(class="subheading")

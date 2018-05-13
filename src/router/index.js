@@ -8,6 +8,7 @@ import Project from '@/pages/Project'
 import Applications from '@/pages/Applications'
 import Application from '@/pages/Application'
 import Login from '@/pages/Login'
+import PageNotFound from '@/pages/PageNotFound'
 // import firebase from 'firebase'
 import AuthGuard from './auth-guard'
 
@@ -17,7 +18,12 @@ let router = new Router({
   routes: [
     {
       path: '*',
-      redirect: '/login'
+      redirect: '/page-not-found'
+    },
+    {
+      path: '/page-not-found',
+      name: 'PageNotFound',
+      component: PageNotFound
     },
     {
       path: '/',
