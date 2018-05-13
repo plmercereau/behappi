@@ -4,8 +4,8 @@
 
 <script>
   // TODO https://stackoverflow.com/questions/22385483/width-full-image-maintain-aspect-ratio-and-keep-in-center-horizontally-and-ver
-  import {GOOGLE_API_KEY, MARKER_COLOR, MAP_TYPE, DEFAULT_LOCATION, DEFAULT_ZOOM} from '../main'
   import _ from 'lodash'
+  import {MARKER_COLOR, DEFAULT_LOCATION, DEFAULT_ZOOM, GOOGLE_API_KEY, MAP_TYPE} from '../config'
   const googleMapsBaseUrl = 'https://maps.googleapis.com/maps/api/staticmap'
   export default {
     name: 'MapImage',

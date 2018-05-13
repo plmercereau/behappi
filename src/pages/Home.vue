@@ -15,7 +15,7 @@
                 v-list-tile-title Roadmap on Trello
 </template>
 <script>
-  import {MENU} from '../main'
+  import {MENU} from '../config'
   import _ from 'lodash'
   export default {
     name: 'Home',

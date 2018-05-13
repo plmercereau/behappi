@@ -2,7 +2,7 @@ import _ from 'lodash'
 import {store} from '../store'
 import defaultSchema from './default'
 import * as firebase from 'firebase'
-import {DEFAULT_LOCATION, DEFAULT_ZOOM} from '../main'
+import {DEFAULT_LOCATION, DEFAULT_ZOOM} from '../config'
 
 function mergeCustomizer (objValue, srcValue) { // TODO not necessarly the best merge rule
   if (_.isArray(objValue)) {

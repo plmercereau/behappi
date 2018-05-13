@@ -22,7 +22,7 @@
 
 <script>
   import firebase from 'firebase'
-  import {MENU} from './main'
+  import {MENU} from './config'
   export default {
     data () {
       return {

@@ -123,11 +123,11 @@
 </template>
 
 <script>
-  import {MAP_TYPE, DEFAULT_LOCATION, DEFAULT_ZOOM, DEFAULT_CHIP_PROPERTY} from '../main'
   import * as firebase from 'firebase'
   import _ from 'lodash'
   import {schemaMixin} from '../mixins'
   import {updateDocument} from '../schemas'
+  import {DEFAULT_CHIP_PROPERTY, DEFAULT_LOCATION, DEFAULT_ZOOM, MAP_TYPE} from '../config'
 
   export default {
     props: ['id', 'schema', 'viewName'],
