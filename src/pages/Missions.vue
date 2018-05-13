@@ -25,19 +25,7 @@
     },
     methods: {
       nbProjects (mission) {
-        return mission.projects && Object.keys(mission.projects).length
-      },
-      markersProjects (mission) {
-        if (mission && mission.projects) {
-          let res = Object.keys(mission.projects).filter(key => {
-            return (mission.projects[key].location)
-          }).map(key => {
-            return mission.projects[key].location
-          })
-          return res
-        } else {
-          return []
-        }
+        return mission.children && Object.keys(mission.children).length
       }
     },
     computed: {
