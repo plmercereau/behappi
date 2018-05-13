@@ -115,10 +115,12 @@
                         v-list-tile(v-for="val in sortedCollection(name)" :key="name+val")
                           v-list-tile-content
                             v-list-tile-title(primary-title) {{schema.properties[name].options[val]}}
-                    map-image(v-else-if="schema.properties[name].type === 'location'",
-                      :schema="schema",
-                      :doc="doc",
-                      :locationProperty="name")
+                    v-card(v-else-if="schema.properties[name].type === 'location'")
+                      v-card-media
+                        map-image(
+                          :schema="schema",
+                          :doc="doc",
+                          :locationProperty="name")
                   v-divider
 </template>
 

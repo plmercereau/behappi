@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card
+  v-card(:class="{'pa-0': $vuetify.breakpoint.xsOnly }")
     v-card-title(v-if="title" primary-title)
       div
         h2 {{title}}

@@ -1,5 +1,8 @@
 <template lang="pug">
-  img(:src="url()")
+  v-container(fill-height fluid :class="{'pa-0': $vuetify.breakpoint.xsOnly }")
+    v-layout(fill-height)
+      v-flex(xs12 align-end flexbox)
+        img(:src="url()")
 </template>
 
 <script>
@@ -35,7 +38,7 @@
         let zoom = this.doc[this.schema.properties[this.locationProperty].zoom] || DEFAULT_ZOOM
         let markers = this.getMarkers()
         let markersStr = (!_.isEmpty(markers)) ? `&markers=color:${MARKER_COLOR}|` + markers.map(m => { return `${m.latitude},${m.longitude}` }).join('|') : ''
-        return `${googleMapsBaseUrl}?center=${lat},${lng}&zoom=${zoom}&size=320x200&maptype=${MAP_TYPE}&key=${GOOGLE_API_KEY}` + markersStr
+        return `${googleMapsBaseUrl}?center=${lat},${lng}&zoom=${zoom}&size=480x300&maptype=${MAP_TYPE}&key=${GOOGLE_API_KEY}` + markersStr
       }
     }
   }
@@ -43,7 +46,7 @@
 
 <style scoped>
   img {
-    max-width:320px;
-    max-height:200px;
+    max-width:480px;
+    max-height:300px;
   }
 </style>
