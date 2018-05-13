@@ -84,7 +84,7 @@
                           :zoom="form[schema.properties[name].zoom]"
                           @zoom_changed="updateField(schema.properties[name].zoom, $event)"
                           :map-type-id="mapType"
-                          style="width: 320px; height: 200px")
+                          style="width: 480px; height: 300px")
                             gmap-marker(v-if="schema.properties[name].markers && schema.properties[name].markers.self" :position="form['reported'+name]")
               v-card-text(v-if="!editToggle")
                 create-button(v-for="name in view.sections[sectionName].read",
