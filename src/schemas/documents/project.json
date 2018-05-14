@@ -31,7 +31,9 @@
   "collectionView": {
     "default": {
       "title": "Projects",
+      "subtitle": ":parent.name",
       "uri": "/projects/{id}",
+      "filters": [[":category", "==", "project"]],
       "create": {
         "title": "New project",
         "default": {

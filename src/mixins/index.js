@@ -1,18 +1,4 @@
-import _ from 'lodash'
-
-export var listMixin = {
-  data () {
-    return {
-      collection: [],
-      search: ''
-    }
-  },
-  computed: {
-    view () {
-      return this.schema.collectionView[this.viewName || 'default']
-    }
-  }
-}
+import {sortCollection, title} from '../schemas'
 
 export var schemaMixin = {
   data () {
@@ -24,26 +10,14 @@ export var schemaMixin = {
   },
   methods: {
     title (doc, titleObject) { // TODO convert into a filter?
-      if (!titleObject) return ''
-      if (titleObject.property) return doc[titleObject.property]
-      if (titleObject.text) return titleObject.text
-      return titleObject
+      return title(titleObject, this.schema, doc)
     },
-    sortedCollection (collectionName) { // TODO other than string compare
-      let sortProperties = this.schema.properties[collectionName].sort
+    sortedCollection (collectionName) {
+      // TODO other than string compare
+      let sortProperties = this.schema.properties[collectionName].schema.collectionView.default.sort
       let collection = []
       if (this.schema.properties[collectionName].schema) {
-        collection = Object.keys(this.doc[collectionName]).map(key => { return this.doc[collectionName][key] })
-        if (_.isArray(sortProperties)) {
-          sortProperties.forEach(sortProp => {
-            collection = collection.sort((a, b) => {
-              let sA = a[sortProp[0]]
-              let sB = b[sortProp[0]]
-              if (_.isString(sA) && _.isString(sB)) return sA.localeCompare(sB) * (sortProp[1] === 'ASC' ? 1 : -1)
-              else return 0
-            })
-          })
-        }
+        collection = sortCollection(sortProperties, this.doc[collectionName])
       } else {
         // TODO for enum
         collection = Object.keys(this.doc[collectionName]).map(id => id)

@@ -130,7 +130,7 @@
   import * as firebase from 'firebase'
   import _ from 'lodash'
   import {schemaMixin} from '../mixins'
-  import {updateDocument} from '../schemas'
+  import {filterCollection, updateDocument} from '../schemas'
   import {DEFAULT_CHIP_PROPERTY, DEFAULT_LOCATION, DEFAULT_ZOOM, MAP_TYPE} from '../config'
 
   export default {
@@ -139,6 +139,7 @@
     mixins: [schemaMixin],
     data () {
       return {
+        doc: {},
         form: {},
         editToggle: false,
         // tab: this.schema.itemView[this.viewName || 'default'].sectionsOrder[0] || 'main',
@@ -294,32 +295,7 @@
             }
             if (this.schema.properties[key].schema) {
               firebase.firestore().collection(this.schema.properties[key].schema.collection).get().then(snapshot => {
-                snapshot.docs
-                  .filter(doc => {
-                    let test = true
-                    if (_.isArray(this.schema.properties[key].filters)) {
-                      console.log('TODO tester les filtres') // TODO tester davantage, et en faire une fonction
-                      this.schema.properties[key].filters.forEach(filter => {
-                        let docData = doc.data()
-                        let [source, operator, destination] = filter
-                        // let source = filter[0]
-                        // let destination = filter[2]
-                        // let operator = filter[1]
-                        if (_.isString(source) && source.charAt(0) === ':') source = _.get(docData, source.substr(1))
-                        if (_.isString(destination) && destination.charAt(0) === ':') destination = _.get(docData, destination.substr(1))
-                        if (_.isString(destination) && destination === '{userId}') destination = this.$store.getters.user.id
-                        switch (operator) {
-                          case '==': test = (source === destination); break
-                          case '!=': test = (source !== destination); break
-                          case '>': test = (source > destination); break
-                          case '>=': test = (source >= destination); break
-                          case '<': test = (source < destination); break
-                          case '<=': test = (source <= destination); break
-                        }
-                      })
-                    }
-                    return test
-                  })
+                filterCollection(this.schema.properties[key].schema.collectionView.default.filters, snapshot.docs)
                   .forEach(doc => {
                     form[`${key}Collection`].push({
                       value: doc.id,

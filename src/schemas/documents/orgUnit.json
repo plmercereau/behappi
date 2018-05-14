@@ -28,7 +28,6 @@
       "component": "card",
       "schemaName": "orgUnit",
       "title": "Children organisation units",
-      "sort": [["name", "ASC"]],
       "placeholder": "",
       "unique": false,
       "create": true
@@ -72,6 +71,7 @@
     "default": {
       "title": "Org Units",
       "uri": "/orgUnits/{id}",
+      "sort": [["name", "ASC"]],
       "create": {
         "title": "New org Unit",
         "properties": ["name"],
@@ -84,5 +84,6 @@
         "property": "location"
       }
     }
-  }
+  },
+  "searchProperties": ["name"]
 }

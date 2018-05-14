@@ -33,11 +33,11 @@
 
 <script>
   import {addDocument} from '../schemas'
-  import {listMixin, schemaMixin} from '../mixins'
+  import {schemaMixin} from '../mixins'
   export default {
     props: ['schema', 'parentData', 'fab'],
     name: 'CreateButton',
-    mixins: [listMixin, schemaMixin],
+    mixins: [schemaMixin],
     data () {
       return {
         form: {},
@@ -76,6 +76,9 @@
       }
     },
     computed: {
+      view () {
+        return this.schema.collectionView[this.viewName || 'default']
+      },
       isFab () {
         return Boolean(this.fab)
       }

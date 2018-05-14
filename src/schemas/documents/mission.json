@@ -18,8 +18,13 @@
     "children" : {
       "schemaName": "project",
       "title": false,
-      "placeholder": "Projects of the mission",
-      "filters": [[":category", "==", "project}"]]
+      "placeholder": "Projects of the mission"
+    },
+    "nbProjects": {
+      "type": "computed",
+      "aggregation": "count",
+      "path": "children",
+      "title": "{result} project{s}"
     }
   },
   "itemView": {
@@ -42,7 +47,9 @@
   "collectionView": {
     "default": {
       "title": "Missions",
+      "subtitle": ":nbProjects",
       "uri": "/missions/{id}",
+      "filters": [[":category", "==", "mission"]],
       "create": {
         "title": "New mission",
         "default": {
