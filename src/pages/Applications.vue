@@ -1,38 +1,16 @@
 <template lang="pug">
-  page
-    tool-bar(title="Applications")
-    v-btn(@click="excelExport") Export applications and their usage
-    v-card
-      v-data-table(:headers="headers", :items="applications", hide-actions, class="elevation-1")
-        template(slot="items", slot-scope="props")
-          td
-            router-link(:to="'/applications/' + props.item.id") {{ props.item.name }}
-          td {{ props.item.applicationUsages ? Object.keys(props.item.applicationUsages).length : 0 }}
+  item-collection(:schema="schema")
 </template>
 
 <script>
-  import * as firebase from 'firebase'
+  import {getSchema} from '../schemas'
   import XLSX from 'xlsx'
 
   export default {
     name: 'Applications',
     data () {
       return {
-        applications: [],
-        headers: [
-          {
-            text: 'Application Name',
-            align: 'left',
-            sortable: true,
-            value: 'name'
-          },
-          {
-            text: 'Number of usages',
-            align: 'left',
-            // sortable: true,
-            value: 'applicationUsages' // TODO how to implement this with Object.keys().length?
-          }
-        ]
+        schema: getSchema('application')
       }
     },
     methods: {
@@ -49,14 +27,6 @@
         // TODO add another sheet with the usages and a formula for nb_applications in the first sheet
         XLSX.writeFile(wb, 'applications.xlsx')
       }
-    },
-    firestore () {
-      return {
-        applications: firebase.firestore().collection('applications').orderBy('name')
-      }
-    },
-    mounted () {
-
     }
   }
 </script>

@@ -151,7 +151,7 @@ export function addDocument (schema, data) {
 }
 
 export function filterCollection (filters, collection) {
-  return collection.filter(doc => {
+  return _.isArray(collection) ? collection.filter(doc => {
     let test = true
     if (_.isArray(filters)) {
       filters.forEach(filter => {
@@ -171,7 +171,7 @@ export function filterCollection (filters, collection) {
       })
     }
     return test
-  })
+  }) : []
 }
 
 export function sortCollection (sortProperties, collection) {
