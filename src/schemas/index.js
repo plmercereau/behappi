@@ -171,4 +171,3 @@ export function propertyValue (schema, path, doc) { // TODO complete - when not 
     return _.get(doc, path)
   }
 }
-
