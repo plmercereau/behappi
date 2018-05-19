@@ -182,6 +182,11 @@
       "autocomplete": true,
       "unique": false,
       "create": true
+    },
+    "nbUsages": {
+      "type": "computed",
+      "aggregation": "count",
+      "path": "applicationUsages"
     }
   },
   "itemView": {
@@ -204,6 +209,8 @@
   "collectionView": {
     "default": {
       "title": "Applications",
+      "subtitle": "${ nbUsages ? nbUsages + ' usage' : ''}${ nbUsages > 1 ? 's' : '' }",
+      "subtitleProperties": ["nbUsages"],
       "uri": "/applications/{id}",
       "create": {
         "title": "New application",
