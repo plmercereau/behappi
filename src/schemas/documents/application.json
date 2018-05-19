@@ -8,7 +8,7 @@
   "properties": {
     "name": {
       "type": "string",
-      "title": "Name",
+      "label": "Name",
       "placeholder": "Name of the application",
       "validation": "required|min:3"
     },

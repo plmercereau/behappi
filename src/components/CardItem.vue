@@ -10,7 +10,7 @@
         div(class="headline mb-0") {{title}}
         slot
       v-spacer
-      i {{doc.status}}
+      i(v-if="schema.mixins && schema.mixins.includes('workflow')") {{doc.status}}
 </template>
 
 <script>
