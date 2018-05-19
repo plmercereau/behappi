@@ -3,21 +3,25 @@
   "type": "document",
   "mixins": ["timestamp"],
   "collection": "orgUnits",
-  "title": {
-    "property": "name"
-  },
+  "title": "${ name }",
   "properties": {
     "name": {
       "type": "string",
-      "title": "Name",
+      "label": "Name",
       "placeholder": "Please enter the name of the organisation unit",
+      "validation": "required|min:3"
+    },
+    "code": {
+      "type": "string",
+      "label": "Financial Code",
+      "placeholder": "Please enter the code of the organisation unit",
       "validation": "required|min:3"
     },
     "parent": {
       "type": "collection",
       "component": "select",
       "schemaName": "orgUnit",
-      "title": "Parent",
+      "label": "Parent",
       "placeholder": "Enter the parent organisation unit",
       "autocomplete": true,
       "unique": true,
@@ -27,14 +31,34 @@
       "type": "collection",
       "component": "card",
       "schemaName": "orgUnit",
-      "title": "Children organisation units",
+      "label": "Children organisation units",
       "placeholder": "",
       "unique": false,
-      "create": true
+      "create": {
+        "title": "New org Unit",
+        "properties": ["name"],
+        "parentProperty": "parent",
+        "inheritedProperties": ["location", "zoom"]
+      }
+    },
+    "applicationUsages": {
+      "type": "collection",
+      "component": "list",
+      "schemaName": "applicationUsage",
+      "label": "Application usages",
+      "title": "${application.name}",
+      "placeholder": "Usages of application in this org unit",
+      "autocomplete": true,
+      "unique": false,
+      "create": {
+        "title": "New application usage",
+        "parentProperty": "orgUnit",
+        "properties": ["application"]
+      }
     },
     "location": {
       "type": "location",
-      "title": "Location",
+      "label": "Location",
       "placeholder": "Enter the location of the org Unit",
       "zoom": "zoom",
       "markers": {
@@ -44,7 +68,7 @@
     "category": {
       "type": "collection",
       "component": "select",
-      "title": "Categories",
+      "label": "Categories",
       "placeholder": "Category of the org unit",
       "unique": true,
       "create": false,
@@ -57,12 +81,17 @@
   },
   "itemView": {
     "default": {
-      "sectionsOrder": ["main", "administration"],
+      "sectionsOrder": ["main", "applications", "administration"],
       "sections": {
         "main": {
           "title": "General",
-          "read": ["name", "location"],
-          "edit": ["name", "location"]
+          "read": ["name", "code", "location"],
+          "edit": ["name", "code", "location"]
+        },
+        "applications": {
+          "title": "Applications",
+          "read": ["applicationUsages"],
+          "edit": ["applicationUsages"]
         }
       }
     }
@@ -73,10 +102,7 @@
       "uri": "/orgUnits/{id}",
       "sort": [["name", "ASC"]],
       "create": {
-        "title": "New org Unit",
-        "properties": ["name"],
-        "parentProperty": "parent",
-        "inheritedProperties": ["location", "zoom"]
+        "properties": ["name"]
       }
     },
     "card" : {

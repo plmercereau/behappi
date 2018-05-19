@@ -1,17 +1,17 @@
 <template lang="pug">
   div
-    v-btn(:fab="isFab" :fixed="isFab" :dark="isFab" :bottom="isFab" :right="isFab" :color="isFab ? 'orange': 'primary'" @click.stop="toggleDialog = !toggleDialog")
+    v-btn(:fab="isFab" :fixed="isFab" :dark="isFab" :bottom="isFab" :right="isFab" :color="isFab ? 'orange': 'primary'" @click.stop="edit")
       v-icon(v-if="isFab") add
       slot
-    v-dialog(v-model="toggleDialog" max-width="500px")
+    v-dialog(v-model="editToggle" max-width="500px")
       v-card
-        v-card-title {{ view.create.title || schema.title || 'Create'}}
+        v-card-title {{ createParams.title || schema.title || 'Create'}}
         v-card-text
           form(novalidate @submit.prevent="create")
-            template(v-for="(name) in view.create.properties")
+            template(v-for="(name) in createParams.properties")
               v-text-field(
               autofocus
-              v-if="schema.properties[name].type==='string' && !schema.properties[name].enum"
+              v-if="schema.properties[name].type==='string'"
               v-model="form[name]",
               :id="'form-' + name",
               :label="schema.properties[name].placeholder",
@@ -20,68 +20,78 @@
               <!--TODO required, data-vv-name-->
               v-select(
               autofocus
-              v-if="schema.properties[name].type==='string' && schema.properties[name].enum"
+              v-if="schema.properties[name].type==='collection'"
               v-model="form[name]",
-              :items="schema.properties[name].enum"
+              :items="form[name+'Collection']"
               :label="schema.properties[name].placeholder",
               single-line)
         v-card-actions
           v-btn(color="primary" flat @click.stop="$validator.validateAll() && create()") Create
-          v-btn(color="primary" flat @click.stop="toggleDialog=false") Cancel
+          v-btn(color="primary" flat @click.stop="editToggle=false") Cancel
 
 </template>
 
 <script>
   import {addDocument} from '../schemas'
-  import {schemaMixin} from '../mixins'
+  import {formMixin, schemaMixin} from '../mixins'
   export default {
-    props: ['schema', 'parentData', 'fab'],
+    props: ['parentSchema', 'propertyName', 'parentData', 'fab'],
     name: 'CreateButton',
-    mixins: [schemaMixin],
-    data () {
-      return {
-        form: {},
-        toggleDialog: false
-      }
-    },
+    mixins: [schemaMixin, formMixin],
     methods: {
       create () { // TODO submit action, rather than $validator.validateAll() && create()
-        if (this.view.create.inheritedProperties && this.parentData) {
-          const parentProperties = this.view.create.inheritedProperties
-          const filteredParentData = parentProperties.reduce((obj, name) => {
+        let cleanForm = this.constructDataWithProperties(this.createParams.properties)
+        if (this.createParams.parentProperty && this.parentData) {
+          const parentProperties = this.createParams.inheritedProperties
+          const filteredParentData = {}
+          parentProperties && parentProperties.reduce((obj, name) => {
             obj[name] = this.parentData[name]
             return obj
           }, {})
-          this.form['_parentData'] = {
+          cleanForm['_parentData'] = {
             id: this.parentData.id,
             ...filteredParentData
           }
         }
-        addDocument(this.schema, this.form).then((docRef) => {
-          this.$router.push(this.view.uri.replace('{id}', docRef.id))
+        addDocument(this.schema, cleanForm, this.parentSchema.properties[this.propertyName]).then((docRef) => {
+          this.$router.push(this.schema.collectionView.default.uri.replace('{id}', docRef.id))
         }).catch(error => {
           console.log(error)
         })
-        this.toggleDialog = false
+        this.editToggle = false
       },
       cancel () {
-        this.toggleDialog = false
+        this.editToggle = false
       }
     },
     watch: {
-      toggleDialog (newValue) {
+      editToggle (newValue) {
         if (!newValue) {
           this.form = {}
         }
       }
     },
     computed: {
-      view () {
-        return this.schema.collectionView[this.viewName || 'default']
+      createParams () {
+        if (this.propertyName) {
+          return this.parentSchema.properties[this.propertyName].create || this.schema.collectionView.default.create
+        } else {
+          return this.schema.collectionView.default.create
+        }
       },
       isFab () {
         return Boolean(this.fab)
+      },
+      schema () {
+        if (this.propertyName) {
+          return this.parentSchema.properties[this.propertyName].schema
+        } else {
+          return this.parentSchema
+        }
       }
+    },
+    mounted () {
+      this.reset()
     }
   }
 </script>

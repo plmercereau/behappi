@@ -7,9 +7,9 @@ import Projects from '@/pages/Projects'
 import Project from '@/pages/Project'
 import Applications from '@/pages/Applications'
 import Application from '@/pages/Application'
+import ApplicationUsage from '@/pages/ApplicationUsage'
 import Login from '@/pages/Login'
 import PageNotFound from '@/pages/PageNotFound'
-// import firebase from 'firebase'
 import AuthGuard from './auth-guard'
 
 Vue.use(Router)
@@ -85,6 +85,16 @@ let router = new Router({
       path: '/applications/:id',
       name: 'Application',
       component: Application,
+      props: true,
+      meta: {
+        keepAlive: true
+      },
+      beforeEnter: AuthGuard
+    },
+    {
+      path: '/applicationUsages/:id',
+      name: 'ApplicationUsage',
+      component: ApplicationUsage,
       props: true,
       meta: {
         keepAlive: true

@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-chip(:to="view.uri.replace('{id}', doc.id)") {{title(doc, schema.title)}}
+  v-chip(:to="view.uri.replace('{id}', doc.id)") {{doc[schema.title.property]}}
 </template>
 
 <script>

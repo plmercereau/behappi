@@ -5,7 +5,7 @@
     "testStatus": {
       "type": "collection",
       "component": "list",
-      "title": "Test de collection de type 'select' e.g. status",
+      "label": "Test de collection de type 'select' e.g. status",
       "unique": true,
       "create": false,
       "options": {
@@ -17,7 +17,7 @@
       "type": "collection",
       "component": "chip",
       "schemaName": "tag",
-      "title": "Test de collection de type 'tag collection'",
+      "label": "Test de collection de type 'tag collection'",
       "autocomplete": true,
       "unique": false,
       "create": true
@@ -25,7 +25,7 @@
     "testTagAdHoc": {
       "type": "collection",
       "component": "chip",
-      "title": "Test de collection de type 'tag ad hoc'",
+      "label": "Test de collection de type 'tag ad hoc'",
       "unique": false,
       "create": true
     },
@@ -34,7 +34,7 @@
       "component": "list",
       "schemaName": "mission",
       "filters": [[":status", "==", "published"]],
-      "title": "Test de collection de type 'single select' e.g. la mission d'un projet",
+      "label": "Test de collection de type 'single select' e.g. la mission d'un projet",
       "unique": true,
       "create": false
     },
@@ -43,14 +43,14 @@
       "component": "chip",
       "schemaName": "mission",
       "filters": [[":owner.id", "==", "{userId}"]],
-      "title": "Test de collection de type 'liste parmi une collection fixe existante'",
+      "label": "Test de collection de type 'liste parmi une collection fixe existante'",
       "unique": false,
       "create": false
     },
     "testMultipleValue": {
       "type": "collection",
       "component": "list",
-      "title": "Test de collection de type 'multiple select'",
+      "label": "Test de collection de type 'multiple select'",
       "unique": false,
       "create": false,
       "options": {

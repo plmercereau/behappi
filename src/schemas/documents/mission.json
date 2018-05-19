@@ -7,7 +7,7 @@
       "placeholder": "Please enter the name of the mission"
     },
     "location": {
-      "title": "Area of the mission",
+      "label": "Area of the mission",
       "placeholder": "Please give the area of the mission",
       "markers": {
         "self": false,
@@ -17,14 +17,13 @@
     },
     "children" : {
       "schemaName": "project",
-      "title": false,
+      "label": false,
       "placeholder": "Projects of the mission"
     },
     "nbProjects": {
       "type": "computed",
       "aggregation": "count",
-      "path": "children",
-      "title": "{result} project{s}"
+      "path": "children"
     }
   },
   "itemView": {
@@ -47,7 +46,8 @@
   "collectionView": {
     "default": {
       "title": "Missions",
-      "subtitle": ":nbProjects",
+      "subtitle": "${ nbProjects ? nbProjects + ' project' : ''}${ nbProjects > 1 ? 's' : '' }",
+      "subtitleProperties": ["nbProjects"],
       "uri": "/missions/{id}",
       "filters": [[":category", "==", "mission"]],
       "create": {

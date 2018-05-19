@@ -3,13 +3,11 @@
   "type": "document",
   "mixins": ["timestamp"],
   "collection": "medicalActivities",
-  "title": {
-    "property": "name"
-  },
+  "title": "${name}",
   "properties": {
     "name": {
       "type": "string",
-      "title": "Name"
+      "title": "label"
     },
     "description": {
       "type": "string",

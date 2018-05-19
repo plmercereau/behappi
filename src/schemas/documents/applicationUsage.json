@@ -1,0 +1,75 @@
+{
+  "name": "applicationUsage",
+  "type": "document",
+  "mixins": ["timestamp", "workflow"],
+  "collection": "applicationUsages",
+  "title": "${ application.name } in ${ orgUnit.name }",
+  "versionable": true,
+  "properties": {
+    "application": {
+      "type": "collection",
+      "component": "list",
+      "schemaName": "application",
+      "label": "Application",
+      "placeholder": "Application",
+      "autocomplete": true,
+      "unique": true,
+      "create": false
+    },
+    "orgUnit": {
+      "type": "collection",
+      "component": "list",
+      "schemaName": "orgUnit",
+      "label": "Organisation Unit",
+      "placeholder": "Org unit where the application is used",
+      "autocomplete": true,
+      "unique": true,
+      "create": false
+    },
+    "supported": {
+      "type": "collection",
+      "component": "boolean",
+      "label": "Supported by OCB ",
+      "placeholder": "Currently supported by OCB (Ehealth or other, see contact)"
+    },
+    "supportOrgUnit": {
+      "type": "collection",
+      "component": "select",
+      "schemaName": "orgUnit",
+      "visible": [[":supported", "==", true]],
+      "label": "Support contact",
+      "placeholder": "Support contact",
+      "autocomplete": true,
+      "unique": true,
+      "create": true
+    },
+    "medicalActivities": {
+      "type": "collection",
+      "component": "chip",
+      "schemaName": "medicalActivity",
+      "label": "Medical activities",
+      "placeholder": "Medical activities",
+      "autocomplete": true,
+      "unique": false,
+      "create": true
+    }
+  },
+  "itemView": {
+    "default": {
+      "sectionsOrder": ["main"],
+      "sections": {
+        "main": {
+          "title": "Usage",
+          "read": ["application", "orgUnit"],
+          "edit": []
+        }
+      }
+    }
+  },
+  "collectionView": {
+    "default": {
+      "title": "Application usage",
+      "uri": "/applicationUsages/{id}"
+    }
+  }
+}

@@ -8,12 +8,13 @@
     },
     "parent": {
       "schemaName": "mission",
-      "title": "Mission",
+      "label": "Mission",
+      "title": "${parent.name}",
       "placeholder": "Enter the mission of the project"
     },
     "location": {
       "type": "location",
-      "title": "Location",
+      "label": "Location",
       "placeholder": "Enter the location of the project"
     }
   },
@@ -31,7 +32,7 @@
   "collectionView": {
     "default": {
       "title": "Projects",
-      "subtitle": ":parent.name",
+      "subtitle": "${ parent.name }",
       "uri": "/projects/{id}",
       "filters": [[":category", "==", "project"]],
       "create": {

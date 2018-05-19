@@ -3,17 +3,15 @@
   "type": "document",
   "mixins": ["timestamp"],
   "collection": "tags",
-  "title": {
-    "property": "name"
-  },
+  "title": "${name}",
   "properties": {
     "name": {
       "type": "string",
-      "title": "Name"
+      "label": "Name"
     },
     "collection": {
       "type": "string",
-      "title": "Collection name of the tag"
+      "label": "Collection name of the tag"
     }
   },
   "itemView": {

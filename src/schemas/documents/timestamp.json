@@ -6,7 +6,7 @@
       "type": "collection",
       "component": "select",
       "schemaName": "user",
-      "title": "Created by",
+      "label": "Created by",
       "placeholder": "Enter the owner",
       "autocomplete": true,
       "unique": true,
@@ -14,13 +14,13 @@
     },
     "createdAt": {
       "type": "date",
-      "title": "Created at"
+      "label": "Created at"
     },
     "updatedBy": {
       "type": "collection",
       "component": "select",
       "schemaName": "user",
-      "title": "Updated by",
+      "label": "Updated by",
       "placeholder": "Enter the owner",
       "autocomplete": true,
       "unique": true,
@@ -28,7 +28,7 @@
     },
     "updatedAt": {
       "type": "date",
-      "title": "Updated at"
+      "label": "Updated at"
     }
   },
   "itemView": {

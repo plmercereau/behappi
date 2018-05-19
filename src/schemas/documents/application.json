@@ -1,11 +1,9 @@
 {
   "name": "application",
   "type": "document",
-  "mixins": ["timestamp", "workflow"],
+  "mixins": ["timestamp"],
   "collection": "applications",
-  "title": {
-    "property": "name"
-  },
+  "title": "${name}",
   "versionable": true,
   "properties": {
     "name": {
@@ -14,35 +12,46 @@
       "placeholder": "Name of the application",
       "validation": "required|min:3"
     },
-    "primaryPurpose": {
+    "applicationUsages": {
       "type": "collection",
-      "component": "chip",
-      "schemaName": "purpose",
-      "title": "Primary purpose",
-      "placeholder": "Primary purpose of the application",
+      "component": "list",
+      "schemaName": "applicationUsage",
+      "label": "Application usages",
+      "title": "${orgUnit.name}",
+      "placeholder": "Usages of this application",
       "autocomplete": true,
       "unique": false,
       "create": true
     },
+    "primaryPurpose": {
+      "type": "collection",
+      "component": "chip",
+      "schemaName": "purpose",
+      "label": "Primary purpose",
+      "placeholder": "Primary purpose of the application",
+      "autocomplete": true,
+      "unique": true,
+      "create": true
+    },
     "linkTool": {
       "type": "link",
-      "title": "Link to the tool",
+      "label": "Link to the tool",
       "external": true
     },
     "userGuide": {
       "type": "link",
-      "title": "User guide",
+      "label": "User guide",
       "external": true
     },
     "technicalDocumentation": {
       "type": "link",
-      "title": "Technical documentation",
+      "label": "Technical documentation",
       "external": true
     },
     "dataStructure": {
       "type": "collection",
       "component": "chip",
-      "title": "Data structure",
+      "label": "Data structure",
       "placeholder": "Data structure: (more than one possible)",
       "unique": false,
       "create": false,
@@ -55,7 +64,7 @@
     "personalIdentifiableInformation": {
       "type": "collection",
       "component": "select",
-      "title": "Person Identifier",
+      "label": "Person Identifier",
       "placeholder": "Person Identifier (pick one)",
       "unique": true,
       "create": false,
@@ -69,7 +78,7 @@
     "analytics": {
       "type": "collection",
       "component": "select",
-      "title": "Analytic capacity",
+      "label": "Analytic capacity",
       "placeholder": "Analytic capacity (pick one)",
       "unique": true,
       "create": false,
@@ -84,7 +93,7 @@
     "sharing": {
       "type": "collection",
       "component": "select",
-      "title": "Data sharing",
+      "label": "Data sharing",
       "placeholder": "Data sharing (pick one)",
       "unique": true,
       "create": false,
@@ -98,7 +107,7 @@
     "contentStandardisationLevel": {
       "type": "collection",
       "component": "select",
-      "title": "Standardization content",
+      "label": "Standardization content",
       "placeholder": "Standardization content (pick one)",
       "unique": true,
       "create": false,
@@ -114,7 +123,7 @@
       "type": "collection",
       "component": "chip",
       "schemaName": "language",
-      "title": "Languages",
+      "label": "Languages",
       "placeholder": "Available languages",
       "autocomplete": true,
       "unique": false,
@@ -124,7 +133,7 @@
       "type": "collection",
       "component": "chip",
       "schemaName": "technology",
-      "title": "Platform / program language",
+      "label": "Platform / program language",
       "placeholder": "Platform / program language",
       "autocomplete": true,
       "unique": false,
@@ -132,12 +141,12 @@
     },
     "comment": {
       "type": "string",
-      "title": "Remark"
+      "label": "Remark"
     },
     "applicationStatus": {
       "type": "collection",
       "component": "select",
-      "title": "Status",
+      "label": "Status",
       "placeholder": "Status",
       "unique": true,
       "create": false,
@@ -150,7 +159,7 @@
     "supported": {
       "type": "collection",
       "component": "boolean",
-      "title": "Supported by OCB ",
+      "label": "Supported by OCB ",
       "placeholder": "Currently supported by OCB (Ehealth or other, see contact)"
     },
     "supportOrgUnit": {
@@ -158,7 +167,7 @@
       "component": "select",
       "schemaName": "orgUnit",
       "visible": [[":supported", "==", true]],
-      "title": "Support contact",
+      "label": "Support contact",
       "placeholder": "Support contact",
       "autocomplete": true,
       "unique": true,
@@ -168,7 +177,7 @@
       "type": "collection",
       "component": "chip",
       "schemaName": "medicalActivity",
-      "title": "Medical activities",
+      "label": "Medical activities",
       "placeholder": "Medical activities",
       "autocomplete": true,
       "unique": false,
@@ -177,14 +186,17 @@
   },
   "itemView": {
     "default": {
-      "sectionsOrder": ["main"],
+      "sectionsOrder": ["main", "usages"],
       "sections": {
         "main": {
-          "title": {
-            "property": "name"
-          },
-          "read": ["name"],
-          "edit": ["name"]
+          "title": "General",
+          "read": ["name", "medicalActivities"],
+          "edit": ["name", "medicalActivities"]
+        },
+        "usages": {
+          "title": "Usages",
+          "read": ["applicationUsages"],
+          "edit": ["applicationUsages"]
         }
       }
     }

@@ -60,41 +60,6 @@ const createSchema = function (schemaName) {
       }
     })
   })
-  // TODO do the same with collectionView?
-  // schema.itemViews = Object.keys(schema.itemViews).reduce((obj, viewName) => {
-  //   let view = schema.itemViews[viewName]
-  //   let sections = !view.sectionsOrder ? view : view.sectionsOrder.reduce((obj, sectionName) => {
-  //     let section = view.sections[sectionName]
-  //     section.read = _.isArray(section.read) && section.read.map(propertyName => {
-  //       let property = schema.properties[propertyName]
-  //       if (property.schemaName) {
-  //         Object.defineProperty(property, 'schema', {
-  //           configurable: true,
-  //           get: function () {
-  //             return createSchema(property.schemaName)
-  //           }
-  //         })
-  //       }
-  //       return property
-  //     })
-  //     section.edit = _.isArray(section.edit) && section.edit.map(propertyName => {
-  //       let property = schema.properties[propertyName]
-  //       if (property.schemaName) {
-  //         Object.defineProperty(property, 'schema', {
-  //           configurable: true,
-  //           get: function () {
-  //             return createSchema(property.schemaName)
-  //           }
-  //         })
-  //       }
-  //       return property
-  //     })
-  //     obj[sectionName] = section
-  //     return obj
-  //   }, {})
-  //   obj[viewName] = sections
-  //   return obj
-  // }, {})
   return schema
 }
 
@@ -109,9 +74,11 @@ function getSystemData (data) {
   return _.mergeWith(initialData, data, mergeCustomizer)
 }
 
-function getInitialDefaultData (schema, data, view = 'default') {
+function getInitialDefaultData (schema, data, property) {
   let res = getSystemData(data)
-  Object.keys(schema.properties)
+  let create = property ? property.create : schema.collectionView.default.create
+  let propNames = property ? create.properties : Object.keys(schema.properties)
+  propNames
     .filter(propName => {
       return (!res[propName])
     })
@@ -121,11 +88,11 @@ function getInitialDefaultData (schema, data, view = 'default') {
         res[schema.properties[propName].zoom] = DEFAULT_ZOOM
       }
     })
-  if (schema.collectionView[view].create.default) {
-    _.mergeWith(res, schema.collectionView[view].create.default, mergeCustomizer)
+  if (create.default) {
+    _.mergeWith(res, create.default, mergeCustomizer)
   }
   if (res._parentData) {
-    const parentProperty = schema.collectionView[view].create.parentProperty
+    const parentProperty = create.parentProperty
     const parentSchema = schema.properties[parentProperty].schema
     let parentRef = firebase.firestore().collection(parentSchema.collection).doc(data._parentData.id)
     res[parentProperty] = parentRef
@@ -146,8 +113,8 @@ export function updateDocument (docRef, data) {
   return docRef.set(getSystemData(data), { merge: true })
 }
 
-export function addDocument (schema, data) {
-  return firebase.firestore().collection(schema.collection).add(getInitialDefaultData(schema, data))
+export function addDocument (schema, data, property) {
+  return firebase.firestore().collection(schema.collection).add(getInitialDefaultData(schema, data, property))
 }
 
 export function filterCollection (filters, collection) {
@@ -189,36 +156,19 @@ export function sortCollection (sortProperties, collection) {
   return col
 }
 
-export function computedProperty (property, doc) { // TODO complete - when not aggregated, and other aggregates
-  let value = 0
-  if (property.type === 'computed') {
+export function propertyValue (schema, path, doc) { // TODO complete - when not aggregated, and other aggregates
+  let property = schema.properties[path]
+  if (property && property.type === 'computed') {
+    let value = ''
     let rootValue = _.get(doc, property.path)
     if (rootValue && property.aggregation) {
       if (property.aggregation.toLowerCase() === 'count') {
         value = _.keys(rootValue).length
       }
     }
+    return value
+  } else {
+    return _.get(doc, path)
   }
-  let title = property.title || String(value)
-  title = _.replace(title, '{result}', value)
-  title = _.replace(title, '{s}', value > 1 ? 's' : '')
-  return {value, title}
 }
 
-export function title (title, schema, doc, asValue = false) { // TODO use wherever possible
-  if (!title) return ''
-  if (title.property) return doc[title.property]
-  if (title.text) return title.text
-  if (title.charAt(0) === ':') {
-    if (_.has(schema.properties, title.substr(1))) {
-      let property = _.get(schema.properties, title.substr(1))
-      switch (property.type) {
-        case 'computed': return asValue ? computedProperty(property, doc).value : computedProperty(property, doc).title
-        default: return _.get(doc, title.substr(1))
-      }
-    } else {
-      return _.get(doc, title.substr(1))
-    }
-  }
-  return title
-}

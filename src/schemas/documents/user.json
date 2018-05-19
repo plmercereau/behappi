@@ -3,20 +3,18 @@
   "mixins": ["timestamp"],
   "type": "document",
   "collection": "users",
-  "title": {
-    "property": "email"
-  },
+  "title": "${email}",
   "versionable": true,
   "properties": {
     "name": {
       "type": "string",
-      "title": "Name",
+      "label": "Name",
       "placeholder": "Please enter the name of the user",
       "validation": "required|min:3"
     },
     "email": {
       "type": "string",
-      "title": "Email",
+      "label": "Email",
       "placeholder": "Please enter the email of the user",
       "validation": "required|min:3"
     }

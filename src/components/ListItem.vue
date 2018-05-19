@@ -1,21 +1,27 @@
 <template lang="pug">
   v-list-tile(:to="view.uri.replace('{id}', doc.id)")
     v-list-tile-content
-      v-list-tile-title(primary-title) {{title(doc, schema.title)}}
+      v-list-tile-title(primary-title) {{title}}
       v-list-tile-sub-title
         slot
 </template>
 
 <script>
   import {schemaMixin} from '../mixins'
+  import _ from 'lodash'
 
   export default {
-    props: ['doc', 'schema'],
+    props: ['doc', 'schema', 'property'],
     name: 'ListItem',
     mixins: [schemaMixin],
     computed: {
       view () {
-        return this.schema.collectionView['list'] || this.schema.collectionView['default']
+        return this.property.schema.collectionView['default'] || this.schema.collectionView['default']
+      },
+      title () {
+        let titleString = this.property.title || this.schema.title
+        let titleTemplate = _.template(titleString)
+        return _.isObject(this.doc) && this.doc.id ? titleTemplate(this.doc) : ''
       }
     }
     // TODO create a card-media that can be used in other cards (e.g. project or mission list)

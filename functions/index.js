@@ -1,12 +1,5 @@
 'use strict';
 const functions = require('firebase-functions');
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
 const admin = require('firebase-admin');
 admin.initializeApp();
 const FieldValue = require('firebase-admin').firestore.FieldValue;
@@ -79,6 +72,7 @@ function deleteOneToManyDocuments(snapshot, oneToManyAttribute) {
 exports.writeApplicationUsage = functions.firestore
   .document('applicationUsages/{applicationUsageId}')
   .onWrite((snap) => { // TODO test infinite loop (when we will be able to update on both sides of the relation)
+    console.log('onwrite app usage')
     updateOneToManyRevertRelation(snap, 'application', 'applicationUsages');
     updateOneToManyRevertRelation(snap, 'orgUnit', 'applicationUsages');
     return 0

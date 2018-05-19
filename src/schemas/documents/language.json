@@ -3,17 +3,15 @@
   "type": "document",
   "mixins": ["timestamp"],
   "collection": "languages",
-  "title": {
-    "property": "name"
-  },
+  "title": "${name}",
   "properties": {
     "code": {
       "type": "string",
-      "title": "Name"
+      "label": "Name"
     },
     "name": {
       "type": "string",
-      "title": "Name"
+      "label": "Name"
     }
   },
   "itemView": {
