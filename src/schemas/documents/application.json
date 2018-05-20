@@ -210,7 +210,6 @@
     "default": {
       "title": "Applications",
       "subtitle": "${ nbUsages ? nbUsages + ' usage' : ''}${ nbUsages > 1 ? 's' : '' }",
-      "subtitleProperties": ["nbUsages"],
       "uri": "/applications/{id}",
       "create": {
         "title": "New application",

@@ -1,13 +1,13 @@
-import {filterCollection, sortCollection} from '../schemas'
+import {addComputedValues, filterCollection, sortCollection} from '../schemas'
 import * as firebase from 'firebase'
 import _ from 'lodash'
 import {DEFAULT_CHIP_PROPERTY, DEFAULT_LOCATION, DEFAULT_ZOOM} from '../config'
 
 export var schemaMixin = {
   data () {
-    let doc = this.doc ? {} : {doc: {}} // do not declare doc if there is already a doc prop
+    let fbDoc = this.fbDoc ? {} : {fbDoc: {}} // do not declare doc if there is already a doc prop
     return {
-      ...doc,
+      ...fbDoc,
       loading: true
     }
   },
@@ -39,6 +39,9 @@ export var schemaMixin = {
     docTitle () { // TODO merge other title functions, and take computed properties into consideration
       let titleTemplate = _.template(this.schema.title)
       return _.isObject(this.doc) && this.doc.id ? titleTemplate(this.doc) : ''
+    },
+    doc () {
+      return addComputedValues(this.schema, this.fbDoc)
     }
   }
 }
@@ -93,11 +96,13 @@ export var formMixin = {
           }
           if (this.schema.properties[key].schema) {
             firebase.firestore().collection(this.schema.properties[key].schema.collection).get().then(snapshot => {
+              let titleTemplate = _.template(this.schema.properties[key].schema.title)
               filterCollection(this.schema.properties[key].schema.collectionView.default.filters, snapshot.docs)
                 .forEach(doc => {
+                  // TODO doc.data() ne charge pas les references firebase a l'interieur de doc.data()
                   form[`${key}Collection`].push({
                     value: doc.id,
-                    text: _.get(doc.data(), this.schema.properties[key].schema.titleProperty)
+                    text: titleTemplate(doc.data())
                   })
                 })
             })

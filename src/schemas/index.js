@@ -159,15 +159,28 @@ export function sortCollection (sortProperties, collection) {
 export function propertyValue (schema, path, doc) { // TODO complete - when not aggregated, and other aggregates
   let property = schema.properties[path]
   if (property && property.type === 'computed') {
-    let value = ''
-    let rootValue = _.get(doc, property.path)
-    if (rootValue && property.aggregation) {
-      if (property.aggregation.toLowerCase() === 'count') {
-        value = _.keys(rootValue).length
-      }
-    }
-    return value
+    return computedPropertyValue(property, doc)
   } else {
     return _.get(doc, path)
   }
+}
+
+function computedPropertyValue (property, doc) {
+  let value = ''
+  let rootValue = _.get(doc, property.path)
+  if (rootValue && property.aggregation) {
+    if (property.aggregation.toLowerCase() === 'count') {
+      value = _.keys(rootValue).length
+    }
+  }
+  return value
+}
+
+export function addComputedValues (schema, doc) {
+  Object.keys(schema.properties)
+    .filter(propName => (schema.properties[propName].type === 'computed'))
+    .forEach(propName => {
+      doc[propName] = computedPropertyValue(schema.properties[propName], doc)
+    })
+  return doc
 }

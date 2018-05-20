@@ -14,35 +14,36 @@
 <script>
   import * as firebase from 'firebase'
   import _ from 'lodash'
-  import {filterCollection, propertyValue, sortCollection} from '../schemas'
+  import {addComputedValues, filterCollection, sortCollection} from '../schemas'
   // TODO create FAB button visible only under certain conditions described in the schema file
   export default {
     name: 'ItemCollection',
     props: ['schema', 'viewName'],
     data () {
       return {
-        collection: [],
+        fbCollection: [],
         search: '' // TODO search param in schema file
       }
     },
     methods: {
       subtitle (item) {
-        if (!this.schema.collectionView.default.subtitle) return ''
-        let subtitle = _.template(this.schema.collectionView.default.subtitle)
-        // TODO subLabelProperties becomes useless if we load computed properties once the doc is loaded from firebase
-        let data = this.schema.collectionView.default.subtitleProperties ? this.schema.collectionView.default.subtitleProperties.reduce((acc, cursor) => {
-          acc[cursor] = propertyValue(this.schema, cursor, item)
-          return acc
-        }, {}) : item
-        return subtitle(data)
+        let template = this.schema.collectionView.default.subtitle || ''
+        return _.template(template)(item)
       }
     },
     computed: {
-      filteredList () {
-        if (this.collection) {
+      collection () {
+        if (this.fbCollection) {
           let initialCollection = sortCollection(this.schema.collectionView.default.sort,
-            filterCollection(this.schema.collectionView.default.filters, this.collection))
-          return initialCollection.filter(doc => {
+            filterCollection(this.schema.collectionView.default.filters, this.fbCollection))
+          return initialCollection.map(item => {
+            return addComputedValues(this.schema, item)
+          })
+        } else return []
+      },
+      filteredList () {
+        if (!_.isEmpty(this.collection)) {
+          return this.collection.filter(doc => {
             let found = false
             if (!this.schema.searchProperties) found = true
             else {
@@ -60,7 +61,7 @@
     },
     firestore () {
       return {
-        collection: firebase.firestore().collection(this.schema.collection)
+        fbCollection: firebase.firestore().collection(this.schema.collection)
       }
     }
   }

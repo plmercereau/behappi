@@ -47,7 +47,6 @@
     "default": {
       "title": "Missions",
       "subtitle": "${ nbProjects ? nbProjects + ' project' : ''}${ nbProjects > 1 ? 's' : '' }",
-      "subtitleProperties": ["nbProjects"],
       "uri": "/missions/{id}",
       "filters": [[":category", "==", "mission"]],
       "create": {

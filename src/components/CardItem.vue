@@ -14,13 +14,11 @@
 </template>
 
 <script>
-  import {schemaMixin} from '../mixins'
   import _ from 'lodash'
 
   export default {
     props: ['doc', 'schema'],
     name: 'CardItem',
-    mixins: [schemaMixin],
     computed: {
       view () {
         return this.schema.collectionView['card'] || this.schema.collectionView['default']

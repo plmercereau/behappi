@@ -7,13 +7,11 @@
 </template>
 
 <script>
-  import {schemaMixin} from '../mixins'
   import _ from 'lodash'
 
   export default {
     props: ['doc', 'schema', 'property'],
     name: 'ListItem',
-    mixins: [schemaMixin],
     computed: {
       view () {
         return this.property.schema.collectionView['default'] || this.schema.collectionView['default']

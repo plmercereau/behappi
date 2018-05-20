@@ -3,12 +3,9 @@
 </template>
 
 <script>
-  import {schemaMixin} from '../mixins'
-
   export default {
     props: ['doc', 'schema'],
     name: 'ListItem',
-    mixins: [schemaMixin],
     computed: {
       view () {
         return this.schema.collectionView['chip'] || this.schema.collectionView['default']

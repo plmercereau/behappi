@@ -224,7 +224,7 @@
       }
     },
     mounted () {
-      this.$bind('doc', firebase.firestore().collection(this.schema.collection).doc(this.id))
+      this.$bind('fbDoc', firebase.firestore().collection(this.schema.collection).doc(this.id))
         .then((doc) => {
           this.reset()
         })
