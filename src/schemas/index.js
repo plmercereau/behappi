@@ -76,7 +76,10 @@ function getSystemData (data) {
 
 function getInitialDefaultData (schema, data, property) {
   let res = getSystemData(data)
-  let create = property ? property.create : schema.collectionView.default.create
+  let schemaCreate = schema.collectionView.default.create
+  let propertyCreate = property.create
+  let create = (schemaCreate && propertyCreate) ? _.mergeWith(schemaCreate, propertyCreate, mergeCustomizer)
+    : propertyCreate || schemaCreate
   let propNames = property ? create.properties : Object.keys(schema.properties)
   propNames
     .filter(propName => {
@@ -156,7 +159,7 @@ export function sortCollection (sortProperties, collection) {
   return col
 }
 
-export function propertyValue (schema, path, doc) { // TODO complete - when not aggregated, and other aggregates
+export function propertyValue (schema, path, doc) { // TODO remove?
   let property = schema.properties[path]
   if (property && property.type === 'computed') {
     return computedPropertyValue(property, doc)

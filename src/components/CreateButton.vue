@@ -43,11 +43,10 @@
         let cleanForm = this.constructDataWithProperties(this.createParams.properties)
         if (this.createParams.parentProperty && this.parentData) {
           const parentProperties = this.createParams.inheritedProperties
-          const filteredParentData = {}
-          parentProperties && parentProperties.reduce((obj, name) => {
+          let filteredParentData = parentProperties ? parentProperties.reduce((obj, name) => {
             obj[name] = this.parentData[name]
             return obj
-          }, {})
+          }, {}) : {}
           cleanForm['_parentData'] = {
             id: this.parentData.id,
             ...filteredParentData
