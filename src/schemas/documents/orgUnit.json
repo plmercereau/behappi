@@ -99,7 +99,7 @@
   "collectionView": {
     "default": {
       "title": "Org Units",
-      "uri": "/orgUnits/{id}",
+      "uri": "/orgUnit/{id}",
       "sort": [["name", "ASC"]],
       "create": {
         "properties": ["name"]

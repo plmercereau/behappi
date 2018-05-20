@@ -3,12 +3,12 @@
     v-layout(row, align-center)
       v-flex(xs12)
         tool-bar(:title="view.title", search, v-model="search")
-        card-list(v-if="!viewName || viewName === 'card' || viewName === 'default'")
-          v-card-actions(slot="actions")
-            create-button(fab, :parentSchema="schema")
+        create-button(fab, :parentSchema="schema")
+        card-list(v-if="collection.length > 0 && (!viewName || viewName === 'card' || viewName === 'default')")
           v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
             card-item(:doc="doc", :schema="schema", component="card")
               div {{subtitle(doc)}}
+        i(v-if="collection.length === 0") {{view.title}}: empty collection
 </template>
 
 <script>
@@ -56,7 +56,7 @@
         } else return []
       },
       view () {
-        return this.schema.collectionView[this.viewName || 'default'] || this.schema.collectionView['default']
+        return this.schema.collectionView[this.viewName || 'default']
       }
     },
     firestore () {

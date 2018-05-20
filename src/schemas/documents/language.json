@@ -31,7 +31,7 @@
   "collectionView": {
     "default": {
       "title": "Languages",
-      "uri": "/languages/{id}",
+      "uri": "/language/{id}",
       "create": {
         "title": "New language",
         "properties": ["code", "name"]

@@ -9,48 +9,40 @@ export const MARKER_COLOR = 'brown'
 export const MENU = [
   {
     icon: 'home',
-    title: 'Home',
+    name: 'Home',
     path: '/home'
   },
   {
     icon: 'map',
-    title: 'Missions',
-    path: '/missions'
+    schema: 'mission'
   },
   {
     icon: 'local_activity',
-    title: 'Projects',
-    path: '/projects'
+    schema: 'project'
   },
   {
     icon: 'apps',
-    title: 'Applications',
-    path: '/applications'
+    schema: 'application'
   },
   {
     icon: 'build',
-    title: 'Technologies',
-    path: '/technologies'
+    schema: 'technology'
   },
   {
     icon: 'local_hospital',
-    title: 'Medical activities',
-    path: '/medicalActivities'
+    schema: 'medicalActivity'
   },
   {
     icon: 'bookmark',
-    title: 'Purposes',
-    path: '/purposes'
+    schema: 'purpose'
   },
   {
     icon: 'language',
-    title: 'Languages',
-    path: '/languages'
+    schema: 'language'
   },
   {
     icon: 'person',
-    title: 'Users',
-    path: '/users'
+    schema: 'user'
   }
 ]
 export const DEFAULT_CHIP_PROPERTY = 'name'

@@ -31,7 +31,7 @@
   "collectionView": {
     "default": {
       "title": "Tags",
-      "uri": "/tags/{id}",
+      "uri": "/tag/{id}",
       "create": {
         "title": "New tag",
         "properties": ["name"]

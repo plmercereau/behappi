@@ -1,21 +1,46 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import ItemCollection from '@/components/ItemCollection'
+import ItemDetails from '@/components/ItemDetails'
 import Home from '@/pages/Home'
-import Missions from '@/pages/Missions'
-import Mission from '@/pages/Mission'
-import Projects from '@/pages/Projects'
-import Project from '@/pages/Project'
-import Applications from '@/pages/Applications'
-import Application from '@/pages/Application'
-import ApplicationUsage from '@/pages/ApplicationUsage'
 import Login from '@/pages/Login'
 import PageNotFound from '@/pages/PageNotFound'
 import AuthGuard from './auth-guard'
+import {getSchemas} from '@/schemas'
 
 Vue.use(Router)
 
+function schemaRoutes () {
+  let schemas = getSchemas()
+  return Object.keys(schemas).reduce((obj, schemaName) => {
+    let schema = schemas[schemaName]
+    obj.push({
+      path: `/${schemaName}`,
+      name: schemaName,
+      component: ItemCollection,
+      props: { schema },
+      meta: {
+        keepAlive: true
+      },
+      beforeEnter: AuthGuard
+    })
+    obj.push({
+      path: `/${schemaName}/:id`,
+      name: `/${schemaName}Item`,
+      component: ItemDetails,
+      props: (route) => ({id: route.params.id, schema}),
+      meta: {
+        keepAlive: true
+      },
+      beforeEnter: AuthGuard
+    })
+    return obj
+  }, [])
+}
+
 let router = new Router({
   routes: [
+    ...schemaRoutes(),
     {
       path: '*',
       redirect: '/page-not-found'
@@ -33,73 +58,6 @@ let router = new Router({
       path: '/login',
       name: 'Login',
       component: Login
-    },
-    {
-      path: '/missions',
-      name: 'Missions',
-      component: Missions,
-      meta: {
-        keepAlive: true
-      },
-      beforeEnter: AuthGuard
-    },
-    {
-      path: '/missions/:id',
-      name: 'Mission',
-      component: Mission,
-      props: true,
-      meta: {
-        keepAlive: true
-      },
-      beforeEnter: AuthGuard
-    },
-    {
-      path: '/projects',
-      name: 'Projects',
-      component: Projects,
-      meta: {
-        keepAlive: true
-      },
-      beforeEnter: AuthGuard
-    },
-    {
-      path: '/projects/:id',
-      name: 'Project',
-      component: Project,
-      props: true,
-      meta: {
-        keepAlive: true
-      },
-      beforeEnter: AuthGuard
-    },
-    {
-      path: '/applications',
-      name: 'Applications',
-      component: Applications,
-      meta: {
-        keepAlive: true
-      },
-      beforeEnter: AuthGuard
-    },
-    {
-      path: '/applications/:id',
-      name: 'Application',
-      component: Application,
-      props: true,
-      meta: {
-        keepAlive: true
-      },
-      beforeEnter: AuthGuard
-    },
-    {
-      path: '/applicationUsages/:id',
-      name: 'ApplicationUsage',
-      component: ApplicationUsage,
-      props: true,
-      meta: {
-        keepAlive: true
-      },
-      beforeEnter: AuthGuard
     },
     {
       path: '/home',

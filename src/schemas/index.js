@@ -112,6 +112,10 @@ export function getSchema (schemaName) {
   return docSchemas[schemaName] || {}
 }
 
+export function getSchemas () {
+  return docSchemas
+}
+
 export function updateDocument (docRef, data) {
   return docRef.set(getSystemData(data), { merge: true })
 }

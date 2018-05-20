@@ -69,7 +69,7 @@
   "collectionView": {
     "default": {
       "title": "Application usage",
-      "uri": "/applicationUsages/{id}"
+      "uri": "/applicationUsage/{id}"
     }
   }
 }
