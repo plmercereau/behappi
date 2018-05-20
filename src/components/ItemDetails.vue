@@ -6,12 +6,12 @@
           v-btn(@click="saveItem()") Save
           v-btn(@click="reset") Reset
           v-btn(@click="cancel") Cancel
-          v-dialog(v-model="deleteDialogToggle" max-width="500px")
-            v-card
-              v-card-title Are you sure you want to delete this document?
-              v-card-actions
-                v-btn(color="error" flat @click.stop="deleteItem") Delete
-                v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
+        v-dialog(v-model="deleteDialogToggle" max-width="500px")
+          v-card
+            v-card-title Are you sure you want to delete this document?
+            v-card-actions
+              v-btn(color="error" flat @click.stop="deleteItem") Delete
+              v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
         v-tabs(v-model="tab")
           v-tab(v-for="sectionName in view.sectionsOrder" :key="sectionName" v-show="isActiveTab(sectionName)") {{view.sections[sectionName].title}}
         v-tabs-items(v-model="tab")
