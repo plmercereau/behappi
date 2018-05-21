@@ -22,12 +22,10 @@
 </template>
 
 <script>
-  const EVENTS = ['online', 'offline', 'load']
   export default {
     name: 'ToolBar',
     data () {
       return {
-        isOnline: navigator.onLine || false,
         snackbar: false,
         searchInput: this.value
       }
@@ -42,28 +40,19 @@
       }
     },
     watch: {
+      isOnline (newVal, oldVal) {
+        if (oldVal !== newVal) {
+          this.snackbar = true
+        }
+      },
       searchInput (val) {
         this.$emit('input', val)
       }
     },
     methods: {
-      updateOnlineStatus() {
-        let isOnline = this.isOnline
-        this.isOnline = navigator.onLine || false
-        this.$emit('detected-condition', this.isOnline)
-        if (isOnline !== this.isOnline) {
-          this.snackbar = true
-        }
-      },
       toggleDrawer () {
         this.$store.commit('toggleDrawer')
       }
-    },
-    mounted () {
-      EVENTS.forEach(event => window.addEventListener(event, this.updateOnlineStatus))
-    },
-    beforeDestroy() {
-      EVENTS.forEach(event => window.removeEventListener(event, this.updateOnlineStatus))
     }
   }
 </script>

@@ -16,6 +16,7 @@ import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import VueMoment from 'vue-moment'
 import {GOOGLE_API_KEY, VUETIFY_THEME} from './config'
+import VueConnection from './plugins/connection'
 
 // https://github.com/chrisvfritz/vue-enterprise-boilerplate/blob/master/src/components/_globals.js
 const requireComponent = require.context(
@@ -29,6 +30,8 @@ requireComponent.keys().forEach(fileName => {
   const componentName = upperFirst(camelCase(fileName.replace(/^\.\/(.*)\.\w+$/, '$1')))
   Vue.component(componentName, componentConfig.default || componentConfig)
 })
+
+Vue.use(VueConnection)
 
 Vue.use(Vue2Filters)
 
@@ -85,23 +88,32 @@ function initApp (withError = false) {
   })
 }
 
-firebase.initializeApp(config)
-firebase.firestore().enablePersistence()
-  .then(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (!app) {
-        if (user) {
-          store.dispatch('autoSignIn', user)
-        }
-        initApp()
+function initFullApp () {
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!app) {
+      if (user) {
+        store.dispatch('autoSignIn', user)
       }
-    })
-  })
-  .catch((err) => {
-    if (err.code === 'failed-precondition') {
-      // Multiple tabs open, persistence can only be enabled in one tab at a a time.
-      initApp('BeHappI only works on one single tab')
-    } else if (err.code === 'unimplemented') {
-      initApp('Offline mode is not supported by this browser')
+      initApp()
     }
   })
+}
+
+firebase.initializeApp(config)
+
+if (process.env.NODE_ENV === 'development') {
+  initFullApp()
+} else {
+  firebase.firestore().enablePersistence()
+    .then(() => {
+      initFullApp()
+    })
+    .catch((err) => {
+      if (err.code === 'failed-precondition') {
+        // Multiple tabs open, persistence can only be enabled in one tab at a a time.
+        initApp('BeHappI only works on one single tab')
+      } else if (err.code === 'unimplemented') {
+        initApp('Offline mode is not supported by this browser')
+      }
+    })
+}
