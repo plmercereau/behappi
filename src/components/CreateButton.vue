@@ -33,11 +33,11 @@
 
 <script>
   import {addDocument} from '../schemas'
-  import {formMixin, schemaMixin} from '../mixins'
+  import {formMixin} from '../mixins'
   export default {
     props: ['parentSchema', 'propertyName', 'parentData', 'fab'],
     name: 'CreateButton',
-    mixins: [schemaMixin, formMixin],
+    mixins: [formMixin],
     methods: {
       create () { // TODO submit action, rather than $validator.validateAll() && create()
         let cleanForm = this.constructDataWithProperties(this.createParams.properties)
