@@ -1,3 +1,12 @@
+export const VUETIFY_THEME = {
+  primary: '#1976D2',
+  secondary: '#424242',
+  accent: '#82B1FF',
+  error: '#FF5252',
+  info: '#2196F3',
+  success: '#4CAF50',
+  warning: '#FFC107'
+}
 export const GOOGLE_API_KEY = 'AIzaSyAzTKuGAzcoIwJ31pCktzJ2I8hcqwHOPJs'
 export const MAP_TYPE = 'terrain'
 export const DEFAULT_LOCATION = {

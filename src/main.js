@@ -15,7 +15,7 @@ import Vue2Filters from 'vue2-filters'
 import upperFirst from 'lodash/upperFirst'
 import camelCase from 'lodash/camelCase'
 import VueMoment from 'vue-moment'
-import {GOOGLE_API_KEY} from './config'
+import {GOOGLE_API_KEY, VUETIFY_THEME} from './config'
 
 // https://github.com/chrisvfritz/vue-enterprise-boilerplate/blob/master/src/components/_globals.js
 const requireComponent = require.context(
@@ -36,7 +36,7 @@ Vue.use(VueMoment)
 
 Vue.use(VeeValidate)
 
-Vue.use(Vuetify)
+Vue.use(Vuetify, {theme: VUETIFY_THEME})
 
 Vue.config.productionTip = false
 

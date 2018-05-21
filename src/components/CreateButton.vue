@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    v-btn(:fab="isFab" :fixed="isFab" :dark="isFab" :bottom="isFab" :right="isFab" :color="isFab ? 'orange': 'primary'" @click.stop="edit")
+    v-btn(:fab="isFab" :fixed="isFab" :dark="isFab" :bottom="isFab" :right="isFab" :color="isFab ? 'secondary': 'primary'" @click.stop="edit")
       v-icon(v-if="isFab") add
       slot
     v-dialog(v-model="editToggle" max-width="500px")
