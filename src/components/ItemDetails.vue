@@ -88,6 +88,7 @@
                             gmap-marker(v-if="schema.properties[name].markers && schema.properties[name].markers.self" :position="form['reported'+name]")
               v-card-text(v-if="!editToggle")
                 create-button(v-for="name in view.sections[sectionName].read",
+                  :key="name"
                   fab,
                   v-if="schema.properties[name].create && (schema.properties[name].component ==='card' || schema.properties[name].component ==='list')",
                   :parentData="doc", :propertyName="name", :parentSchema="schema")
