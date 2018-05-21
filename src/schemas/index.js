@@ -82,9 +82,7 @@ function getInitialDefaultData (schema, data, property) {
     : propertyCreate || schemaCreate
   let propNames = property ? create.properties : Object.keys(schema.properties)
   propNames
-    .filter(propName => {
-      return (!res[propName])
-    })
+    .filter(propName => !res[propName])
     .map(propName => {
       if (schema.properties[propName].type === 'location') {
         res[propName] = DEFAULT_LOCATION

@@ -120,8 +120,9 @@ export var formMixin = {
       let initialForm = this.form
       let schema = this.schema
       let doc = this.doc || {}
-      Object.keys(initialForm).map(key => {
-        if (maskedProperties.indexOf(key) > -1) {
+      Object.keys(initialForm)
+        .filter(key => (maskedProperties.indexOf(key) > -1))
+        .map(key => {
           let val = doc[key]
           if (schema.properties[key].type === 'location') {
             val = {
@@ -178,8 +179,7 @@ export var formMixin = {
           } else {
             if (!_.isEqual(doc[key], val)) cleanedForm[key] = val
           }
-        }
-      })
+        })
       return cleanedForm
     },
     updateMapCenter (fieldName) { // TODO move map editor into a dedicated component

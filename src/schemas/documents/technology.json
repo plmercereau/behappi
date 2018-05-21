@@ -31,7 +31,6 @@
   "collectionView": {
     "default": {
       "title": "Technologies",
-      "uri": "/technology/{id}",
       "create": {
         "title": "New technology",
         "properties": ["name"]

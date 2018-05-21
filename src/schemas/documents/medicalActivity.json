@@ -31,7 +31,6 @@
   "collectionView": {
     "default": {
       "title": "Medical activities",
-      "uri": "/medicalActivitie/{id}",
       "create": {
         "title": "New medical activity",
         "properties": ["name"]

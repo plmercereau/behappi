@@ -31,7 +31,6 @@
   "collectionView": {
     "default": {
       "title": "Purposes",
-      "uri": "/purpose/{id}",
       "create": {
         "title": "New purpose",
         "properties": ["name"]

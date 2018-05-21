@@ -68,8 +68,7 @@
   },
   "collectionView": {
     "default": {
-      "title": "Application usage",
-      "uri": "/applicationUsage/{id}"
+      "title": "Application usage"
     }
   }
 }

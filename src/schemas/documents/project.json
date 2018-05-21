@@ -33,7 +33,6 @@
     "default": {
       "title": "Projects",
       "subtitle": "${ parent.name }",
-      "uri": "/project/{id}",
       "filters": [[":category", "==", "project"]],
       "create": {
         "title": "New project",
