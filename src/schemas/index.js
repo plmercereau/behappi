@@ -77,7 +77,7 @@ function getSystemData (data) {
 function getInitialDefaultData (schema, data, property) {
   let res = getSystemData(data)
   let schemaCreate = schema.collectionView.default.create
-  let propertyCreate = property.create
+  let propertyCreate = property && property.create
   let create = (schemaCreate && propertyCreate) ? _.mergeWith(schemaCreate, propertyCreate, mergeCustomizer)
     : propertyCreate || schemaCreate
   let propNames = property ? create.properties : Object.keys(schema.properties)
