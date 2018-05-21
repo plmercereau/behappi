@@ -1,16 +1,11 @@
 <template lang="pug">
-  v-chip(:to="view.uri.replace('{id}', doc.id)") {{doc[schema.title.property]}}
+  v-chip(:to="`/${schema.name}/${doc.id}`") {{doc[schema.title.property]}}
 </template>
 
 <script>
   export default {
     props: ['doc', 'schema'],
-    name: 'ListItem',
-    computed: {
-      view () {
-        return this.schema.collectionView['chip'] || this.schema.collectionView['default']
-      }
-    }
+    name: 'ListItem'
     // TODO create a card-media that can be used in other cards (e.g. project or mission list)
   }
 </script>

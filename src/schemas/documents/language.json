@@ -1,5 +1,5 @@
 {
-  "name": "purpose",
+  "name": "language",
   "type": "document",
   "mixins": ["timestamp"],
   "collection": "languages",

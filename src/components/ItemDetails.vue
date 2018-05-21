@@ -12,118 +12,120 @@
             v-card-actions
               v-btn(color="error" flat @click.stop="deleteItem") Delete
               v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
-        v-tabs(v-model="tab")
-          v-tab(v-for="sectionName in view.sectionsOrder" :key="sectionName" v-show="isActiveTab(sectionName)") {{view.sections[sectionName].title}}
-        v-tabs-items(v-model="tab")
-          v-tab-item(v-for="sectionName in view.sectionsOrder" :key="sectionName")
-            v-card
-              v-card-text(v-if="editToggle")
-                form(novalidate @submit.prevent="saveItem")
-                  template(v-for="name in view.sections[sectionName].edit")
-                    div(v-if="schema.properties[name].type==='string'" class="caption") {{schema.properties[name].label || '' }}
-                      v-text-field(
+        loading(v-if="loading")
+        template(v-else)
+          v-tabs(v-model="tab")
+            v-tab(v-for="sectionName in view.sectionsOrder" :key="sectionName" v-show="isActiveTab(sectionName)") {{view.sections[sectionName].title}}
+          v-tabs-items(v-model="tab")
+            v-tab-item(v-for="sectionName in view.sectionsOrder" :key="sectionName")
+              v-card
+                v-card-text(v-if="editToggle")
+                  form(novalidate @submit.prevent="saveItem")
+                    template(v-for="name in view.sections[sectionName].edit")
+                      div(v-if="schema.properties[name].type==='string'" class="caption") {{schema.properties[name].label || '' }}
+                        v-text-field(
+                          autofocus,
+                          v-model="form[name]",
+                          :id="'form-' + name",
+                          :label="schema.properties[name].placeholder",
+                          v-validate="schema.properties[name].validation",
+                          :doc-vv-name="'form-' + name")
+                        <!--TODO required, doc-vv-name-->
+                      div(v-if="schema.properties[name].type==='collection' && schema.properties[name].component!=='card' && schema.properties[name].unique") {{schema.properties[name].label || '' }}
+                        v-select(
+                          autofocus,
+                          :chips="schema.properties[name].component === 'chip'",
+                          :autocomplete="schema.properties[name].autocomplete",
+                          v-model="form[name]",
+                          :items="form[name+'Collection']"
+                          :label="schema.properties[name].placeholder",
+                          single-line)
+                      div(v-if="schema.properties[name].type==='collection' && schema.properties[name].component!=='card' && !schema.properties[name].unique") {{schema.properties[name].label || '' }}
+                        v-select(
+                        multiple,
                         autofocus,
-                        v-model="form[name]",
-                        :id="'form-' + name",
-                        :label="schema.properties[name].placeholder",
-                        v-validate="schema.properties[name].validation",
-                        :doc-vv-name="'form-' + name")
-                      <!--TODO required, doc-vv-name-->
-                    div(v-if="schema.properties[name].type==='collection' && schema.properties[name].component!=='card' && schema.properties[name].unique") {{schema.properties[name].label || '' }}
-                      v-select(
-                        autofocus,
+                        :tags="exists(schema.properties[name].create)",
+                        :return-object="exists(schema.properties[name].create)",
                         :chips="schema.properties[name].component === 'chip'",
+                        :deletable-chips="schema.properties[name].component === 'chip'",
                         :autocomplete="schema.properties[name].autocomplete",
                         v-model="form[name]",
                         :items="form[name+'Collection']"
                         :label="schema.properties[name].placeholder",
                         single-line)
-                    div(v-if="schema.properties[name].type==='collection' && schema.properties[name].component!=='card' && !schema.properties[name].unique") {{schema.properties[name].label || '' }}
-                      v-select(
-                      multiple,
-                      autofocus,
-                      :tags="exists(schema.properties[name].create)",
-                      :return-object="exists(schema.properties[name].create)",
-                      :chips="schema.properties[name].component === 'chip'",
-                      :deletable-chips="schema.properties[name].component === 'chip'",
-                      :autocomplete="schema.properties[name].autocomplete",
-                      v-model="form[name]",
-                      :items="form[name+'Collection']"
-                      :label="schema.properties[name].placeholder",
-                      single-line)
-                    v-container(v-if="schema.properties[name].type==='location'", fluid ,grid-list-md)
-                      v-layout(row, wrap)
-                        v-flex(d-flex xs12 sm6 md4)
-                          v-container(fluid)
-                            v-layout(row)
-                              v-flex
-                                div(class="caption") {{schema.properties[name].placeholder}}
-                                v-text-field(
-                                autofocus
-                                type="number"
-                                v-model.number="form['reported'+name].lat",
-                                :id="'form-' + name + '-latitude'",
-                                label="Latitude",
-                                v-validate="",
-                                @change="updateMapCenter(name)",
-                                :doc-vv-name="'form-' + name + '-latitude'")
-                                v-text-field(
-                                autofocus
-                                type="number"
-                                v-model.number="form['reported'+name].lng",
-                                :id="'form-' + name + '-latitude'",
-                                label="Longitude",
-                                v-validate="",
-                                @change="updateMapCenter(name)",
-                                :doc-vv-name="'form-' + name + '-latitude'")
-                                v-slider(label="Zoom" :max="20" v-model="form[schema.properties[name].zoom]")
-                        v-flex(d-flex xs12 sm6 md8)
-                          gmap-map(
-                          :center="form[name]"
-                          @center_changed="updateCenter(name, $event)"
-                          :zoom="form[schema.properties[name].zoom]"
-                          @zoom_changed="updateField(schema.properties[name].zoom, $event)"
-                          :map-type-id="mapType"
-                          style="width: 480px; height: 300px")
-                            gmap-marker(v-if="schema.properties[name].markers && schema.properties[name].markers.self" :position="form['reported'+name]")
-              v-card-text(v-if="!editToggle")
-                create-button(v-for="name in view.sections[sectionName].read",
-                  :key="name"
-                  fab,
-                  v-if="schema.properties[name].create && (schema.properties[name].component ==='card' || schema.properties[name].component ==='list')",
-                  :parentData="doc", :propertyName="name", :parentSchema="schema")
-                div(v-for="name in view.sections[sectionName].read" v-if="doc[name]" :key="name")
-                  div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].label || '' }}
-                  div(class="subheading")
-                    div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? doc[name]: doc[name] | labelEnum(schema.properties[name].enum)}}
-                    div(v-if="schema.properties[name].type === 'date'") {{doc[name] | moment('DD-MM-YYYY HH:mm:ss')}}
-                    router-link(v-else-if="schema.properties[name].type === 'collection' && schema.properties[name].schema && schema.properties[name].unique" :to="schema.properties[name].schema.collectionView.default.uri.replace('{id}', doc[name].id)") {{ title(name) }}
-                    div(v-else-if="schema.properties[name].type === 'collection' && !schema.properties[name].schema && schema.properties[name].unique") {{ schema.properties[name].options[doc[name]] }}
-                    template(v-else-if="schema.properties[name].type === 'collection' && schema.properties[name].schema && !schema.properties[name].unique")
-                      v-container(v-if="schema.properties[name].component ==='card'" fluid, grid-list-md)
+                      v-container(v-if="schema.properties[name].type==='location'", fluid ,grid-list-md)
                         v-layout(row, wrap)
-                          v-flex(dd-flex xs12 sm6 md4, v-for="doc in sortedCollection(name)" :key="doc.id")
-                            card-item(:schema="schema.properties[name].schema", :doc="doc")
-                      v-chip(v-else-if="schema.properties[name].component ==='chip'",
-                        v-for="doc in sortedCollection(name)",
-                        :key="doc.id") {{title(name)}}
-                      v-list(v-else)
-                        list-item(v-for="doc in sortedCollection(name)" :key="doc.id", :property="schema.properties[name]", :doc="doc")
-                    div(v-else-if="schema.properties[name].type === 'collection' && !schema.properties[name].schema && !schema.properties[name].unique")
-                      v-chip(v-if="schema.properties[name].component ==='chip'",
-                        v-for="val in sortedCollection(name)",
-                        :key="name+val") {{schema.properties[name].options[val]}}
-                      v-list(v-if="schema.properties[name].component ==='list'")
-                        v-list-tile(v-for="val in sortedCollection(name)" :key="name+val")
-                          v-list-tile-content
-                            v-list-tile-title(primary-title) {{schema.properties[name].options[val]}}
-                    v-card(v-else-if="schema.properties[name].type === 'location'")
-                      v-card-media
-                        map-image(
-                          :schema="schema",
-                          :doc="doc",
-                          :locationProperty="name")
-                  v-divider
+                          v-flex(d-flex xs12 sm6 md4)
+                            v-container(fluid)
+                              v-layout(row)
+                                v-flex
+                                  div(class="caption") {{schema.properties[name].placeholder}}
+                                  v-text-field(
+                                  autofocus
+                                  type="number"
+                                  v-model.number="form['reported'+name].lat",
+                                  :id="'form-' + name + '-latitude'",
+                                  label="Latitude",
+                                  v-validate="",
+                                  @change="updateMapCenter(name)",
+                                  :doc-vv-name="'form-' + name + '-latitude'")
+                                  v-text-field(
+                                  autofocus
+                                  type="number"
+                                  v-model.number="form['reported'+name].lng",
+                                  :id="'form-' + name + '-latitude'",
+                                  label="Longitude",
+                                  v-validate="",
+                                  @change="updateMapCenter(name)",
+                                  :doc-vv-name="'form-' + name + '-latitude'")
+                                  v-slider(label="Zoom" :max="20" v-model="form[schema.properties[name].zoom]")
+                          v-flex(d-flex xs12 sm6 md8)
+                            gmap-map(
+                            :center="form[name]"
+                            @center_changed="updateCenter(name, $event)"
+                            :zoom="form[schema.properties[name].zoom]"
+                            @zoom_changed="updateField(schema.properties[name].zoom, $event)"
+                            :map-type-id="mapType"
+                            style="width: 480px; height: 300px")
+                              gmap-marker(v-if="schema.properties[name].markers && schema.properties[name].markers.self" :position="form['reported'+name]")
+                v-card-text(v-if="!editToggle")
+                  create-button(v-for="name in view.sections[sectionName].read",
+                    :key="`create-button-${name}`"
+                    fab,
+                    v-if="schema.properties[name].create && (schema.properties[name].component ==='card' || schema.properties[name].component ==='list')",
+                    :parentData="doc", :propertyName="name", :parentSchema="schema")
+                  div(v-for="name in view.sections[sectionName].read" v-if="doc[name]" :key="name")
+                    div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].label || '' }}
+                    div(class="subheading")
+                      div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? doc[name]: doc[name] | labelEnum(schema.properties[name].enum)}}
+                      div(v-if="schema.properties[name].type === 'date'") {{doc[name] | moment('DD-MM-YYYY HH:mm:ss')}}
+                      router-link(v-else-if="schema.properties[name].type === 'collection' && schema.properties[name].schema && schema.properties[name].unique" :to="`/${schema.properties[name].schema.name}/${doc[name].id}`") {{ title(name) }}
+                      div(v-else-if="schema.properties[name].type === 'collection' && !schema.properties[name].schema && schema.properties[name].unique") {{ schema.properties[name].options[doc[name]] }}
+                      template(v-else-if="schema.properties[name].type === 'collection' && schema.properties[name].schema && !schema.properties[name].unique")
+                        v-container(v-if="schema.properties[name].component ==='card'" fluid, grid-list-md)
+                          v-layout(row, wrap)
+                            v-flex(dd-flex xs12 sm6 md4, v-for="doc in sortedCollection(name)" :key="doc.id")
+                              card-item(:schema="schema.properties[name].schema", :doc="doc")
+                        v-chip(v-else-if="schema.properties[name].component ==='chip'",
+                          v-for="doc in sortedCollection(name)",
+                          :key="doc.id") {{title(name)}}
+                        v-list(v-else)
+                          list-item(v-for="doc in sortedCollection(name)" :key="doc.id", :property="schema.properties[name]", :doc="doc")
+                      div(v-else-if="schema.properties[name].type === 'collection' && !schema.properties[name].schema && !schema.properties[name].unique")
+                        v-chip(v-if="schema.properties[name].component ==='chip'",
+                          v-for="val in sortedCollection(name)",
+                          :key="name+val") {{schema.properties[name].options[val]}}
+                        v-list(v-if="schema.properties[name].component ==='list'")
+                          v-list-tile(v-for="val in sortedCollection(name)" :key="name+val")
+                            v-list-tile-content
+                              v-list-tile-title(primary-title) {{schema.properties[name].options[val]}}
+                      v-card(v-else-if="schema.properties[name].type === 'location'")
+                        v-card-media
+                          map-image(
+                            :schema="schema",
+                            :doc="doc",
+                            :locationProperty="name")
+                    v-divider
 </template>
 
 <script>
@@ -139,6 +141,7 @@
     mixins: [schemaMixin, formMixin],
     data () {
       return {
+        loading: true,
         tab: '0',
         deleteDialogToggle: false
       }
@@ -228,6 +231,7 @@
       this.$bind('fbDoc', firebase.firestore().collection(this.schema.collection).doc(this.id))
         .then((doc) => {
           this.reset()
+          this.loading = false
         })
         .catch((error) => {
           console.log('error in loading: ', error)

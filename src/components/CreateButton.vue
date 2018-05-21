@@ -53,7 +53,7 @@
           }
         }
         addDocument(this.schema, cleanForm, this.parentSchema.properties[this.propertyName]).then((docRef) => {
-          this.$router.push(this.schema.collectionView.default.uri.replace('{id}', docRef.id))
+          this.$router.push(`/${this.schema.name}/${docRef.id}`)
         }).catch(error => {
           console.log(error)
         })

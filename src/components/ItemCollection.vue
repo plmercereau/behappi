@@ -1,14 +1,16 @@
 <template lang="pug">
-  v-container(fluid :class="{'pa-0': $vuetify.breakpoint.xsOnly }")
-    v-layout(row, align-center)
+  v-container(fill-height fluid :class="{'pa-0': $vuetify.breakpoint.xsOnly }")
+    v-layout(row, justify-center)
       v-flex(xs12)
         tool-bar(:title="view.title", search, v-model="search")
         create-button(fab, :parentSchema="schema")
-        card-list(v-if="collection.length > 0 && (!viewName || viewName === 'card' || viewName === 'default')")
-          v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
-            card-item(:doc="doc", :schema="schema", component="card")
-              div {{subtitle(doc)}}
-        i(v-if="collection.length === 0") {{view.title}}: empty collection
+        loading(v-if="loading")
+        template(v-else)
+          card-list(v-if="collection.length > 0 && (!viewName || viewName === 'card' || viewName === 'default')")
+            v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
+              card-item(:doc="doc", :schema="schema", component="card")
+                div {{subtitle(doc)}}
+          v-alert(:value="collection.length === 0" type="info") {{view.title}}: empty collection
 </template>
 
 <script>
@@ -21,7 +23,8 @@
     props: ['schema', 'viewName'],
     data () {
       return {
-        fbCollection: [],
+        loading: true,
+        collection: [],
         search: '' // TODO search param in schema file
       }
     },
@@ -32,15 +35,6 @@
       }
     },
     computed: {
-      collection () {
-        if (this.fbCollection) {
-          let initialCollection = sortCollection(this.schema.collectionView.default.sort,
-            filterCollection(this.schema.collectionView.default.filters, this.fbCollection))
-          return initialCollection.map(item => {
-            return addComputedValues(this.schema, item)
-          })
-        } else return []
-      },
       filteredList () {
         if (!_.isEmpty(this.collection)) {
           return this.collection.filter(doc => {
@@ -59,10 +53,19 @@
         return this.schema.collectionView[this.viewName || 'default']
       }
     },
-    firestore () {
-      return {
-        fbCollection: firebase.firestore().collection(this.schema.collection)
-      }
+    mounted () {
+      this.$bind('collection', firebase.firestore().collection(this.schema.collection))
+        .then((col) => {
+          this.collection = sortCollection(this.schema.collectionView.default.sort,
+            filterCollection(this.schema.collectionView.default.filters, col))
+            .map(item => {
+              return addComputedValues(this.schema, item)
+            })
+          this.loading = false
+        })
+        .catch((error) => {
+          console.log('error in loading: ', error)
+        })
     }
   }
 </script>

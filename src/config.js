@@ -9,7 +9,7 @@ export const MARKER_COLOR = 'brown'
 export const MENU = [
   {
     icon: 'home',
-    name: 'Home',
+    title: 'Home',
     path: '/home'
   },
   {

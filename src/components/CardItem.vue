@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card(:to="view.uri.replace('{id}', doc.id)")
+  v-card(:to="`/${schema.name}/${doc.id}`")
     v-card-media(v-if="view.media")
       map-image(v-if="view.media.property && (schema.properties[view.media.property].type === 'location') && doc[view.media.property]",
       :locationProperty="view.media.property",
