@@ -131,22 +131,38 @@
 <script>
   import * as firebase from 'firebase'
   import _ from 'lodash'
-  import {formMixin, schemaMixin} from '../mixins'
-  import {updateDocument} from '../schemas'
+  import {formMixin} from '../mixins'
+  import {addComputedValues, sortCollection, updateDocument} from '../schemas'
   import {MAP_TYPE} from '../config'
 
   export default {
     props: ['id', 'schema', 'viewName'],
     name: 'ItemDetails',
-    mixins: [schemaMixin, formMixin],
+    mixins: [formMixin],
     data () {
       return {
+        fbDoc: {},
         loading: true,
         tab: '0',
         deleteDialogToggle: false
       }
     },
     methods: {
+      sortedCollection (collectionName) {
+        // TODO other than string compare
+        let sortProperties = this.schema.properties[collectionName].schema.collectionView.default.sort
+        let collection = []
+        if (this.schema.properties[collectionName].schema) {
+          collection = sortCollection(sortProperties, this.doc[collectionName])
+        } else {
+          // TODO for enum
+          collection = Object.keys(this.doc[collectionName]).map(id => id)
+        }
+        return collection
+      },
+      exists (object) {
+        return Boolean(object)
+      },
       isActiveTab (sectionName) {
         let props = this.editToggle ? this.view.sections[sectionName].edit : this.view.sections[sectionName].read
         let show = false
@@ -188,6 +204,13 @@
       }
     },
     computed: {
+      docTitle () { // TODO merge other title functions, and take computed properties into consideration
+        let titleTemplate = _.template(this.schema.title)
+        return _.isObject(this.doc) && this.doc.id ? titleTemplate(this.doc) : ''
+      },
+      doc () {
+        return addComputedValues(this.schema, this.fbDoc)
+      },
       mapType () {
         return MAP_TYPE
       },

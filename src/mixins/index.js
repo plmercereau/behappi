@@ -1,50 +1,7 @@
-import {addComputedValues, filterCollection, sortCollection} from '../schemas'
+import {filterCollection} from '../schemas'
 import * as firebase from 'firebase'
 import _ from 'lodash'
 import {DEFAULT_CHIP_PROPERTY, DEFAULT_LOCATION, DEFAULT_ZOOM} from '../config'
-
-export var schemaMixin = {
-  data () {
-    let fbDoc = this.fbDoc ? {} : {fbDoc: {}} // do not declare doc if there is already a doc prop
-    return {
-      ...fbDoc,
-      loading: true
-    }
-  },
-  methods: {
-    sortedCollection (collectionName) {
-      // TODO other than string compare
-      let sortProperties = this.schema.properties[collectionName].schema.collectionView.default.sort
-      let collection = []
-      if (this.schema.properties[collectionName].schema) {
-        collection = sortCollection(sortProperties, this.doc[collectionName])
-      } else {
-        // TODO for enum
-        collection = Object.keys(this.doc[collectionName]).map(id => id)
-      }
-      return collection
-    },
-    exists (object) {
-      return Boolean(object)
-    }
-  },
-  watch: {
-    doc (newValue) {
-      if (newValue.id) {
-        this.loading = false
-      }
-    }
-  },
-  computed: {
-    docTitle () { // TODO merge other title functions, and take computed properties into consideration
-      let titleTemplate = _.template(this.schema.title)
-      return _.isObject(this.doc) && this.doc.id ? titleTemplate(this.doc) : ''
-    },
-    doc () {
-      return addComputedValues(this.schema, this.fbDoc)
-    }
-  }
-}
 
 export var formMixin = {
   data () {
