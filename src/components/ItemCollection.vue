@@ -10,7 +10,7 @@
             v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
               card-item(:doc="doc", :schema="schema", component="card")
                 div {{subtitle(doc)}}
-          v-alert(:value="collection.length === 0" type="info") {{view.title}}: empty collection
+          v-alert(:value="collection.length === 0" type="info") Empty collection
 </template>
 
 <script>

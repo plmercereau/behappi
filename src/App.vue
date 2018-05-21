@@ -1,17 +1,7 @@
 <template lang="pug">
   v-app
     v-navigation-drawer(v-if="userIsAuthenticated", persistent, v-model="$store.state.drawer", enable-resize-watcher, fixed, app)
-      v-list
-        v-list-tile(value="true", v-for="(item, i) in items", :key="i", :to="path(item)")
-          v-list-tile-action
-            v-icon(v-html="item.icon")
-          v-list-tile-content
-            v-list-tile-title(v-text="title(item)")
-        v-list-tile(class="footer" v-if="userIsAuthenticated", @click="signOut")
-          v-list-tile-action(class="large")
-            v-icon exit_to_app
-          v-list-tile-content(class="large")
-            v-list-tile-title Sign out
+      main-menu(icons, actions)
     v-content
         keep-alive
           router-view(:key="$route.fullPath", v-if="$route.meta.keepAlive")
@@ -22,33 +12,17 @@
 
 <script>
   import firebase from 'firebase'
-  import _ from 'lodash'
-  import {MENU} from './config'
-  import {getSchema} from './schemas'
 
   export default {
+    name: 'App',
     data () {
       return {
-        drawer: true,
-        items: MENU
+        drawer: true
       }
     },
-    name: 'App',
     computed: {
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
-      }
-    },
-    methods: {
-      signOut () {
-        this.$store.dispatch('logout')
-        this.$router.push('/')
-      },
-      path (item) {
-        return item.schema ? `/${getSchema(item.schema).name}` : item.path
-      },
-      title (item) {
-        return item.schema ? _.get(getSchema(item.schema), 'collectionView.default.title') : item.title
       }
     },
     created () {

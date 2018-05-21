@@ -6,10 +6,7 @@
         v-flex(xs12 sm6)
           h1 Welcome to the Brussels eHealth Applications Initiative
           v-btn(v-if="!userIsAuthenticated", to="/login") Sign In
-          v-list(v-if="userIsAuthenticated")
-            v-list-tile(value="true", v-for="(item, i) in menu", :key="i", :to="item.path")
-              v-list-tile-content
-                v-list-tile-title(v-text="item.title")
+          main-menu(v-if="userIsAuthenticated")
             v-list-tile(value="true", key="roadmap", href="https://trello.com/b/25y0sBq2/behappi", target="_blank")
               v-list-tile-content
                 v-list-tile-title Roadmap on Trello
