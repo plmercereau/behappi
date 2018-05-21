@@ -5,12 +5,12 @@
         tool-bar(:title="view.title", search, v-model="search")
         create-button(fab, :parentSchema="schema")
         loading(v-if="loading")
-        template(v-else)
-          card-list(v-if="collection.length > 0 && (!viewName || viewName === 'card' || viewName === 'default')")
+        template(v-else-if="collection.length > 0")
+          card-list(v-if="!viewName || viewName === 'card' || viewName === 'default'")
             v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
               card-item(:doc="doc", :schema="schema", component="card")
                 div {{subtitle(doc)}}
-          v-alert(:value="collection.length === 0" type="info") Empty collection
+        v-alert(v-else :value="collection.length === 0" type="info") Empty collection
 </template>
 
 <script>
@@ -24,7 +24,7 @@
     data () {
       return {
         loading: true,
-        collection: [],
+        fbCollection: [],
         search: '' // TODO search param in schema file
       }
     },
@@ -35,6 +35,13 @@
       }
     },
     computed: {
+      collection () {
+        return sortCollection(this.schema.collectionView.default.sort,
+          filterCollection(this.schema.collectionView.default.filters, this.fbCollection))
+          .map(item => {
+            return addComputedValues(this.schema, item)
+          })
+      },
       filteredList () {
         if (!_.isEmpty(this.collection)) {
           return this.collection.filter(doc => {
@@ -53,14 +60,14 @@
         return this.schema.collectionView[this.viewName || 'default']
       }
     },
+    firestore () {
+      return {
+        fbCollection: firebase.firestore().collection(this.schema.collection)
+      }
+    },
     mounted () {
-      this.$bind('collection', firebase.firestore().collection(this.schema.collection))
+      this.$bind('fbCollection', firebase.firestore().collection(this.schema.collection))
         .then((col) => {
-          this.collection = sortCollection(this.schema.collectionView.default.sort,
-            filterCollection(this.schema.collectionView.default.filters, col))
-            .map(item => {
-              return addComputedValues(this.schema, item)
-            })
           this.loading = false
         })
         .catch((error) => {

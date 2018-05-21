@@ -227,6 +227,11 @@
         }
       }
     },
+    firestore () {
+      return {
+        fbDoc: firebase.firestore().collection(this.schema.collection).doc(this.id)
+      }
+    },
     mounted () {
       this.$bind('fbDoc', firebase.firestore().collection(this.schema.collection).doc(this.id))
         .then((doc) => {

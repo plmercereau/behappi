@@ -73,37 +73,35 @@ Vue.filter('labelEnum', function (value, enumeration) {
   }
 })
 
-firebase.initializeApp(config)
-firebase.auth().onAuthStateChanged((user) => {
-  if (!app) {
-    if (user) {
-      store.dispatch('autoSignIn', user)
-    }
-    app = new Vue({
-      el: '#app',
-      router,
-      store,
-      template: '<App/>',
-      components: {App}
-    })
-  }
-})
+function initApp (withError = false) {
+  let error = withError ? {data: {error: withError}} : {}
+  app = new Vue({
+    el: '#app',
+    router,
+    store,
+    ...error,
+    template: '<App/>',
+    components: {App}
+  })
+}
 
-// firebase.firestore().enablePersistence()
-//   .then(() => {
-//     // Initialize Cloud Firestore through firebase
-//     // const rightDB = firebase.firestore()
-//     // console.log(rightDB)
-//   })
-//   .catch((err) => {
-//     if (err.code === 'failed-precondition') {
-//       // Multiple tabs open, persistence can only be enabled
-//       // in one tab at a a time.
-//       console.log('failed-precondition')
-//     } else if (err.code === 'unimplemented') {
-//       // The current browser does not support all of the
-//       // features required to enable persistence
-//       console.log('unimplemented')
-//     }
-//   })
-// export const db = firebase.firestore()
+firebase.initializeApp(config)
+firebase.firestore().enablePersistence()
+  .then(() => {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (!app) {
+        if (user) {
+          store.dispatch('autoSignIn', user)
+        }
+        initApp()
+      }
+    })
+  })
+  .catch((err) => {
+    if (err.code === 'failed-precondition') {
+      // Multiple tabs open, persistence can only be enabled in one tab at a a time.
+      initApp('BeHappI only works on one single tab')
+    } else if (err.code === 'unimplemented') {
+      initApp('Offline mode is not supported by this browser')
+    }
+  })
