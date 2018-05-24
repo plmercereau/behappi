@@ -93,7 +93,7 @@
                   create-button(v-for="name in view.sections[sectionName].read",
                     :key="`create-button-${name}`"
                     fab,
-                    v-if="schema.properties[name].create && (schema.properties[name].component ==='card' || schema.properties[name].component ==='list')",
+                    v-if="schema.properties[name].create && (schema.properties[name].component ==='card' || schema.properties[name].component ==='select')",
                     :parentData="doc", :propertyName="name", :parentSchema="schema")
                   div(v-for="name in view.sections[sectionName].read" v-if="doc[name]" :key="name")
                     div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].label || '' }}
