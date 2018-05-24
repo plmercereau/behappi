@@ -44,12 +44,12 @@ export var formMixin = {
               form[key] = form[key] && form[key].id
             }
           } else {
-            form[key] = form[key] && Object.keys(form[key]).map(id => {
+            form[key] = form[key] ? Object.keys(form[key]).map(id => {
               if (this.schema.properties[key].schema) {
                 let properyName = (this.schema.properties[key].schema.title && this.schema.properties[key].schema.title.property) || DEFAULT_CHIP_PROPERTY
                 return {value: id, text: form[key][id][properyName]}
               } else return id
-            })
+            }) : []
           }
           if (this.schema.properties[key].schema) {
             firebase.firestore().collection(this.schema.properties[key].schema.collection).get().then(snapshot => {
@@ -120,7 +120,7 @@ export var formMixin = {
                       ref = firebase.firestore().collection(schema.properties[key].schema.collection).doc(id)
                     }
                   }
-                  obj[ref.id] = ref
+                  obj[ref.id || id] = ref
                   return obj
                 }, {})
                 doc[key] && Object.keys(doc[key]).forEach(id => {

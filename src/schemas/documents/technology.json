@@ -16,12 +16,10 @@
   },
   "itemView": {
     "default": {
-      "sectionsOrder": ["main", "administration"],
+      "sectionsOrder": ["main"],
       "sections": {
         "main": {
-          "title": {
-            "property": "name"
-          },
+          "title": "Main",
           "read": ["name", "description"],
           "edit": ["name", "description"]
         }

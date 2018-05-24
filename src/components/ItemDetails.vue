@@ -15,35 +15,33 @@
         loading(v-if="loading")
         template(v-else)
           v-tabs(v-model="tab")
-            v-tab(v-for="sectionName in view.sectionsOrder" :key="sectionName" v-show="isActiveTab(sectionName)") {{view.sections[sectionName].title}}
+            v-tab(v-for="sectionName in view.sectionsOrder" :key="'tab-'+sectionName" v-show="isActiveTab(sectionName)") {{view.sections[sectionName].title}}
           v-tabs-items(v-model="tab")
-            v-tab-item(v-for="sectionName in view.sectionsOrder" :key="sectionName")
+            v-tab-item(v-for="sectionName in view.sectionsOrder" :key="'tab-item-'+sectionName")
               v-card
                 v-card-text(v-if="editToggle")
                   form(novalidate @submit.prevent="saveItem")
                     template(v-for="name in view.sections[sectionName].edit")
                       div(v-if="schema.properties[name].type==='string'" class="caption") {{schema.properties[name].label || '' }}
                         v-text-field(
-                          autofocus,
                           v-model="form[name]",
                           :id="'form-' + name",
-                          :label="schema.properties[name].placeholder",
+                          :label="schema.properties[name].placeholder || schema.properties[name].label",
                           v-validate="schema.properties[name].validation",
                           :doc-vv-name="'form-' + name")
                         <!--TODO required, doc-vv-name-->
-                      div(v-if="schema.properties[name].type==='collection' && schema.properties[name].component!=='card' && schema.properties[name].unique") {{schema.properties[name].label || '' }}
+                      div(v-else-if="schema.properties[name].type==='collection' && (schema.properties[name].component==='dropdown' || schema.properties[name].component==='chip') && schema.properties[name].unique") {{schema.properties[name].label || '' }}
                         v-select(
-                          autofocus,
                           :chips="schema.properties[name].component === 'chip'",
                           :autocomplete="schema.properties[name].autocomplete",
                           v-model="form[name]",
                           :items="form[name+'Collection']"
-                          :label="schema.properties[name].placeholder",
+                          :label="schema.properties[name].placeholder || schema.properties[name].label",
                           single-line)
-                      div(v-if="schema.properties[name].type==='collection' && schema.properties[name].component!=='card' && !schema.properties[name].unique") {{schema.properties[name].label || '' }}
+                        <!-- TODO merge above and below -->
+                      div(v-else-if="schema.properties[name].type==='collection' && (schema.properties[name].component==='dropdown' || schema.properties[name].component==='chip') && !schema.properties[name].unique") {{schema.properties[name].label || '' }}
                         v-select(
                         multiple,
-                        autofocus,
                         :tags="exists(schema.properties[name].create)",
                         :return-object="exists(schema.properties[name].create)",
                         :chips="schema.properties[name].component === 'chip'",
@@ -51,17 +49,21 @@
                         :autocomplete="schema.properties[name].autocomplete",
                         v-model="form[name]",
                         :items="form[name+'Collection']"
-                        :label="schema.properties[name].placeholder",
+                        :label="schema.properties[name].placeholder || schema.properties[name].label",
                         single-line)
-                      v-container(v-if="schema.properties[name].type==='location'", fluid ,grid-list-md)
+                      div(v-else-if="schema.properties[name].type==='collection' && schema.properties[name].component==='select' && !schema.properties[name].unique") {{schema.properties[name].label || '' }}
+                        v-checkbox(v-for="item in form[name+'Collection']" :key="item.value" :label="item.text" :value="item.value" v-model="form[name]")
+                      div(v-else-if="schema.properties[name].type==='collection' && schema.properties[name].component==='select' && schema.properties[name].unique") {{schema.properties[name].label || '' }}
+                        v-radio-group(v-model="form[name]")
+                          v-radio(v-for="item in form[name+'Collection']" :key="item.value" :label="item.text" :value="item.value")
+                      v-container(v-else-if="schema.properties[name].type==='location'", fluid ,grid-list-md)
                         v-layout(row, wrap)
                           v-flex(d-flex xs12 sm6 md4)
                             v-container(fluid)
                               v-layout(row)
                                 v-flex
-                                  div(class="caption") {{schema.properties[name].placeholder}}
+                                  div(class="caption") {{schema.properties[name].placeholder || schema.properties[name].label}}
                                   v-text-field(
-                                  autofocus
                                   type="number"
                                   v-model.number="form['reported'+name].lat",
                                   :id="'form-' + name + '-latitude'",
@@ -70,7 +72,6 @@
                                   @change="updateMapCenter(name)",
                                   :doc-vv-name="'form-' + name + '-latitude'")
                                   v-text-field(
-                                  autofocus
                                   type="number"
                                   v-model.number="form['reported'+name].lng",
                                   :id="'form-' + name + '-latitude'",
@@ -88,7 +89,7 @@
                             :map-type-id="mapType"
                             style="width: 480px; height: 300px")
                               gmap-marker(v-if="schema.properties[name].markers && schema.properties[name].markers.self" :position="form['reported'+name]")
-                v-card-text(v-if="!editToggle")
+                v-card-text(v-else)
                   create-button(v-for="name in view.sections[sectionName].read",
                     :key="`create-button-${name}`"
                     fab,
@@ -98,27 +99,27 @@
                     div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].label || '' }}
                     div(class="subheading")
                       div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? doc[name]: doc[name] | labelEnum(schema.properties[name].enum)}}
-                      div(v-if="schema.properties[name].type === 'date'") {{doc[name] | moment('DD-MM-YYYY HH:mm:ss')}}
-                      router-link(v-else-if="schema.properties[name].type === 'collection' && schema.properties[name].schema && schema.properties[name].unique" :to="`/${schema.properties[name].schema.name}/${doc[name].id}`") {{ title(name) }}
-                      div(v-else-if="schema.properties[name].type === 'collection' && !schema.properties[name].schema && schema.properties[name].unique") {{ schema.properties[name].options[doc[name]] }}
-                      template(v-else-if="schema.properties[name].type === 'collection' && schema.properties[name].schema && !schema.properties[name].unique")
-                        v-container(v-if="schema.properties[name].component ==='card'" fluid, grid-list-md)
+                      div(v-else-if="schema.properties[name].type === 'date'") {{doc[name] | moment('DD-MM-YYYY HH:mm:ss')}}
+                      template(v-else-if="schema.properties[name].type === 'collection'")
+                        template(v-if="schema.properties[name].unique")
+                          v-container(v-if="schema.properties[name].component ==='card'" fluid, grid-list-md)
+                            v-layout(row, wrap)
+                              v-flex(dd-flex xs12 sm6 md4, v-for="doc in sortedCollection(name)" :key="doc.id")
+                                card-item(:schema="schema.properties[name].schema", :doc="doc")
+                          router-link(v-else-if="doc[name].id" :to="`/${schema.properties[name].schema.name}/${doc[name].id}`") {{title(name)}}
+                          div(v-else) {{title(name)}}
+                        v-list(v-else-if="schema.properties[name].component === 'dropdown'")
+                          <!--TODO merge two components below-->
+                          list-item(v-if="schema.properties[name].schema" v-for="doc in sortedCollection(name)" :schema="schema.properties[name].schema" :key="doc.id", :property="schema.properties[name]", :doc="doc")
+                          v-list-tile(v-else v-for="(item, index) in sortedCollection(name)" :key="name + index")
+                            v-list-tile-content {{title(name, item)}}
+                        v-chip(v-else-if="schema.properties[name].component === 'chip' || schema.properties[name].component === 'select'",
+                          v-for="(val, index) in sortedCollection(name)",
+                          :key="name + index") {{title(name, val)}}
+                        v-container(v-else-if="schema.properties[name].component === 'card'" fluid, grid-list-md)
                           v-layout(row, wrap)
                             v-flex(dd-flex xs12 sm6 md4, v-for="doc in sortedCollection(name)" :key="doc.id")
                               card-item(:schema="schema.properties[name].schema", :doc="doc")
-                        v-chip(v-else-if="schema.properties[name].component ==='chip'",
-                          v-for="doc in sortedCollection(name)",
-                          :key="doc.id") {{title(name)}}
-                        v-list(v-else)
-                          list-item(v-for="doc in sortedCollection(name)" :key="doc.id", :property="schema.properties[name]", :doc="doc")
-                      div(v-else-if="schema.properties[name].type === 'collection' && !schema.properties[name].schema && !schema.properties[name].unique")
-                        v-chip(v-if="schema.properties[name].component ==='chip'",
-                          v-for="val in sortedCollection(name)",
-                          :key="name+val") {{schema.properties[name].options[val]}}
-                        v-list(v-if="schema.properties[name].component ==='list'")
-                          v-list-tile(v-for="val in sortedCollection(name)" :key="name+val")
-                            v-list-tile-content
-                              v-list-tile-title(primary-title) {{schema.properties[name].options[val]}}
                       v-card(v-else-if="schema.properties[name].type === 'location'")
                         v-card-media
                           map-image(
@@ -150,10 +151,14 @@
     methods: {
       sortedCollection (collectionName) {
         // TODO other than string compare
-        let sortProperties = this.schema.properties[collectionName].schema.collectionView.default.sort
         let collection = []
         if (this.schema.properties[collectionName].schema) {
-          collection = sortCollection(sortProperties, this.doc[collectionName])
+          let sortProperties = _.get(this.schema.properties[collectionName].schema, 'collectionView.default.sort')
+          if (sortProperties) {
+            collection = sortCollection(sortProperties, this.doc[collectionName])
+          } else {
+            collection = this.doc[collectionName]
+          }
         } else {
           // TODO for enum
           collection = Object.keys(this.doc[collectionName]).map(id => id)
@@ -167,13 +172,13 @@
         let props = this.editToggle ? this.view.sections[sectionName].edit : this.view.sections[sectionName].read
         let show = false
         if (this.editToggle) {
-          props.map(propName => {
+          props && props.map(propName => {
             if (this.schema.properties[propName].component !== 'card' || !this.schema.properties[propName].create) {
               show = true
             }
           })
         } else {
-          props.map(propName => {
+          props && props.map(propName => {
             if (!_.isEmpty(this.doc[propName]) || (this.schema.properties[propName].create && (this.schema.properties[propName].component === 'card' || this.schema.properties[propName].component === 'list'))) {
               show = true
             }
@@ -196,11 +201,15 @@
           console.log(error)
         })
       },
-      title (propertyName) {
-        let fromRootDoc = Boolean(this.schema.properties[propertyName].title)
-        let titleString = fromRootDoc ? this.schema.properties[propertyName].title : this.schema.properties[propertyName].schema.title
-        let titleTemplate = _.template(titleString)
-        return _.isObject(this.doc) && this.doc.id ? titleTemplate(fromRootDoc ? this.doc : this.doc[propertyName]) : ''
+      title (propertyName, value) {
+        if (this.schema.properties[propertyName].schema) { // TODO a bit messy and not correct for options
+          let fromRootDoc = Boolean(this.schema.properties[propertyName].title)
+          let titleString = fromRootDoc ? this.schema.properties[propertyName].title : _.get(this.schema.properties[propertyName], 'schema.title')
+          let titleTemplate = _.template(titleString)
+          return titleTemplate(value ? this.doc[propertyName][value.id || value] : (fromRootDoc ? this.doc : this.doc[propertyName]))
+        } else if (this.schema.properties[propertyName].options) {
+          return value ? this.schema.properties[propertyName].options[value.id || value] : this.schema.properties[propertyName].options[this.doc[propertyName]]
+        } else return this.doc[propertyName]
       }
     },
     computed: {
@@ -242,6 +251,9 @@
     },
     deactivated () {
       this.editToggle = false
+    },
+    activated () {
+      this.reset()
     },
     watch: {
       editToggle () {

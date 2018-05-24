@@ -19,9 +19,7 @@
       "sectionsOrder": ["main", "administration"],
       "sections": {
         "main": {
-          "title": {
-            "property": "name"
-          },
+          "title": "Main",
           "read": ["name", "description"],
           "edit": ["name", "description"]
         }

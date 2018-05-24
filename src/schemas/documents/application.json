@@ -14,7 +14,7 @@
     },
     "applicationUsages": {
       "type": "collection",
-      "component": "list",
+      "component": "dropdown",
       "schemaName": "applicationUsage",
       "label": "Application usages",
       "title": "${orgUnit.name}",
@@ -50,7 +50,7 @@
     },
     "dataStructure": {
       "type": "collection",
-      "component": "chip",
+      "component": "select",
       "label": "Data structure",
       "placeholder": "Data structure: (more than one possible)",
       "unique": false,
@@ -164,7 +164,7 @@
     },
     "supportOrgUnit": {
       "type": "collection",
-      "component": "select",
+      "component": "dropdown",
       "schemaName": "orgUnit",
       "visible": [[":supported", "==", true]],
       "label": "Support contact",
@@ -195,8 +195,8 @@
       "sections": {
         "main": {
           "title": "General",
-          "read": ["name", "medicalActivities"],
-          "edit": ["name", "medicalActivities"]
+          "read": ["name", "primaryPurpose", "medicalActivities", "linkTool", "userGuide", "technicalDocumentation", "dataStructure", "personalIdentifiableInformation", "analytics", "sharing", "contentStandardisationLevel", "languages", "technologies", "comment", "applicationStatus", "supported", "supportOrgUnit"],
+          "edit": ["name", "primaryPurpose", "medicalActivities", "linkTool", "userGuide", "technicalDocumentation", "dataStructure", "personalIdentifiableInformation", "analytics", "sharing", "contentStandardisationLevel", "languages", "technologies", "comment", "applicationStatus", "supported", "supportOrgUnit"]
         },
         "usages": {
           "title": "Usages",

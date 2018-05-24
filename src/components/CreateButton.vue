@@ -14,7 +14,7 @@
               v-if="schema.properties[name].type==='string'"
               v-model="form[name]",
               :id="'form-' + name",
-              :label="schema.properties[name].placeholder",
+              :label="schema.properties[name].placeholder || schema.properties[name].label",
               v-validate="schema.properties[name].validation",
               :data-vv-name="'form-' + name")
               <!--TODO required, data-vv-name-->
@@ -23,7 +23,7 @@
               v-if="schema.properties[name].type==='collection'"
               v-model="form[name]",
               :items="form[name+'Collection']"
-              :label="schema.properties[name].placeholder",
+              :label="schema.properties[name].placeholder || schema.properties[name].label",
               single-line)
         v-card-actions
           v-btn(color="primary" flat @click.stop="$validator.validateAll() && create()") Create

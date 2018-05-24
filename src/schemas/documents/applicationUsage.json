@@ -34,7 +34,7 @@
     },
     "supportOrgUnit": {
       "type": "collection",
-      "component": "select",
+      "component": "dropdown",
       "schemaName": "orgUnit",
       "visible": [[":supported", "==", true]],
       "label": "Support contact",
@@ -60,8 +60,8 @@
       "sections": {
         "main": {
           "title": "Usage",
-          "read": ["application", "orgUnit"],
-          "edit": []
+          "read": ["application", "orgUnit", "supported", "supportOrgUnit", "medicalActivities"],
+          "edit": ["supported", "supportOrgUnit", "medicalActivities"]
         }
       }
     }

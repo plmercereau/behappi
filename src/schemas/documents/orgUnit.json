@@ -19,7 +19,7 @@
     },
     "parent": {
       "type": "collection",
-      "component": "select",
+      "component": "dropdown",
       "schemaName": "orgUnit",
       "label": "Parent",
       "placeholder": "Enter the parent organisation unit",
@@ -43,7 +43,7 @@
     },
     "applicationUsages": {
       "type": "collection",
-      "component": "list",
+      "component": "dropdown",
       "schemaName": "applicationUsage",
       "label": "Application usages",
       "title": "${application.name}",

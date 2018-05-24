@@ -36,9 +36,7 @@
       "sections": {
         "administration": {
           "type": "properties",
-          "title": {
-            "text": "Administration"
-          },
+          "title": "Administration",
           "read": ["createdBy", "createdAt", "updatedBy", "updatedAt"]
         }
       }
