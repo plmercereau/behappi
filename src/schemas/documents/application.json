@@ -201,7 +201,8 @@
         "usages": {
           "title": "Usages",
           "read": ["applicationUsages"],
-          "edit": []
+          "edit": [],
+          "create": "applicationUsages"
         }
       }
     }

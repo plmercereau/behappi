@@ -91,7 +91,8 @@
         "applications": {
           "title": "Applications",
           "read": ["applicationUsages"],
-          "edit": []
+          "edit": [],
+          "create": "applicationUsages"
         }
       }
     }

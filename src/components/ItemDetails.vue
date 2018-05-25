@@ -14,8 +14,15 @@
               v-btn(color="primary" flat @click.stop="deleteDialogToggle=false") Cancel
         loading(v-if="loading")
         template(v-else)
+          create-button(
+            v-for="sectionName in view.sectionsOrder",
+            :key="'actions-' + sectionName",
+            v-if="!editToggle && view.sections[sectionName].create"
+            :showButton="activeTab === sectionName",
+            fab,
+            :parentData="doc", :propertyName="view.sections[sectionName].create", :parentSchema="schema")
           v-tabs(v-model="tab")
-            v-tab(v-for="sectionName in view.sectionsOrder" :key="'tab-'+sectionName" v-show="isActiveTab(sectionName)") {{view.sections[sectionName].title}}
+            v-tab(v-for="sectionName in view.sectionsOrder" :key="'tab-'+sectionName" v-show="isActiveTab(sectionName)") {{sectionTitle(sectionName)}}
           v-tabs-items(v-model="tab")
             v-tab-item(v-for="sectionName in view.sectionsOrder" :key="'tab-item-'+sectionName")
               v-card
@@ -84,11 +91,6 @@
                             style="width: 480px; height: 300px")
                               gmap-marker(v-if="schema.properties[name].markers && schema.properties[name].markers.self" :position="form['reported'+name]")
                 v-card-text(v-else)
-                  create-button(v-for="name in view.sections[sectionName].read",
-                    :key="`create-button-${name}`"
-                    fab,
-                    v-if="schema.properties[name].create && (schema.properties[name].component ==='card' || schema.properties[name].component ==='select')",
-                    :parentData="doc", :propertyName="name", :parentSchema="schema")
                   div(v-for="name in view.sections[sectionName].read" v-if="doc[name]" :key="name")
                     div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].label || '' }}
                     div(class="subheading")
@@ -172,13 +174,12 @@
             }
           })
         } else {
-          props && props.map(propName => {
-            if (!_.isEmpty(this.doc[propName]) || (this.schema.properties[propName].create && (this.schema.properties[propName].component === 'card' || this.schema.properties[propName].component === 'list'))) {
-              show = true
-            }
-          })
+          show = true
         }
         return show
+      },
+      fabActions (sectionName) { // TODO
+        return sectionName
       },
       saveItem () { // TODO form action instead of $validator.validateAll() && saveItem()
         let docRef = firebase.firestore().collection(this.schema.collection).doc(this.id)
@@ -205,12 +206,17 @@
         } else if (this.schema.properties[propertyName].options) {
           return value ? this.schema.properties[propertyName].options[value.id || value] : this.schema.properties[propertyName].options[this.doc[propertyName]]
         } else return this.doc[propertyName]
+      },
+      sectionTitle (tabName) {
+        return _.isObject(this.doc) && this.doc.id ? _.template(this.view.sections[tabName].title)(this.doc) : ''
       }
     },
     computed: {
       docTitle () {
-        let titleTemplate = _.template(this.schema.title)
-        return _.isObject(this.doc) && this.doc.id ? titleTemplate(this.doc) : ''
+        return _.isObject(this.doc) && this.doc.id ? _.template(this.schema.title)(this.doc) : ''
+      },
+      activeTab () {
+        return this.view.sectionsOrder[Number(this.tab)]
       },
       doc () {
         return addComputedValues(this.schema, this.fbDoc)

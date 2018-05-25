@@ -28,7 +28,7 @@
   },
   "itemView": {
     "default": {
-      "sectionsOrder": ["main", "projects"],
+      "sectionsOrder": ["main", "projects", "applications"],
       "sections": {
         "main": {
           "subtitles": ["children"],
@@ -38,7 +38,7 @@
         "projects": {
           "title": "Projects",
           "read": ["children"],
-          "edit": ["children"]
+          "create": "children"
         }
       }
     }

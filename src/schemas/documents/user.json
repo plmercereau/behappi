@@ -24,9 +24,7 @@
       "sectionsOrder": ["main", "administration"],
       "sections": {
         "main": {
-          "title": {
-            "property": "name"
-          },
+          "title": "${email}",
           "read": ["name", "email"],
           "edit": ["name", "email"]
         }

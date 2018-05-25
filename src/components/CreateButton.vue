@@ -1,8 +1,9 @@
 <template lang="pug">
   div
-    v-btn(:fab="isFab" :fixed="isFab" :dark="isFab" :bottom="isFab" :right="isFab" :color="isFab ? 'secondary': 'primary'" @click.stop="edit")
-      v-icon(v-if="isFab") add
-      slot
+    v-fab-transition
+      v-btn(v-show="showButton" :fab="isFab" :fixed="isFab" :dark="isFab" :bottom="isFab" :right="isFab" :color="isFab ? 'secondary': 'primary'" @click.stop="edit")
+        v-icon(v-if="isFab") add
+        slot
     v-dialog(v-model="editToggle" max-width="500px")
       v-card
         v-card-title {{ createParams.title || schema.title || 'Create'}}
@@ -35,7 +36,13 @@
   import {addDocument} from '../schemas'
   import {formMixin} from '../mixins'
   export default {
-    props: ['parentSchema', 'propertyName', 'parentData', 'fab'],
+    props: {
+      parentSchema: {type: Object},
+      propertyName: {type: String},
+      parentData: {type: Object},
+      fab: {default: false},
+      showButton: {default: true}
+    },
     name: 'CreateButton',
     mixins: [formMixin],
     methods: {
