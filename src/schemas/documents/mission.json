@@ -4,11 +4,10 @@
   "mixins": ["orgUnit"],
   "properties": {
     "name": {
-      "placeholder": "Please enter the name of the mission"
+      "label": "Name of the mission"
     },
     "location": {
       "label": "Area of the mission",
-      "placeholder": "Please give the area of the mission",
       "markers": {
         "self": false,
         "collection": "children",
@@ -17,8 +16,7 @@
     },
     "children" : {
       "schemaName": "project",
-      "label": false,
-      "placeholder": "Projects of the mission"
+      "label": "Projects of the mission"
     },
     "nbProjects": {
       "type": "computed",
@@ -27,8 +25,7 @@
     },
     "dateTest": {
       "type": "date",
-      "label": "Test date",
-      "placeholder": "Pick a date for the test"
+      "label": "Test date"
     }
   },
   "itemView": {

@@ -8,7 +8,6 @@
     "name": {
       "type": "string",
       "label": "Name",
-      "placeholder": "Please enter the name of the organisation unit",
       "validation": {
         "required": true,
         "min": 3
@@ -17,7 +16,6 @@
     "code": {
       "type": "string",
       "label": "Financial Code",
-      "placeholder": "Please enter the code of the organisation unit",
       "validation": {
         "required": true,
         "min": 3
@@ -28,7 +26,6 @@
       "component": "dropdown",
       "schemaName": "orgUnit",
       "label": "Parent",
-      "placeholder": "Enter the parent organisation unit",
       "autocomplete": true,
       "unique": true,
       "create": false
@@ -38,7 +35,6 @@
       "component": "card",
       "schemaName": "orgUnit",
       "label": "Children organisation units",
-      "placeholder": "",
       "unique": false,
       "create": {
         "title": "New org Unit",
@@ -53,7 +49,6 @@
       "schemaName": "applicationUsage",
       "label": "Application usages",
       "title": "${application.name}",
-      "placeholder": "Usages of application in this org unit",
       "autocomplete": true,
       "unique": false,
       "create": {
@@ -64,8 +59,7 @@
     },
     "location": {
       "type": "location",
-      "label": "Location",
-      "placeholder": "Enter the location of the org Unit",
+      "label": "Location of the Org Unit",
       "zoom": "zoom",
       "markers": {
         "self": true
