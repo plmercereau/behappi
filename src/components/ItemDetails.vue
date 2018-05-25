@@ -30,34 +30,19 @@
               v-card
                 v-card-text(v-if="editToggle")
                   form(novalidate @submit.prevent="saveItem")
-                    div(v-for="name in view.sections[sectionName].edit" class="caption") {{schema.properties[name].label || '' }}
+                    template(v-for="name in view.sections[sectionName].edit")
                       v-text-field(v-if="schema.properties[name].type==='string'"
                         v-model="form[name]",
                         :id="'form-' + name",
-                        :label="schema.properties[name].placeholder || schema.properties[name].label",
+                        :label="schema.properties[name].label",
                         :required="schema.properties[name].validation && schema.properties[name].validation.required",
                         v-validate.initial="schema.properties[name].validation",
                         :error-messages="errors.collect(name)",
                         :data-vv-name="name")
-                      v-menu(v-else-if="schema.properties[name].type==='date'",
-                      :close-on-content-click="false",
-                      v-model="TODO",
-                      :nudge-right="40",
-                      lazy,
-                      transition="scale-transition",
-                      offset-y,
-                      full-width,
-                      max-width="290px",
-                      min-width="290px")
-                        v-text-field(slot="activator",
-                        v-model="computedDateFormatted",
-                        label="Date (read only text field)",
-                        hint="MM/DD/YYYY format",
-                        persistent-hint,
-                        prepend-icon="event",
-                        readonly)
-                        v-date-picker(v-model="form[name]", no-title, @input="menu2 = false")
-                      template(v-else-if="schema.properties[name].type==='collection'")
+                      date-field(v-else-if="schema.properties[name].type==='date'",
+                        v-model="form[name]",
+                        :label="schema.properties[name].label")
+                      div(v-else-if="schema.properties[name].type==='collection'" class="caption") {{schema.properties[name].label || '' }}
                         template(v-if="schema.properties[name].component==='select'")
                           v-radio-group(v-if="schema.properties[name].unique",
                             v-model="form[name]",
@@ -78,29 +63,27 @@
                               type="checkbox",
                               v-model="form[name]")
                         v-select(v-else,
-                        :multiple="!schema.properties[name].unique",
-                        :tags="(!exists(schema.properties[name].unique) || !schema.properties[name].unique) && exists(schema.properties[name].create)",
-                        return-object,
-                        :chips="schema.properties[name].component === 'chip' && !schema.properties[name].unique",
-                        :deletable-chips="schema.properties[name].component === 'chip'",
-                        :autocomplete="exists(schema.properties[name].autocomplete) ? schema.properties[name].autocomplete : true",
-                        v-model="form[name]",
-                        :items="form[name+'Collection']"
-                        :label="schema.properties[name].placeholder || schema.properties[name].label",
-                        :required="schema.properties[name].validation && schema.properties[name].validation.required",
-                        v-validate.initial="schema.properties[name].validation",
-                        :error-messages="errors.collect(name)",
-                        :data-vv-name="name",
-                        single-line)
-                        div {{form[name]}}
+                          :multiple="!schema.properties[name].unique",
+                          :tags="(!exists(schema.properties[name].unique) || !schema.properties[name].unique) && exists(schema.properties[name].create)",
+                          return-object,
+                          :chips="schema.properties[name].component === 'chip' && !schema.properties[name].unique",
+                          :deletable-chips="schema.properties[name].component === 'chip'",
+                          :autocomplete="exists(schema.properties[name].autocomplete) ? schema.properties[name].autocomplete : true",
+                          v-model="form[name]",
+                          :items="form[name+'Collection']"
+                          :label="schema.properties[name].unique ? (schema.properties[name].create ? 'select an option, or type a new one' : 'select an option') : (schema.properties[name].create ? 'select any existing options, or type new ones' : 'select one or more existing options')",
+                          :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                          v-validate.initial="schema.properties[name].validation",
+                          :error-messages="errors.collect(name)",
+                          :data-vv-name="name",
+                          single-line)
                       v-container(v-else-if="schema.properties[name].type==='location'", fluid ,grid-list-md)
-                        div() ==={{((schema.properties[name].validation && schema.properties[name].validation.required) ? 'required|' : '')+'decimal'}}===
                         v-layout(row, wrap)
                           v-flex(d-flex xs12 sm6 md4)
                             v-container(fluid)
                               v-layout(row)
                                 v-flex
-                                  div(class="caption") {{schema.properties[name].placeholder || schema.properties[name].label}}{{schema.properties[name].required && '*'}}
+                                  div(class="caption") {{schema.properties[name].label}}{{schema.properties[name].required && '*'}}
                                   v-text-field(
                                   type="number"
                                   v-model.number="form['reported'+name].lat",

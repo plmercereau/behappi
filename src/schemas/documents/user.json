@@ -8,14 +8,12 @@
   "properties": {
     "name": {
       "type": "string",
-      "label": "Name",
-      "placeholder": "Please enter the name of the user",
+      "label": "Name of the user",
       "validation": "required|min:3"
     },
     "email": {
       "type": "string",
-      "label": "Email",
-      "placeholder": "Please enter the email of the user",
+      "label": "Email of the user",
       "validation": "required|min:3"
     }
   },

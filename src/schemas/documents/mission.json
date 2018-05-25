@@ -24,6 +24,11 @@
       "type": "computed",
       "aggregation": "count",
       "path": "children"
+    },
+    "dateTest": {
+      "type": "date",
+      "label": "Test date",
+      "placeholder": "Pick a date for the test"
     }
   },
   "itemView": {
@@ -32,8 +37,8 @@
       "sections": {
         "main": {
           "subtitles": ["children"],
-          "read": ["name", "location"],
-          "edit": ["name", "location"]
+          "read": ["name", "code", "dateTest", "location"],
+          "edit": ["name", "code", "dateTest", "location"]
         },
         "projects": {
           "title": "Projects",

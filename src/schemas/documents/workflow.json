@@ -5,8 +5,7 @@
     "status": {
       "type": "collection",
       "component": "select",
-      "label": "Status",
-      "placeholder": "Status of the document",
+      "label": "Status of the document",
       "unique": true,
       "create": false,
       "options": {

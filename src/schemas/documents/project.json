@@ -4,18 +4,16 @@
   "mixins": ["orgUnit"],
   "properties": {
     "name": {
-      "placeholder": "Please enter the name of the project"
+      "label": "Name of the project"
     },
     "parent": {
       "schemaName": "mission",
       "label": "Mission",
-      "title": "${parent.name}",
-      "placeholder": "Enter the mission of the project"
+      "title": "${parent.name}"
     },
     "location": {
       "type": "location",
-      "label": "Location",
-      "placeholder": "Enter the location of the project"
+      "label": "Location of the project"
     }
   },
   "itemView": {
@@ -23,8 +21,8 @@
       "sectionsOrder": ["main", "administration"],
       "sections": {
         "main": {
-          "read": ["name", "parent", "location"],
-          "edit": ["name", "parent", "location"]
+          "read": ["name", "code", "parent", "location"],
+          "edit": ["name", "code", "parent", "location"]
         }
       }
     }
