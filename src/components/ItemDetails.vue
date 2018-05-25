@@ -39,6 +39,24 @@
                         v-validate.initial="schema.properties[name].validation",
                         :error-messages="errors.collect(name)",
                         :data-vv-name="name")
+                      v-menu(v-else-if="schema.properties[name].type==='date'",
+                      :close-on-content-click="false",
+                      v-model="TODO",
+                      :nudge-right="40",
+                      lazy,
+                      transition="scale-transition",
+                      offset-y,
+                      full-width,
+                      max-width="290px",
+                      min-width="290px")
+                        v-text-field(slot="activator",
+                        v-model="computedDateFormatted",
+                        label="Date (read only text field)",
+                        hint="MM/DD/YYYY format",
+                        persistent-hint,
+                        prepend-icon="event",
+                        readonly)
+                        v-date-picker(v-model="form[name]", no-title, @input="menu2 = false")
                       template(v-else-if="schema.properties[name].type==='collection'")
                         template(v-if="schema.properties[name].component==='select'")
                           v-radio-group(v-if="schema.properties[name].unique",

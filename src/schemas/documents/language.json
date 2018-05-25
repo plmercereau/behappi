@@ -7,7 +7,7 @@
   "properties": {
     "code": {
       "type": "string",
-      "label": "Name"
+      "label": "Code"
     },
     "name": {
       "type": "string",
@@ -19,9 +19,7 @@
       "sectionsOrder": ["main", "administration"],
       "sections": {
         "main": {
-          "title": {
-            "property": "name"
-          },
+          "title": "${name}",
           "read": ["code", "name"],
           "edit": ["code", "name"]
         }
