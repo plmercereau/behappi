@@ -4,6 +4,9 @@ import _ from 'lodash'
 import {DEFAULT_CHIP_PROPERTY, DEFAULT_LOCATION, DEFAULT_ZOOM} from '../config'
 
 export var formMixin = {
+  $_veeValidate: {
+    validator: 'new'
+  },
   data () {
     return {
       form: {},
@@ -71,6 +74,7 @@ export var formMixin = {
         }
       })
       this.form = Object.assign({}, this.form, form)
+      this.$validator.validateAll()
     },
     constructDataWithProperties (maskedProperties) {
       let cleanedForm = {}

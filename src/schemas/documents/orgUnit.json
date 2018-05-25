@@ -9,13 +9,19 @@
       "type": "string",
       "label": "Name",
       "placeholder": "Please enter the name of the organisation unit",
-      "validation": "required|min:3"
+      "validation": {
+        "required": true,
+        "min": 3
+      }
     },
     "code": {
       "type": "string",
       "label": "Financial Code",
       "placeholder": "Please enter the code of the organisation unit",
-      "validation": "required|min:3"
+      "validation": {
+        "required": true,
+        "min": 3
+      }
     },
     "parent": {
       "type": "collection",

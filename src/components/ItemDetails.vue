@@ -3,7 +3,9 @@
     v-layout(row, align-center)
       v-flex(xs12)
         tool-bar(:title="docTitle", :actions="actions", :edit="editToggle")
-          v-btn(@click="saveItem()") Save
+          v-tooltip(bottom :disabled="errors.items.length === 0")
+            v-btn(slot="activator" @click="saveItem()" :disabled="errors.items.length > 0") Save
+            span You have to fill in all the form correctly before you can save the document
           v-btn(@click="reset") Reset
           v-btn(@click="cancel") Cancel
         v-dialog(v-model="deleteDialogToggle" max-width="500px")
@@ -33,17 +35,29 @@
                         v-model="form[name]",
                         :id="'form-' + name",
                         :label="schema.properties[name].placeholder || schema.properties[name].label",
-                        v-validate="schema.properties[name].validation",
-                        :doc-vv-name="'form-' + name")
+                        :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                        v-validate.initial="schema.properties[name].validation",
+                        :error-messages="errors.collect(name)",
+                        :data-vv-name="name")
                       template(v-else-if="schema.properties[name].type==='collection'")
                         template(v-if="schema.properties[name].component==='select'")
-                          v-radio-group(v-if="schema.properties[name].unique", v-model="form[name]")
+                          v-radio-group(v-if="schema.properties[name].unique",
+                            v-model="form[name]",
+                            :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                            v-validate.initial="schema.properties[name].validation",
+                            :error-messages="errors.collect(name)",
+                            :data-vv-name="name")
                             v-radio(v-for="item in form[name+'Collection']" :key="item.value" :label="item.text" :value="item.value")
                           v-checkbox(v-else,
                               v-for="item in form[name+'Collection']",
                               :key="name + (item.value || item)",
                               :label="item.text || schema.properties[name].options[item]",
+                              :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                              v-validate.initial="schema.properties[name].validation",
+                              :error-messages="errors.collect(name)",
+                              :data-vv-name="name",
                               :value="item.value || item",
+                              type="checkbox",
                               v-model="form[name]")
                         v-select(v-else,
                         :multiple="!schema.properties[name].unique",
@@ -55,31 +69,40 @@
                         v-model="form[name]",
                         :items="form[name+'Collection']"
                         :label="schema.properties[name].placeholder || schema.properties[name].label",
+                        :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                        v-validate.initial="schema.properties[name].validation",
+                        :error-messages="errors.collect(name)",
+                        :data-vv-name="name",
                         single-line)
                         div {{form[name]}}
                       v-container(v-else-if="schema.properties[name].type==='location'", fluid ,grid-list-md)
+                        div() ==={{((schema.properties[name].validation && schema.properties[name].validation.required) ? 'required|' : '')+'decimal'}}===
                         v-layout(row, wrap)
                           v-flex(d-flex xs12 sm6 md4)
                             v-container(fluid)
                               v-layout(row)
                                 v-flex
-                                  div(class="caption") {{schema.properties[name].placeholder || schema.properties[name].label}}
+                                  div(class="caption") {{schema.properties[name].placeholder || schema.properties[name].label}}{{schema.properties[name].required && '*'}}
                                   v-text-field(
                                   type="number"
                                   v-model.number="form['reported'+name].lat",
                                   :id="'form-' + name + '-latitude'",
                                   label="Latitude",
-                                  v-validate="",
-                                  @change="updateMapCenter(name)",
-                                  :doc-vv-name="'form-' + name + '-latitude'")
+                                  :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                                  :error-messages="errors.collect(name+ '-latitude')",
+                                  :data-vv-name="name+ '-latitude'",
+                                  v-validate.initial="((schema.properties[name].validation && schema.properties[name].validation.required) ? 'required|' : '')+'decimal'",
+                                  @change="updateMapCenter(name)")
                                   v-text-field(
                                   type="number"
                                   v-model.number="form['reported'+name].lng",
-                                  :id="'form-' + name + '-latitude'",
+                                  :id="'form-' + name + '-longitude'",
                                   label="Longitude",
-                                  v-validate="",
-                                  @change="updateMapCenter(name)",
-                                  :doc-vv-name="'form-' + name + '-latitude'")
+                                  :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                                  :error-messages="errors.collect(name+ '-longitude')",
+                                  v-validate.initial="((schema.properties[name].validation && schema.properties[name].validation.required) ? 'required|' : '')+'decimal'",
+                                  :data-vv-name="name + '-longitude'",
+                                  @change="updateMapCenter(name)")
                                   v-slider(label="Zoom" :max="20" v-model="form[schema.properties[name].zoom]")
                           v-flex(d-flex xs12 sm6 md8)
                             gmap-map(
@@ -181,14 +204,20 @@
       fabActions (sectionName) { // TODO
         return sectionName
       },
-      saveItem () { // TODO form action instead of $validator.validateAll() && saveItem()
-        let docRef = firebase.firestore().collection(this.schema.collection).doc(this.id)
-        let form = this.constructDataWithProperties(Object.keys(this.schema.properties))
-        if (!_.isEmpty(form)) {
-          updateDocument(docRef, form)
-        }
-        this.editToggle = false
-        this.reset()
+      saveItem () {
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            let docRef = firebase.firestore().collection(this.schema.collection).doc(this.id)
+            let form = this.constructDataWithProperties(Object.keys(this.schema.properties))
+            if (!_.isEmpty(form)) {
+              updateDocument(docRef, form)
+            }
+            this.editToggle = false
+            this.reset()
+          } else {
+            alert('Some inputs of the form are not valid. Please correct them before saving the document')
+          }
+        })
       },
       deleteItem () {
         firebase.firestore().collection(this.schema.collection).doc(this.id).delete().then(() => {
