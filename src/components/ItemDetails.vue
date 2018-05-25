@@ -21,41 +21,35 @@
               v-card
                 v-card-text(v-if="editToggle")
                   form(novalidate @submit.prevent="saveItem")
-                    template(v-for="name in view.sections[sectionName].edit")
-                      div(v-if="schema.properties[name].type==='string'" class="caption") {{schema.properties[name].label || '' }}
-                        v-text-field(
-                          v-model="form[name]",
-                          :id="'form-' + name",
-                          :label="schema.properties[name].placeholder || schema.properties[name].label",
-                          v-validate="schema.properties[name].validation",
-                          :doc-vv-name="'form-' + name")
-                        <!--TODO required, doc-vv-name-->
-                      div(v-else-if="schema.properties[name].type==='collection' && (schema.properties[name].component==='dropdown' || schema.properties[name].component==='chip') && schema.properties[name].unique") {{schema.properties[name].label || '' }}
-                        v-select(
-                          :chips="schema.properties[name].component === 'chip'",
-                          :autocomplete="schema.properties[name].autocomplete",
-                          v-model="form[name]",
-                          :items="form[name+'Collection']"
-                          :label="schema.properties[name].placeholder || schema.properties[name].label",
-                          single-line)
-                        <!-- TODO merge above and below -->
-                      div(v-else-if="schema.properties[name].type==='collection' && (schema.properties[name].component==='dropdown' || schema.properties[name].component==='chip') && !schema.properties[name].unique") {{schema.properties[name].label || '' }}
-                        v-select(
-                        multiple,
-                        :tags="exists(schema.properties[name].create)",
-                        :return-object="exists(schema.properties[name].create)",
-                        :chips="schema.properties[name].component === 'chip'",
+                    div(v-for="name in view.sections[sectionName].edit" class="caption") {{schema.properties[name].label || '' }}
+                      v-text-field(v-if="schema.properties[name].type==='string'"
+                        v-model="form[name]",
+                        :id="'form-' + name",
+                        :label="schema.properties[name].placeholder || schema.properties[name].label",
+                        v-validate="schema.properties[name].validation",
+                        :doc-vv-name="'form-' + name")
+                      template(v-else-if="schema.properties[name].type==='collection'")
+                        template(v-if="schema.properties[name].component==='select'")
+                          v-radio-group(v-if="schema.properties[name].unique", v-model="form[name]")
+                            v-radio(v-for="item in form[name+'Collection']" :key="item.value" :label="item.text" :value="item.value")
+                          v-checkbox(v-else,
+                              v-for="item in form[name+'Collection']",
+                              :key="name + (item.value || item)",
+                              :label="item.text || schema.properties[name].options[item]",
+                              :value="item.value || item",
+                              v-model="form[name]")
+                        v-select(v-else,
+                        :multiple="!schema.properties[name].unique",
+                        :tags="(!exists(schema.properties[name].unique) || !schema.properties[name].unique) && exists(schema.properties[name].create)",
+                        return-object,
+                        :chips="schema.properties[name].component === 'chip' && !schema.properties[name].unique",
                         :deletable-chips="schema.properties[name].component === 'chip'",
-                        :autocomplete="schema.properties[name].autocomplete",
+                        :autocomplete="exists(schema.properties[name].autocomplete) ? schema.properties[name].autocomplete : true",
                         v-model="form[name]",
                         :items="form[name+'Collection']"
                         :label="schema.properties[name].placeholder || schema.properties[name].label",
                         single-line)
-                      div(v-else-if="schema.properties[name].type==='collection' && schema.properties[name].component==='select' && !schema.properties[name].unique") {{schema.properties[name].label || '' }}
-                        v-checkbox(v-for="item in form[name+'Collection']" :key="item.value" :label="item.text" :value="item.value" v-model="form[name]")
-                      div(v-else-if="schema.properties[name].type==='collection' && schema.properties[name].component==='select' && schema.properties[name].unique") {{schema.properties[name].label || '' }}
-                        v-radio-group(v-model="form[name]")
-                          v-radio(v-for="item in form[name+'Collection']" :key="item.value" :label="item.text" :value="item.value")
+                        div {{form[name]}}
                       v-container(v-else-if="schema.properties[name].type==='location'", fluid ,grid-list-md)
                         v-layout(row, wrap)
                           v-flex(d-flex xs12 sm6 md4)
@@ -213,7 +207,7 @@
       }
     },
     computed: {
-      docTitle () { // TODO merge other title functions, and take computed properties into consideration
+      docTitle () {
         let titleTemplate = _.template(this.schema.title)
         return _.isObject(this.doc) && this.doc.id ? titleTemplate(this.doc) : ''
       },

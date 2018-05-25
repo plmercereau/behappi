@@ -97,7 +97,7 @@ export var formMixin = {
             if (initialForm[key]) {
               if (schema.properties[key].unique) {
                 if (schema.properties[key].schema) {
-                  val = firebase.firestore().collection(schema.properties[key].schema.collection).doc(initialForm[key])
+                  val = firebase.firestore().collection(schema.properties[key].schema.collection).doc(initialForm[key].value || initialForm[key])
                   if (((val || doc[key]) && (val !== doc[key])) || (!_.isEqual(val.id, doc[key].id))) cleanedForm[key] = val
                 } else {
                   if (!_.isEqual(doc[key], initialForm[key])) cleanedForm[key] = initialForm[key]
@@ -110,9 +110,9 @@ export var formMixin = {
                       ref = firebase.firestore().collection(schema.properties[key].schema.collection).doc(id.value)
                     } else if (schema.properties[key].component === 'chip') {
                       ref = firebase.firestore().collection(schema.properties[key].schema.collection).doc()
-                      let properyName = (schema.properties[key].schema.title && schema.properties[key].schema.title.property) || DEFAULT_CHIP_PROPERTY
+                      let propertyName = (schema.properties[key].schema.title && schema.properties[key].schema.title.property) || DEFAULT_CHIP_PROPERTY
                       let newValue = { // TODO addDocument
-                        [properyName]: id,
+                        [propertyName]: id,
                         userId: this.$store.getters.user.id
                       }
                       ref.set(newValue)
