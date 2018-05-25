@@ -187,6 +187,7 @@
           updateDocument(docRef, form)
         }
         this.editToggle = false
+        this.reset()
       },
       deleteItem () {
         firebase.firestore().collection(this.schema.collection).doc(this.id).delete().then(() => {
