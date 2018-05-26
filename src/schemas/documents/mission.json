@@ -22,10 +22,6 @@
       "type": "computed",
       "aggregation": "count",
       "path": "children"
-    },
-    "dateTest": {
-      "type": "date",
-      "label": "Test date"
     }
   },
   "itemView": {
@@ -34,8 +30,8 @@
       "sections": {
         "main": {
           "subtitles": ["children"],
-          "read": ["name", "code", "dateTest", "location"],
-          "edit": ["name", "code", "dateTest", "location"]
+          "read": ["name", "code", "location"],
+          "edit": ["name", "code", "location"]
         },
         "projects": {
           "title": "Projects",
