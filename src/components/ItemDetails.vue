@@ -63,6 +63,7 @@
                               type="checkbox",
                               v-model="form[name]")
                         v-select(v-else,
+                          :hint="schema.properties[name].description"
                           :multiple="!schema.properties[name].unique",
                           :tags="(!exists(schema.properties[name].unique) || !schema.properties[name].unique) && exists(schema.properties[name].create)",
                           return-object,
