@@ -11,7 +11,7 @@
       "component": "list",
       "schemaName": "application",
       "label": "Application",
-      "placeholder": "Application",
+      "description": "Application",
       "autocomplete": true,
       "unique": true,
       "create": false
@@ -21,16 +21,15 @@
       "component": "list",
       "schemaName": "orgUnit",
       "label": "Organisation Unit",
-      "placeholder": "Org unit where the application is used",
+      "description": "Org unit where the application is used",
       "autocomplete": true,
       "unique": true,
       "create": false
     },
     "supported": {
-      "type": "collection",
-      "component": "boolean",
+      "type": "boolean",
       "label": "Supported by OCB ",
-      "placeholder": "Currently supported by OCB (Ehealth or other, see contact)"
+      "description": "Currently supported by OCB (Ehealth or other, see contact)"
     },
     "supportOrgUnit": {
       "type": "collection",
@@ -38,7 +37,7 @@
       "schemaName": "orgUnit",
       "visible": [[":supported", "==", true]],
       "label": "Support contact",
-      "placeholder": "Support contact",
+      "description": "Support contact",
       "autocomplete": true,
       "unique": true,
       "create": true
@@ -48,7 +47,7 @@
       "component": "chip",
       "schemaName": "medicalActivity",
       "label": "Medical activities",
-      "placeholder": "Medical activities",
+      "description": "Medical activities",
       "autocomplete": true,
       "unique": false,
       "create": true

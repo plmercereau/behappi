@@ -9,7 +9,7 @@
     "name": {
       "type": "string",
       "label": "Name",
-      "placeholder": "Name of the application",
+      "description": "Name of the application",
       "validation": {
         "required": true,
         "min": 3
@@ -21,7 +21,7 @@
       "schemaName": "applicationUsage",
       "label": "Application usages",
       "title": "${orgUnit.name}",
-      "placeholder": "Usages of this application",
+      "description": "Usages of this application",
       "autocomplete": true,
       "unique": false,
       "create": true
@@ -31,7 +31,7 @@
       "component": "chip",
       "schemaName": "purpose",
       "label": "Primary purpose",
-      "placeholder": "Primary purpose of the application",
+      "description": "Primary purpose of the application",
       "autocomplete": true,
       "unique": true,
       "create": true
@@ -55,7 +55,7 @@
       "type": "collection",
       "component": "select",
       "label": "Data structure",
-      "placeholder": "Data structure: (more than one possible)",
+      "description": "Data structure: (more than one possible)",
       "unique": false,
       "create": false,
       "options": {
@@ -68,7 +68,7 @@
       "type": "collection",
       "component": "select",
       "label": "Person Identifier",
-      "placeholder": "Person Identifier (pick one)",
+      "description": "Person Identifier (pick one)",
       "unique": true,
       "create": false,
       "options": {
@@ -82,7 +82,7 @@
       "type": "collection",
       "component": "select",
       "label": "Analytic capacity",
-      "placeholder": "Analytic capacity (pick one)",
+      "description": "Analytic capacity (pick one)",
       "unique": true,
       "create": false,
       "options": {
@@ -97,7 +97,7 @@
       "type": "collection",
       "component": "select",
       "label": "Data sharing",
-      "placeholder": "Data sharing (pick one)",
+      "description": "Data sharing (pick one)",
       "unique": true,
       "create": false,
       "options": {
@@ -111,7 +111,7 @@
       "type": "collection",
       "component": "select",
       "label": "Standardization content",
-      "placeholder": "Standardization content (pick one)",
+      "description": "Standardization content (pick one)",
       "unique": true,
       "create": false,
       "options": {
@@ -127,7 +127,7 @@
       "component": "chip",
       "schemaName": "language",
       "label": "Languages",
-      "placeholder": "Available languages",
+      "description": "Available languages",
       "autocomplete": true,
       "unique": false,
       "create": false
@@ -137,7 +137,7 @@
       "component": "chip",
       "schemaName": "technology",
       "label": "Platform / program language",
-      "placeholder": "Platform / program language",
+      "description": "Platform / program language",
       "autocomplete": true,
       "unique": false,
       "create": true
@@ -150,7 +150,7 @@
       "type": "collection",
       "component": "select",
       "label": "Status",
-      "placeholder": "Status",
+      "description": "Status",
       "unique": true,
       "create": false,
       "options": {
@@ -162,7 +162,7 @@
     "supported": {
       "type": "boolean",
       "label": "Supported by OCB ",
-      "placeholder": "Currently supported by OCB (Ehealth or other, see contact)"
+      "description": "Currently supported by OCB (Ehealth or other, see contact)"
     },
     "supportOrgUnit": {
       "type": "collection",
@@ -170,7 +170,7 @@
       "schemaName": "orgUnit",
       "visible": [[":supported", "==", true]],
       "label": "Support contact",
-      "placeholder": "Support contact",
+      "description": "Support contact",
       "autocomplete": true,
       "unique": true,
       "create": true
@@ -180,7 +180,7 @@
       "component": "chip",
       "schemaName": "medicalActivity",
       "label": "Medical activities",
-      "placeholder": "Medical activities",
+      "description": "Medical activities",
       "autocomplete": true,
       "unique": false,
       "create": true
