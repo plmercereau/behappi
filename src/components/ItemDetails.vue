@@ -31,7 +31,8 @@
                 v-card-text(v-if="editToggle")
                   form(novalidate @submit.prevent="saveItem")
                     template(v-for="name in view.sections[sectionName].edit")
-                      v-text-field(v-if="schema.properties[name].type==='string'"
+                      v-text-field(v-if="schema.properties[name].type==='string'",
+                        :hint="schema.properties[name].description",
                         v-model="form[name]",
                         :id="'form-' + name",
                         :label="schema.properties[name].label",
@@ -42,17 +43,16 @@
                       date-field(v-else-if="schema.properties[name].type==='date'",
                         v-model="form[name]",
                         :label="schema.properties[name].label")
-                      div(v-else-if="schema.properties[name].type==='collection'" class="caption") {{schema.properties[name].label || '' }}
+                      template(v-else-if="schema.properties[name].type==='collection'")
                         template(v-if="schema.properties[name].component==='select'")
-                          v-radio-group(v-if="schema.properties[name].unique",
+                          radio-field(v-if="schema.properties[name].unique",
                             v-model="form[name]",
-                            :required="schema.properties[name].validation && schema.properties[name].validation.required",
-                            v-validate.initial="schema.properties[name].validation",
+                            :property="schema.properties[name]",
+                            :collection="form[name+'Collection']",
                             :error-messages="errors.collect(name)",
                             :data-vv-name="name")
-                            v-radio(v-for="item in form[name+'Collection']" :key="item.value" :label="item.text" :value="item.value")
-                          v-checkbox(v-else,
-                              v-for="item in form[name+'Collection']",
+                          div(v-else) {{schema.properties[name].label || '' }}
+                            v-checkbox(v-for="item in form[name+'Collection']",
                               :key="name + (item.value || item)",
                               :label="item.text || schema.properties[name].options[item]",
                               :required="schema.properties[name].validation && schema.properties[name].validation.required",
@@ -71,12 +71,11 @@
                           :autocomplete="exists(schema.properties[name].autocomplete) ? schema.properties[name].autocomplete : true",
                           v-model="form[name]",
                           :items="form[name+'Collection']"
-                          :label="schema.properties[name].unique ? (schema.properties[name].create ? 'select an option, or type a new one' : 'select an option') : (schema.properties[name].create ? 'select any existing options, or type new ones' : 'select one or more existing options')",
+                          :label="schema.properties[name].label",
                           :required="schema.properties[name].validation && schema.properties[name].validation.required",
                           v-validate.initial="schema.properties[name].validation",
                           :error-messages="errors.collect(name)",
-                          :data-vv-name="name",
-                          single-line)
+                          :data-vv-name="name")
                       v-container(v-else-if="schema.properties[name].type==='location'", fluid ,grid-list-md)
                         v-layout(row, wrap)
                           v-flex(d-flex xs12 sm6 md4)
@@ -119,7 +118,7 @@
                     div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].label || '' }}
                     div(class="subheading")
                       div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? doc[name]: doc[name] | labelEnum(schema.properties[name].enum)}}
-                      div(v-else-if="schema.properties[name].type === 'date'") {{doc[name] | moment('DD-MM-YYYY HH:mm:ss')}}
+                      div(v-else-if="schema.properties[name].type === 'date'") {{doc[name] | moment('DD/MM/YYYY')}}
                       template(v-else-if="schema.properties[name].type === 'collection'")
                         template(v-if="schema.properties[name].unique")
                           v-container(v-if="schema.properties[name].component ==='card'" fluid, grid-list-md)
