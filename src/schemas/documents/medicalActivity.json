@@ -7,7 +7,7 @@
   "properties": {
     "name": {
       "type": "string",
-      "label": "label"
+      "label": "Label"
     },
     "description": {
       "type": "string",
