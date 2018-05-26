@@ -10,7 +10,10 @@
       "type": "string",
       "label": "Name",
       "placeholder": "Name of the application",
-      "validation": "required|min:3"
+      "validation": {
+        "required": true,
+        "min": 3
+      }
     },
     "applicationUsages": {
       "type": "collection",
@@ -157,8 +160,7 @@
       }
     },
     "supported": {
-      "type": "collection",
-      "component": "boolean",
+      "type": "boolean",
       "label": "Supported by OCB ",
       "placeholder": "Currently supported by OCB (Ehealth or other, see contact)"
     },

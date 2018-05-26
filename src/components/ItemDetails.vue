@@ -29,7 +29,7 @@
             v-tab-item(v-for="sectionName in view.sectionsOrder" :key="'tab-item-'+sectionName")
               v-card
                 v-card-text(v-if="editToggle")
-                  form(novalidate @submit.prevent="saveItem")
+                  form(@submit.prevent="saveItem")
                     template(v-for="name in view.sections[sectionName].edit")
                       v-text-field(v-if="schema.properties[name].type==='string'",
                         :hint="schema.properties[name].description",
@@ -40,7 +40,12 @@
                         v-validate.initial="schema.properties[name].validation",
                         :error-messages="errors.collect(name)",
                         :data-vv-name="name")
+                      link-field(v-else-if="schema.properties[name].type==='link'",
+                        :required="schema.properties[name].required",
+                        v-model="form[name]",
+                        :label="schema.properties[name].label")
                       date-field(v-else-if="schema.properties[name].type==='date'",
+                        :required="schema.properties[name].required",
                         v-model="form[name]",
                         :label="schema.properties[name].label")
                       template(v-else-if="schema.properties[name].type==='collection'")
@@ -74,6 +79,7 @@
                           :items="form[name+'Collection']"
                           :label="schema.properties[name].label",
                           :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                          :clearable="!(schema.properties[name].validation && schema.properties[name].validation.required)",
                           v-validate.initial="schema.properties[name].validation",
                           :error-messages="errors.collect(name)",
                           :data-vv-name="name")
@@ -83,7 +89,7 @@
                             v-container(fluid)
                               v-layout(row)
                                 v-flex
-                                  div(class="caption") {{schema.properties[name].label}}{{schema.properties[name].required && '*'}}
+                                  v-subheader {{schema.properties[name].label}}{{schema.properties[name].required && '*'}}
                                   v-text-field(
                                   type="number"
                                   v-model.number="form['reported'+name].lat",
@@ -119,6 +125,7 @@
                     div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].label || '' }}
                     div(class="subheading")
                       div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? doc[name]: doc[name] | labelEnum(schema.properties[name].enum)}}
+                      a(v-else-if="schema.properties[name].type === 'link'" :href="doc[name].value" target="_blank") {{doc[name].text}}
                       div(v-else-if="schema.properties[name].type === 'date'") {{doc[name] | moment('DD/MM/YYYY')}}
                       template(v-else-if="schema.properties[name].type === 'collection'")
                         template(v-if="schema.properties[name].unique")
@@ -157,6 +164,9 @@
   import {MAP_TYPE} from '../config'
 
   export default {
+    provide () {
+      return { parentValidator: this.$validator }
+    },
     props: ['id', 'schema', 'viewName'],
     name: 'ItemDetails',
     mixins: [formMixin],
@@ -268,12 +278,12 @@
             method: () => { this.deleteDialogToggle = !this.deleteDialogToggle }
           }
         ]
-        if (this.schema.versionable) {
-          readActions.push({
-            title: 'New version',
-            method: () => console.log('todo versionable')
-          })
-        }
+        // if (this.schema.versionable) {
+        //   readActions.push({
+        //     title: 'New version',
+        //     method: () => console.log('todo versionable')
+        //   })
+        // }
         let editActions = []
         return [
           ...(this.editToggle ? editActions : readActions)

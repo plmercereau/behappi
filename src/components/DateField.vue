@@ -14,7 +14,11 @@
       hint="DD/MM/YYYY format",
       persistent-hint,
       prepend-icon="event",
-      @blur="$emit('input', parseDate(date))")
+      :required="required",
+      @blur="$emit('input', parseDate(date))",
+      v-validate.initial="(required ? 'required|' : '') + 'date_format:DD/MM/YYYY'",
+      :error-messages="errors.collect(label.toLowerCase())",
+      :data-vv-name="label.toLowerCase()")
     v-date-picker(
       :value="value",
       @input="inputDate"
@@ -24,7 +28,8 @@
 <script>
   export default {
     name: 'DateField',
-    props: ['value', 'label'],
+    inject: [ 'parentValidator' ],
+    props: ['value', 'label', 'required'],
     data () {
       return {
         date: null,
@@ -47,6 +52,9 @@
         const [day, month, year] = date.split('/')
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
       }
+    },
+    created () {
+      this.$validator = this.parentValidator
     },
     mounted () {
       this.date = this.formatDate(this.value)

@@ -2,7 +2,7 @@
   v-container(fill-height fluid :class="{'pa-0': $vuetify.breakpoint.xsOnly }")
     v-layout(row, justify-center)
       v-flex(xs12)
-        tool-bar(:title="view.title", search, v-model="search")
+        tool-bar(:title="view.title", search, v-model="search", :actions="actions")
         create-button(fab, :parentSchema="schema")
         loading(v-if="loading")
         template(v-else-if="collection.length > 0")
@@ -32,6 +32,12 @@
       subtitle (item) {
         let template = this.schema.collectionView.default.subtitle || ''
         return _.template(template)(item)
+      },
+      excelExport () { // TODO
+        let fields = this.schema.collectionView.default.export || Object.keys(this.schema.properties)
+        fields.forEach(fieldName => {
+          console.log(fieldName)
+        })
       }
     },
     computed: {
@@ -58,6 +64,14 @@
       },
       view () {
         return this.schema.collectionView[this.viewName || 'default']
+      },
+      actions () {
+        return !this.loading && [
+          {
+            title: 'Export to Excel',
+            method: () => this.excelExport()
+          }
+        ]
       }
     },
     firestore () {
