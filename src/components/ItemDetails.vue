@@ -50,12 +50,14 @@
                         :label="schema.properties[name].label")
                       template(v-else-if="schema.properties[name].type==='collection'")
                         template(v-if="schema.properties[name].component==='select'")
-                          radio-field(v-if="schema.properties[name].unique",
-                            v-model="form[name]",
-                            :property="schema.properties[name]",
-                            :collection="form[name+'Collection']",
-                            :error-messages="errors.collect(name)",
-                            :data-vv-name="name")
+                          v-radio-group(v-if="schema.properties[name].unique",
+                          :label="schema.properties[name].label",
+                          v-model="form[name]",
+                          :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                          v-validate.initial="schema.properties[name].validation",
+                          :error-messages="errors.collect(name)",
+                          :data-vv-name="name")
+                            v-radio(v-for="item in form[name+'Collection']" :key="item.value" :label="item.text" :value="item.value")
                           div(v-else) {{schema.properties[name].label || '' }}
                             v-checkbox(v-for="item in form[name+'Collection']",
                               :key="name + (item.value || item)",

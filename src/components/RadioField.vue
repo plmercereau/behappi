@@ -2,7 +2,7 @@
   v-radio-group(v-if="property.unique",
   :label="property.label",
   :value="value",
-  @input="inputValue"
+  @change="inputValue"
   :required="property.validation && property.validation.required",
   v-validate.initial="property.validation",
   :error-messages="errorMessages",
@@ -11,7 +11,7 @@
 </template>
 
 <script>
-  export default {
+  export default { // TODO does not take the initial value into account
     name: 'RadioField',
     props: ['property', 'collection', 'value', 'errorMessages', 'dataVvName'],
     methods: {

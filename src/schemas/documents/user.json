@@ -3,7 +3,7 @@
   "mixins": ["timestamp"],
   "type": "document",
   "collection": "users",
-  "title": "${email}",
+  "title": "${name || email}",
   "versionable": true,
   "properties": {
     "name": {
@@ -36,9 +36,9 @@
       "sectionsOrder": ["main", "administration"],
       "sections": {
         "main": {
-          "title": "${email}",
-          "read": ["name", "email"],
-          "edit": ["name", "email"]
+          "title": "Main",
+          "read": ["name", "email", "role"],
+          "edit": ["name", "email", "role"]
         }
       }
     }
