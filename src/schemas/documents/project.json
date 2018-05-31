@@ -37,6 +37,9 @@
         "default": {
           "category": "project"
         }
+      },
+      "media": {
+        "property": "location"
       }
     }
   }

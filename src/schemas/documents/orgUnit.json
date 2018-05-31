@@ -50,6 +50,7 @@
       "label": "Application usages",
       "title": "${application.name}",
       "autocomplete": true,
+      "description": "Usages of this application",
       "unique": false,
       "create": {
         "title": "New application usage",
@@ -102,11 +103,6 @@
       "sort": [["name", "ASC"]],
       "create": {
         "properties": ["name"]
-      }
-    },
-    "card" : {
-      "media": {
-        "property": "location"
       }
     }
   },

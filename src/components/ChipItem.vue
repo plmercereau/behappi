@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-chip(:to="`/${schema.name}/${doc.id}`") {{doc[schema.title.property]}}
+  v-chip(:to="`/${doc._schema || schema.name}/${doc.id}`") {{doc[schema.title.property]}}
 </template>
 
 <script>

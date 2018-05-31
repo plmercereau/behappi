@@ -133,7 +133,7 @@
                             v-layout(row, wrap)
                               v-flex(dd-flex xs12 sm6 md4, v-for="doc in sortedCollection(name)" :key="doc.id")
                                 card-item(:schema="schema.properties[name].schema", :doc="doc")
-                          router-link(v-else-if="doc[name].id" :to="`/${schema.properties[name].schema.name}/${doc[name].id}`") {{title(name)}}
+                          router-link(v-else-if="doc[name].id" :to="`/${doc[name]._schema || schema.properties[name].schema.name}/${doc[name].id}`") {{title(name)}}
                           div(v-else) {{title(name)}}
                         v-list(v-else-if="schema.properties[name].component === 'dropdown'")
                           <!--TODO merge two components below-->

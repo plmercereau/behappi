@@ -103,6 +103,7 @@ function getInitialDefaultData (schema, data, property) {
     })
     delete res._parentData
   }
+  res._schema = schema.name
   return res
 }
 

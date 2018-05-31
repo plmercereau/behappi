@@ -51,9 +51,7 @@
         "default": {
           "category": "mission"
         }
-      }
-    },
-    "card": {
+      },
       "media": {
         "property": "location"
       }

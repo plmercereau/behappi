@@ -6,7 +6,7 @@
         create-button(fab, :parentSchema="schema")
         loading(v-if="loading")
         template(v-else-if="collection.length > 0")
-          card-list(v-if="!viewName || viewName === 'card' || viewName === 'default'")
+          card-list
             v-flex(d-flex xs12 sm6 md4, v-for="doc in filteredList" :key="doc.id")
               card-item(:doc="doc", :schema="schema", component="card")
                 div {{subtitle(doc)}}

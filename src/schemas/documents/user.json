@@ -15,6 +15,20 @@
       "type": "string",
       "label": "Email of the user",
       "validation": "required|min:3"
+    },
+    "role": {
+      "type": "collection",
+      "component": "select",
+      "label": "Role",
+      "description": "Role of the user",
+      "unique": true,
+      "create": false,
+      "options": {
+        "member": "Default member, read-only user",
+        "editor": "Editor: manages their own org units",
+        "manager": "Manager of the application. Can perform most of the actions",
+        "admin": "Super-user, can perform any action"
+      }
     }
   },
   "itemView": {

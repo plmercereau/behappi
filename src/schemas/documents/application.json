@@ -24,7 +24,11 @@
       "description": "Usages of this application",
       "autocomplete": true,
       "unique": false,
-      "create": true
+      "create": {
+        "title": "New application usage",
+        "parentProperty": "application",
+        "properties": ["orgUnit"]
+      }
     },
     "primaryPurpose": {
       "type": "collection",

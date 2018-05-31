@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-list-tile(:to="`/${schema.name}/${doc.id}`")
+  v-list-tile(:to="`/${doc._schema || schema.name}/${doc.id}`")
     v-list-tile-content
       v-list-tile-title(primary-title) {{title}}
       v-list-tile-sub-title

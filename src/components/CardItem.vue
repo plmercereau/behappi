@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-card(:to="`/${schema.name}/${doc.id}`")
+  v-card(:to="`/${doc._schema || schema.name}/${doc.id}`")
     v-card-media(v-if="view.media")
       map-image(v-if="view.media.property && (schema.properties[view.media.property].type === 'location') && doc[view.media.property]",
       :locationProperty="view.media.property",
@@ -21,7 +21,7 @@
     name: 'CardItem',
     computed: {
       view () {
-        return this.schema.collectionView['card'] || this.schema.collectionView['default']
+        return this.schema.collectionView['default']
       },
       title () { // TODO merge with other title methods?
         let title = _.template(this.schema.title)
