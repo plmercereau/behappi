@@ -24,7 +24,11 @@
             fab,
             :parentData="doc", :propertyName="view.sections[sectionName].create", :parentSchema="schema")
           v-tabs(v-model="tab")
-            v-tab(v-for="sectionName in view.sectionsOrder" :key="'tab-'+sectionName" v-show="isActiveTab(sectionName)") {{sectionTitle(sectionName)}}
+            v-tab(v-for="sectionName in view.sectionsOrder",
+              :key="'tab-'+sectionName",
+              v-show="isActiveTab(sectionName)",
+              :class="sectionErrors(sectionName) ? 'error--text' : ''"
+            ) {{sectionTitle(sectionName)}}
           v-tabs-items(v-model="tab")
             v-tab-item(v-for="sectionName in view.sectionsOrder" :key="'tab-item-'+sectionName")
               v-card
@@ -121,7 +125,7 @@
                             @zoom_changed="updateField(schema.properties[name].zoom, $event)"
                             :map-type-id="mapType"
                             style="width: 480px; height: 300px")
-                              gmap-marker(v-if="schema.properties[name].markers && schema.properties[name].markers.self" :position="form['reported'+name]")
+                              gmap-marker(v-if="schema.properties[name].markers && (typeof schema.properties[name].markers.self === 'boolean')" :position="form['reported'+name]")
                 v-card-text(v-else)
                   div(v-for="name in view.sections[sectionName].read" v-if="doc[name]" :key="name")
                     div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].label || '' }}
@@ -134,7 +138,8 @@
                           v-container(v-if="schema.properties[name].component ==='card'" fluid, grid-list-md)
                             v-layout(row, wrap)
                               v-flex(dd-flex xs12 sm6 md4, v-for="doc in sortedCollection(name)" :key="doc.id")
-                                card-item(:schema="schema.properties[name].schema", :doc="doc")
+                                card-item(:schema="schema.properties[name]", :doc="doc")
+                                  div {{subtitle(schema.properties[name].schema, doc)}}
                           router-link(v-else-if="doc[name].id" :to="`/${doc[name]._schema || schema.properties[name].schema.name}/${doc[name].id}`") {{title(name)}}
                           div(v-else) {{title(name)}}
                         v-list(v-else-if="schema.properties[name].component === 'dropdown'")
@@ -149,6 +154,7 @@
                           v-layout(row, wrap)
                             v-flex(dd-flex xs12 sm6 md4, v-for="doc in sortedCollection(name)" :key="doc.id")
                               card-item(:schema="schema.properties[name].schema", :doc="doc")
+                                div {{subtitle(schema.properties[name], doc)}}
                       v-card(v-else-if="schema.properties[name].type === 'location'")
                         v-card-media
                           map-image(
@@ -249,8 +255,20 @@
           return value ? this.schema.properties[propertyName].options[value.id || value] : this.schema.properties[propertyName].options[this.doc[propertyName]]
         } else return this.doc[propertyName]
       },
+      subtitle (property, doc) {
+        let withComputed = addComputedValues(property.schema, doc)
+        let template = property.subtitle || property.schema.collectionView.default.subtitle || ''
+        return _.template(template)(withComputed)
+      },
       sectionTitle (tabName) {
         return _.isObject(this.doc) && this.doc.id ? _.template(this.view.sections[tabName].title)(this.doc) : ''
+      },
+      sectionErrors (tabName) {
+        let properties = _.isObject(this.doc) && this.doc.id && this.view.sections[tabName].edit
+        if (this.editToggle && properties && this.errors.items) {
+          return this.errors.items.some(item => properties.includes(item.field))
+        }
+        return false
       }
     },
     computed: {
@@ -265,10 +283,6 @@
       },
       mapType () {
         return MAP_TYPE
-      },
-      view () {
-        let role = this.$store.getters.user ? this.$store.getters.user.role : 'public'
-        return _.merge(this.schema.itemView.default || {}, this.schema.itemView[role] || {})
       },
       actions () {
         let role = this.$store.getters.user ? this.$store.getters.user.role : 'public'

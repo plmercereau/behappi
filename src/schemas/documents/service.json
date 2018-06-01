@@ -31,6 +31,20 @@
       "media": {
         "property": "location"
       }
+    },
+    "manager": {
+      "create": {
+        "title": "New project",
+        "properties": ["parent", "name"]
+
+      }
+    },
+    "admin": {
+      "create": {
+        "title": "New project",
+        "properties": ["parent", "name"]
+
+      }
     }
   }
 }

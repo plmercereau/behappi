@@ -28,7 +28,8 @@
           })
         }
         if (markerProp && markerProp.self) {
-          markers.push(this.doc[this.locationProperty])
+          let prop = _.isBoolean(markerProp.self) ? this.locationProperty : markerProp.self
+          markers.push(this.doc[prop])
         }
         return markers
       },

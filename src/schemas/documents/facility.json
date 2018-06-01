@@ -39,21 +39,21 @@
     },
     "editor": {
       "sections": {
-        "projects": {
+        "services": {
           "create": "children"
         }
       }
     },
     "manager": {
       "sections": {
-        "projects": {
+        "services": {
           "create": "children"
         }
       }
     },
     "admin": {
       "sections": {
-        "projects": {
+        "services": {
           "create": "children"
         }
       }
@@ -61,11 +61,25 @@
   },
   "collectionView": {
     "default": {
-      "title": "Facilities",
+      "title": "Health facilities",
       "subtitle": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }",
       "filters": [[":_schema", "==", "facility"]],
       "media": {
         "property": "location"
+      }
+    },
+    "manager": {
+      "create": {
+        "title": "New project",
+        "properties": ["parent", "name"]
+
+      }
+    },
+    "admin": {
+      "create": {
+        "title": "New project",
+        "properties": ["parent", "name"]
+
       }
     }
   }

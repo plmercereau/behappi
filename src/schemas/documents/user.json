@@ -9,12 +9,32 @@
     "name": {
       "type": "string",
       "label": "Name of the user",
-      "validation": "required|min:3"
+      "validation": {
+        "required": true,
+        "min": 3
+      }
+    },
+    "password": {
+      "type": "string",
+      "component": "password",
+      "label": "Password",
+      "validation": {
+        "required": true,
+        "min": 6
+      }
     },
     "email": {
       "type": "string",
       "label": "Email of the user",
-      "validation": "required|min:3"
+      "validation": {
+        "required": true,
+        "email": true
+      }
+    },
+    "photoURL": {
+      "type": "link",
+      "label": "Photo URL",
+      "external": true
     },
     "role": {
       "type": "collection",
@@ -44,7 +64,19 @@
     },
     "member": {
       "edit": false,
-      "delete": false
+      "delete": false,
+      "actions": [
+        {
+          "resetPassword": {
+            "title": "Reset password",
+            "conditions": [["{userId}", "==", ":id"]],
+            "action": "update",
+            "payload": {
+              "_action": "resetPassword"
+            }
+          }
+        }
+      ]
     },
     "editor": {
       "edit": false,
@@ -68,7 +100,7 @@
     "admin" : {
       "create": {
         "title": "New user",
-        "properties": ["email"]
+        "properties": ["email", "name", "photoURL"]
       }
     },
     "editor": {},

@@ -8,7 +8,7 @@
       v-card
         v-card-title {{ createParams.title || schema.title || 'Create'}}
         v-card-text
-          form(novalidate @submit.prevent="create")
+          form(@submit.prevent="create")
             template(v-for="(name) in createParams.properties")
               v-text-field(
               autofocus
@@ -16,8 +16,10 @@
               v-model="form[name]",
               :id="'form-' + name",
               :label="schema.properties[name].placeholder || schema.properties[name].label",
-              v-validate="schema.properties[name].validation",
-              :data-vv-name="'form-' + name")
+              :required="schema.properties[name].validation && schema.properties[name].validation.required",
+              v-validate.initial="schema.properties[name].validation",
+              :error-messages="errors.collect(name)",
+              :data-vv-name="name")
               <!--TODO required, data-vv-name-->
               v-select(
               autofocus
@@ -25,9 +27,13 @@
               v-model="form[name]",
               :items="form[name+'Collection']"
               :label="schema.properties[name].placeholder || schema.properties[name].label",
-              single-line)
+              single-line,
+              :required="schema.properties[name].validation && schema.properties[name].validation.required",
+              v-validate.initial="schema.properties[name].validation",
+              :error-messages="errors.collect(name)",
+              :data-vv-name="name")
         v-card-actions
-          v-btn(color="primary" flat @click.stop="$validator.validateAll() && create()") Create
+          v-btn(:disabled="errors.items.length > 0" color="primary" flat @click.stop="create()") Create
           v-btn(color="primary" flat @click.stop="editToggle=false") Cancel
 
 </template>
@@ -47,24 +53,31 @@
     mixins: [formMixin],
     methods: {
       create () { // TODO submit action, rather than $validator.validateAll() && create()
-        let cleanForm = this.constructDataWithProperties(this.createParams.properties)
-        if (this.createParams.parentProperty && this.parentData) {
-          const parentProperties = this.createParams.inheritedProperties
-          let filteredParentData = parentProperties ? parentProperties.reduce((obj, name) => {
-            obj[name] = this.parentData[name]
-            return obj
-          }, {}) : {}
-          cleanForm['_parentData'] = {
-            id: this.parentData.id,
-            ...filteredParentData
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            let cleanForm = this.constructDataWithProperties(this.createParams.properties)
+            if (this.createParams.parentProperty && this.parentData) {
+              const parentProperties = this.createParams.inheritedProperties
+              let filteredParentData = parentProperties ? parentProperties.reduce((obj, name) => {
+                obj[name] = this.parentData[name]
+                return obj
+              }, {}) : {}
+              cleanForm['_parentData'] = {
+                id: this.parentData.id,
+                ...filteredParentData
+              }
+            }
+            addDocument(this.schema, cleanForm, this.parentSchema.properties[this.propertyName]).then((docRef) => {
+              this.$router.push(`/${this.schema.name}/${docRef.id}`)
+            }).catch(error => {
+              console.log(error)
+            })
+            this.editToggle = false
+            this.reset()
+          } else {
+            alert('Some inputs of the form are not valid. Please correct them before saving the document')
           }
-        }
-        addDocument(this.schema, cleanForm, this.parentSchema.properties[this.propertyName]).then((docRef) => {
-          this.$router.push(`/${this.schema.name}/${docRef.id}`)
-        }).catch(error => {
-          console.log(error)
         })
-        this.editToggle = false
       },
       cancel () {
         this.editToggle = false
@@ -80,9 +93,9 @@
     computed: {
       createParams () {
         if (this.propertyName) {
-          return this.parentSchema.properties[this.propertyName].create || this.schema.collectionView.default.create
+          return this.parentSchema.properties[this.propertyName].create || this.collectionView.create || {}
         } else {
-          return this.schema.collectionView.default.create
+          return this.collectionView.create || {}
         }
       },
       isFab () {
@@ -95,6 +108,9 @@
           return this.parentSchema
         }
       }
+    },
+    activated () {
+      this.reset()
     },
     mounted () {
       this.reset()

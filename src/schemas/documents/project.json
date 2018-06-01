@@ -14,46 +14,64 @@
     "children" : {
       "schemaName": "facility",
       "label": "Facilities in the project",
+      "subtitle": "todo - type",
       "create": {
         "title": "New facility"
       }
     },
     "location": {
+      "label": "Location of the base",
+      "markers": {
+        "self": true
+      }
+    },
+    "area": {
       "type": "location",
-      "label": "Location of the project"
+      "label": "Area of the project",
+      "zoom": "zoomArea",
+      "markers": {
+        "self": "location",
+        "collection": "children",
+        "property": "location"
+      }
     }
   },
   "itemView": {
     "default": {
-      "sectionsOrder": ["main", "facilities", "administration"],
+      "sectionsOrder": ["main", "base", "facilities", "administration"],
       "sections": {
         "main": {
-          "read": ["name", "shortName", "code", "parent", "location"],
-          "edit": ["name", "shortName", "code", "parent", "location"]
+          "read": ["name", "shortName", "parent", "code", "area"],
+          "edit": ["name", "shortName", "parent", "code", "area"]
+        },
+        "base": {
+          "title": "Base",
+          "read": ["location"],
+          "edit": ["location"]
         },
         "facilities": {
-          "title": "Facilities",
+          "title": "Health facilities",
           "read": ["children"]
         }
       }
     },
     "editor": {
       "sections": {
-        "projects": {
+        "facilities": {
           "create": "children"
         }
       }
     },
     "manager": {
       "sections": {
-        "projects": {
+        "facilities": {
           "create": "children"
         }
       }
     },
     "admin": {
       "sections": {
-        "projects": {
+        "facilities": {
           "create": "children"
         }
       }
@@ -65,19 +83,21 @@
       "subtitle": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }",
       "filters": [[":_schema", "==", "project"]],
       "media": {
-        "property": "location"
+        "property": "area"
       }
     },
-    "member": {},
-    "editor": {},
     "manager": {
       "create": {
-        "title": "New project"
+        "title": "New project",
+        "properties": ["parent", "name"]
+
       }
     },
     "admin": {
       "create": {
-        "title": "New project"
+        "title": "New project",
+        "properties": ["parent", "name"]
+
       }
     }
   }

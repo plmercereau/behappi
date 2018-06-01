@@ -6,10 +6,21 @@
     "name": {
       "label": "Name of the mission"
     },
+    "code": {
+      "label": "Financial code of the coordination"
+    },
     "location": {
-      "label": "Area of the mission",
+      "label": "Location of the coordination office",
       "markers": {
-        "self": false,
+        "self": true
+      }
+    },
+    "area": {
+      "type": "location",
+      "label": "Area of the mission",
+      "zoom": "zoomArea",
+      "markers": {
+        "self": "location",
         "collection": "children",
         "property": "location"
       }
@@ -17,28 +28,33 @@
     "children" : {
       "schemaName": "project",
       "label": "Projects of the mission",
+      "subtitle": "${ nbChildren ? nbChildren + (nbChildren > 1 ? ' health facilities' : ' health facility'): ''}",
       "create": {
-        "title": "New project"
+        "title": "New project",
+        "inheritedProperties": ["location", "zoom", "area", "zoomArea"]
       }
-    },
-    "nbProjects": {
-      "type": "computed",
-      "aggregation": "count",
-      "path": "children"
     }
   },
   "itemView": {
     "default": {
-      "sectionsOrder": ["main", "projects", "applications"],
+      "sectionsOrder": ["main", "coordination", "projects", "applications"],
       "sections": {
         "main": {
           "subtitles": ["children"],
-          "read": ["name", "shortName", "code", "location"],
-          "edit": ["name", "shortName", "code", "location"]
+          "read": ["name", "shortName", "area"],
+          "edit": ["name", "shortName", "area"]
+        },
+        "coordination": {
+          "title": "Coordination",
+          "read": ["code", "location"],
+          "edit": ["code", "location"]
         },
         "projects": {
           "title": "Projects",
           "read": ["children"]
+        },
+        "applications": {
+          "title": "Coordination applications"
         }
       }
     },
@@ -67,22 +83,22 @@
   "collectionView": {
     "default": {
       "title": "Missions",
-      "subtitle": "${ nbProjects ? nbProjects + ' project' : ''}${ nbProjects > 1 ? 's' : '' }",
+      "subtitle": "${ nbChildren ? nbChildren + ' project' : ''}${ nbChildren > 1 ? 's' : '' }",
       "filters": [[":_schema", "==", "mission"]],
       "media": {
-        "property": "location"
+        "property": "area"
       }
     },
-    "member": {},
-    "editor": {},
     "manager": {
       "create": {
-        "title": "New mission"
+        "title": "New mission",
+        "properties": ["name"]
       }
     },
     "admin": {
       "create": {
-        "title": "New mission"
+        "title": "New mission",
+        "properties": ["name"]
       }
     }
   }

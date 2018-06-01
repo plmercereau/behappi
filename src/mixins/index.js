@@ -155,5 +155,15 @@ export var formMixin = {
     updateField (field, event) {
       this.$set(this.form, field, event)
     }
+  },
+  computed: {
+    view () {
+      let role = this.$store.getters.user ? this.$store.getters.user.role : 'public'
+      return _.merge(this.schema.itemView.default || {}, this.schema.itemView[role] || {})
+    },
+    collectionView () {
+      let role = this.$store.getters.user ? this.$store.getters.user.role : 'public'
+      return _.merge(this.schema.collectionView.default || {}, this.schema.collectionView[role] || {})
+    }
   }
 }

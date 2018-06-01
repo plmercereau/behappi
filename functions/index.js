@@ -72,7 +72,6 @@ function deleteOneToManyDocuments(snapshot, oneToManyAttribute) {
 exports.writeApplicationUsage = functions.firestore
   .document('applicationUsages/{applicationUsageId}')
   .onWrite((snap) => { // TODO test infinite loop (when we will be able to update on both sides of the relation)
-    console.log('onwrite app usage')
     updateOneToManyRevertRelation(snap, 'application', 'applicationUsages');
     updateOneToManyRevertRelation(snap, 'orgUnit', 'applicationUsages');
     return 0
@@ -109,8 +108,8 @@ exports.updateOrgUnit = functions.firestore
 exports.createDocument = functions.firestore
   .document('{collection}/{docId}')
   .onCreate((snap) => {
-    const firestore = admin.firestore()
-    const userId = snap.data().userId
+    const firestore = admin.firestore();
+    const userId = snap.data().userId;
     if (userId) {
       const user = firestore.doc(`/users/${userId}`);
       let data = {
@@ -126,8 +125,8 @@ exports.createDocument = functions.firestore
 exports.updateDocument = functions.firestore
   .document('{collection}/{docId}')
   .onUpdate((snap) => {
-    const firestore = admin.firestore()
-    const userId = snap.after.data().userId
+    const firestore = admin.firestore();
+    const userId = snap.after.data().userId;
     const user = firestore.doc(`/users/${userId}`);
     let data = {
       updatedBy: user,
@@ -139,9 +138,74 @@ exports.updateDocument = functions.firestore
     else return 0
   });
 
-exports.createUser = functions.auth.user().onCreate((user) => { // TODO implement the delete trigger as well
-  const firestore = admin.firestore()
+// exports.createUser = functions.firestore
+//   .document('users/{docId}')
+//   .onCreate((snap) => {
+//     const data = snap.data();
+//     admin.auth()
+//       .createUser({
+//         email: data.email,
+//         emailVerified: false,
+//         displayName: data.name,
+//         photoURL: data.photoURL,
+//         disabled: false
+//       })
+//       .then((userRecord) => {
+//         // See the UserRecord reference doc for the contents of userRecord.
+//         console.log("Successfully created new user:", userRecord.uid);
+//         // TODO send an email to set the password
+//         return 0;
+//       })
+//       .catch((error) => {
+//         console.log("Error creating new user:", error);
+//         return 0;
+//       });
+//     return 0;
+//   });
+//
+// exports.updateUser = functions.firestore
+//   .document('users/{docId}')
+//   .onUpdate((snap) => {
+//     const data = snap.after.data();
+//     admin.auth()
+//       .updateUser(snap.after.id, { // TODO only existing values
+//         email: data.email,
+//         emailVerified: false,
+//         displayName: data.name,
+//         photoURL: data.photoURL,
+//         disabled: false
+//       })
+//       .then((userRecord) => {
+//         // See the UserRecord reference doc for the contents of userRecord.
+//         console.log("Successfully created new user:", userRecord.uid);
+//         // TODO send an email if we've been asked to reset the password
+//         return 0;
+//       })
+//       .catch((error) => {
+//         console.log("Error updating the user:", error);
+//         return 0;
+//       });
+//     return 0;
+//   });
+//
+// exports.deleteUser = functions.firestore // TODO soft delete: deactivate only?
+//   .document('users/{docId}')
+//   .onDelete((snap) => {
+//     admin.auth().deleteUser(snap.id)
+//       .then(() => {
+//         console.log("Successfully deleted user");
+//         return 0;
+//       })
+//       .catch((error) => {
+//         console.log("Error deleting user:", error);
+//         return 0;
+//       });
+//     return 0;
+//   });
+
+exports.createAuthUser = functions.auth.user().onCreate((user) => { // TODO implement the delete trigger as well
+  const firestore = admin.firestore();
   const userProfile = firestore.doc(`/users/${user.uid}`);
-  userProfile.set({email: user.email, role: 'member'})
+  userProfile.set({email: user.email, role: 'member'});
   return 0
 });
