@@ -128,7 +128,7 @@
                               gmap-marker(v-if="schema.properties[name].markers && (typeof schema.properties[name].markers.self === 'boolean')" :position="form['reported'+name]")
                 v-card-text(v-else)
                   div(v-for="name in view.sections[sectionName].read" v-if="doc[name]" :key="name")
-                    div(v-if="!(view.sections[sectionName].hideLabels && view.sections[sectionName].hideLabels.includes(name))") {{schema.properties[name].label || '' }}
+                    div(v-if="!(view.sections[sectionName].hideLabels && view.sections[sectionName].hideLabels.includes(name))" class="grey--text") {{schema.properties[name].label || '' }}
                     div(class="subheading")
                       div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? doc[name]: doc[name] | labelEnum(schema.properties[name].enum)}}
                       a(v-else-if="schema.properties[name].type === 'link'" :href="doc[name].value" target="_blank") {{doc[name].text}}
