@@ -142,6 +142,6 @@ exports.updateDocument = functions.firestore
 exports.createUser = functions.auth.user().onCreate((user) => { // TODO implement the delete trigger as well
   const firestore = admin.firestore()
   const userProfile = firestore.doc(`/users/${user.uid}`);
-  userProfile.set({email: user.email})
+  userProfile.set({email: user.email, role: 'member'})
   return 0
 });

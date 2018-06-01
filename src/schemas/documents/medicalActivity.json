@@ -24,11 +24,36 @@
           "edit": ["name", "description"]
         }
       }
+    },
+    "member": {
+      "edit": false,
+      "delete": false
+    },
+    "editor": {
+      "edit": false,
+      "delete": false
+    },
+    "manager": {
+      "edit": true,
+      "delete": false
+    },
+    "admin": {
+      "edit": true,
+      "delete": true
     }
   },
   "collectionView": {
     "default": {
-      "title": "Medical activities",
+      "title": "Medical activities"
+    },
+    "admin" : {
+      "create": {
+        "title": "New medical activity",
+        "properties": ["name"]
+      }
+    },
+    "editor": {},
+    "manager": {
       "create": {
         "title": "New medical activity",
         "properties": ["name"]

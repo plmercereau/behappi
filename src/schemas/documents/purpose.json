@@ -24,15 +24,41 @@
           "edit": ["name", "description"]
         }
       }
+    },
+    "member": {
+      "edit": false,
+      "delete": false
+    },
+    "editor": {
+      "edit": false,
+      "delete": false
+    },
+    "manager": {
+      "edit": true,
+      "delete": true
+    },
+    "admin": {
+      "edit": true,
+      "delete": true
     }
   },
   "collectionView": {
     "default": {
-      "title": "Purposes",
+      "title": "Purposes"
+    },
+    "admin" : {
+      "create": {
+        "title": "New purpose",
+        "properties": ["name"]
+      }
+    },
+    "editor": {},
+    "manager": {
       "create": {
         "title": "New purpose",
         "properties": ["name"]
       }
     }
+
   }
 }

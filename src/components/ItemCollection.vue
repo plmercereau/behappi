@@ -3,7 +3,7 @@
     v-layout(row, justify-center)
       v-flex(xs12)
         tool-bar(:title="view.title", search, v-model="search", :actions="actions")
-        create-button(fab, :parentSchema="schema")
+        create-button(v-if="view.create" fab, :parentSchema="schema")
         loading(v-if="loading")
         template(v-else-if="collection.length > 0")
           card-list
@@ -123,16 +123,19 @@
             let found = false
             if (!this.schema.searchProperties) found = true
             else {
-              this.schema.searchProperties.forEach(propName => {
-                found = doc[propName].toLowerCase().includes(this.search.toLowerCase())
-              })
+              this.schema.searchProperties
+                .filter(path => _.get(doc, path))
+                .forEach(path => {
+                  if (_.get(doc, path).toLowerCase().includes(this.search.toLowerCase())) found = true
+                })
             }
             return found
           })
         } else return []
       },
       view () {
-        return this.schema.collectionView[this.viewName || 'default']
+        let role = this.$store.getters.user ? this.$store.getters.user.role : 'public'
+        return _.merge(this.schema.collectionView.default || {}, this.schema.collectionView[role] || {})
       },
       actions () {
         return !this.loading && [

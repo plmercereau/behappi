@@ -11,6 +11,11 @@
               form(@submit.prevent="signIn")
                 v-layout(row)
                   v-flex(xs12)
+                    i Hint: the public, generic account is&nbsp;
+                      nobr ocb-oops@ocb-oops.com&nbsp;
+                      | with the usual OCB oops password
+                v-layout(row)
+                  v-flex(xs12)
                     v-text-field(name="email" label="Mail" id="email" v-model="email" type="email" required)
                 v-layout(row)
                   v-flex(xs12)

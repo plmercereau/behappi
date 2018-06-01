@@ -1,0 +1,36 @@
+{
+  "name": "service",
+  "type": "document",
+  "mixins": ["orgUnit"],
+  "properties": {
+    "name": {
+      "label": "Name of the service"
+    },
+    "parent": {
+      "schemaName": "facility",
+      "label": "Facility",
+      "title": "${typeof parent.shortName === 'undefined' ? parent.name : parent.shortName}"
+    }
+  },
+  "itemView": {
+    "default": {
+      "sectionsOrder": ["main", "administration"],
+      "sections": {
+        "main": {
+          "read": ["name", "shortName", "parent"],
+          "edit": ["name", "shortName", "parent"]
+        }
+      }
+    }
+  },
+  "collectionView": {
+    "default": {
+      "title": "Services",
+      "subtitle": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }${ (typeof parent.parent !== 'undefined') ? ', ' + (typeof parent.parent.shortName === 'undefined' ? parent.parent.name : parent.parent.shortName) : '' }",
+      "filters": [[":_schema", "==", "service"]],
+      "media": {
+        "property": "location"
+      }
+    }
+  }
+}

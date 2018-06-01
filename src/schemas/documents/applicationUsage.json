@@ -63,6 +63,22 @@
           "edit": ["supported", "supportOrgUnit", "medicalActivities"]
         }
       }
+    },
+    "member": {
+      "edit": false,
+      "delete": false
+    },
+    "editor": {
+      "edit": true,
+      "delete": false
+    },
+    "manager": {
+      "edit": true,
+      "delete": true
+    },
+    "admin": {
+      "edit": true,
+      "delete": true
     }
   },
   "collectionView": {

@@ -11,7 +11,7 @@
         v-icon(v-if="isOnline" color="success") link
         v-icon(v-else color="warning") link_off
       span {{snackbarMessage}}
-    v-menu(v-if="actions" bottom left)
+    v-menu(v-if="actions && actions.length > 0" bottom left)
       v-btn(icon slot="activator")
         v-icon more_vert
       v-list

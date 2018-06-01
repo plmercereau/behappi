@@ -23,10 +23,23 @@
     props: ['icons', 'actions'],
     computed: {
       items () {
-        return MENU
+        let role = this.userRole
+        if (role === 'admin') return MENU
+        return MENU.filter(item => {
+          if (item.schema) {
+            let schema = getSchema(item.schema)
+            if (schema.collectionView[role]) return true
+            else return false
+          } else return true
+        })
       },
       userIsAuthenticated () {
         return this.$store.getters.user !== null && this.$store.getters.user !== undefined
+      },
+      userRole () {
+        if (this.userIsAuthenticated) {
+          return this.$store.getters.user.role
+        } else return 'public'
       }
     },
     methods: {

@@ -29,7 +29,7 @@ Object.keys(allSchemas)
   .map(name => {
     let schema = _.cloneDeep(defaultSchema)
     allSchemas[name].mixins && allSchemas[name].mixins.map(mixinName => {
-      _.mergeWith(schema, allSchemas[mixinName], mergeCustomizer)
+      _.merge(schema, allSchemas[mixinName])
     })
     _.mergeWith(schema, allSchemas[name], mergeCustomizer)
     // merge viewItem and collectionItem from their respective default values

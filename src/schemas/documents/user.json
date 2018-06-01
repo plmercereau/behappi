@@ -38,19 +38,40 @@
         "main": {
           "title": "Main",
           "read": ["name", "email", "role"],
-          "edit": ["name", "email", "role"]
+          "edit": ["name", "role"]
         }
       }
+    },
+    "member": {
+      "edit": false,
+      "delete": false
+    },
+    "editor": {
+      "edit": false,
+      "delete": false
+    },
+    "manager": {
+      "edit": true,
+      "delete": false
+    },
+    "admin": {
+      "edit": true,
+      "delete": true
     }
   },
   "collectionView": {
     "default" : {
       "title": "Users",
-      "uri": "/users/{id}",
+      "subtitle": "${ typeof role === 'undefined' ? '' : role }",
+      "uri": "/users/{id}"
+    },
+    "admin" : {
       "create": {
         "title": "New user",
         "properties": ["email"]
       }
-    }
+    },
+    "editor": {},
+    "manager": {}
   }
 }

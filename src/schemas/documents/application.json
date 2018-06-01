@@ -207,7 +207,37 @@
         "usages": {
           "title": "Usages",
           "read": ["applicationUsages"],
-          "edit": [],
+          "edit": []
+        }
+      }
+    },
+    "member": {
+      "edit": false,
+      "delete": false
+    },
+    "editor": {
+      "edit": false,
+      "delete": false,
+      "sections": {
+        "usages": {
+          "create": "applicationUsages"
+        }
+      }
+    },
+    "manager": {
+      "edit": true,
+      "delete": false,
+      "sections": {
+        "usages": {
+          "create": "applicationUsages"
+        }
+      }
+    },
+    "admin": {
+      "edit": true,
+      "delete": true,
+      "sections": {
+        "usages": {
           "create": "applicationUsages"
         }
       }
@@ -216,7 +246,17 @@
   "collectionView": {
     "default": {
       "title": "Applications",
-      "subtitle": "${ nbUsages ? nbUsages + ' usage' : ''}${ nbUsages > 1 ? 's' : '' }",
+      "subtitle": "${ nbUsages ? nbUsages + ' usage' : ''}${ nbUsages > 1 ? 's' : '' }"
+    },
+    "member": {},
+    "editor": {},
+    "manager": {
+      "create": {
+        "title": "New application",
+        "properties": ["name"]
+      }
+    },
+    "admin": {
       "create": {
         "title": "New application",
         "properties": ["name"]

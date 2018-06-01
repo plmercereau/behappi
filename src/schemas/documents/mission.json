@@ -16,7 +16,10 @@
     },
     "children" : {
       "schemaName": "project",
-      "label": "Projects of the mission"
+      "label": "Projects of the mission",
+      "create": {
+        "title": "New project"
+      }
     },
     "nbProjects": {
       "type": "computed",
@@ -30,12 +33,32 @@
       "sections": {
         "main": {
           "subtitles": ["children"],
-          "read": ["name", "code", "location"],
-          "edit": ["name", "code", "location"]
+          "read": ["name", "shortName", "code", "location"],
+          "edit": ["name", "shortName", "code", "location"]
         },
         "projects": {
           "title": "Projects",
-          "read": ["children"],
+          "read": ["children"]
+        }
+      }
+    },
+    "editor": {
+      "sections": {
+        "projects": {
+          "create": "children"
+        }
+      }
+    },
+    "manager": {
+      "sections": {
+        "projects": {
+          "create": "children"
+        }
+      }
+    },
+    "admin": {
+      "sections": {
+        "projects": {
           "create": "children"
         }
       }
@@ -45,15 +68,21 @@
     "default": {
       "title": "Missions",
       "subtitle": "${ nbProjects ? nbProjects + ' project' : ''}${ nbProjects > 1 ? 's' : '' }",
-      "filters": [[":category", "==", "mission"]],
-      "create": {
-        "title": "New mission",
-        "default": {
-          "category": "mission"
-        }
-      },
+      "filters": [[":_schema", "==", "mission"]],
       "media": {
         "property": "location"
+      }
+    },
+    "member": {},
+    "editor": {},
+    "manager": {
+      "create": {
+        "title": "New mission"
+      }
+    },
+    "admin": {
+      "create": {
+        "title": "New mission"
       }
     }
   }

@@ -169,7 +169,7 @@
     provide () {
       return { parentValidator: this.$validator }
     },
-    props: ['id', 'schema', 'viewName'],
+    props: ['id', 'schema'],
     name: 'ItemDetails',
     mixins: [formMixin],
     data () {
@@ -267,19 +267,26 @@
         return MAP_TYPE
       },
       view () {
-        return this.schema.itemView[this.viewName || 'default'] || this.schema.itemView['default']
+        let role = this.$store.getters.user ? this.$store.getters.user.role : 'public'
+        return _.merge(this.schema.itemView.default || {}, this.schema.itemView[role] || {})
       },
       actions () {
-        let readActions = [
-          {
-            title: 'Edit',
-            method: () => this.edit()
-          },
-          {
-            title: 'Delete',
-            method: () => { this.deleteDialogToggle = !this.deleteDialogToggle }
+        let role = this.$store.getters.user ? this.$store.getters.user.role : 'public'
+        let readActions = []
+        if (this.schema.itemView[role]) {
+          if (this.schema.itemView[role].edit) {
+            readActions.push({
+              title: 'Edit',
+              method: () => this.edit()
+            })
           }
-        ]
+          if (this.schema.itemView[role].delete) {
+            readActions.push({
+              title: 'Delete',
+              method: () => { this.deleteDialogToggle = !this.deleteDialogToggle }
+            })
+          }
+        }
         // if (this.schema.versionable) {
         //   readActions.push({
         //     title: 'New version',

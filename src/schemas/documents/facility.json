@@ -1,38 +1,38 @@
 {
-  "name": "project",
+  "name": "facility",
   "type": "document",
   "mixins": ["orgUnit"],
   "properties": {
     "name": {
-      "label": "Name of the project"
+      "label": "Name of the facility"
     },
     "parent": {
-      "schemaName": "mission",
-      "label": "Mission",
-      "title": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }"
+      "schemaName": "project",
+      "label": "Project",
+      "title": "${typeof parent.shortName === 'undefined' ? parent.name : parent.shortName}"
     },
     "children" : {
-      "schemaName": "facility",
-      "label": "Facilities in the project",
+      "schemaName": "service",
+      "label": "Services of the facility",
       "create": {
-        "title": "New facility"
+        "title": "New service"
       }
     },
     "location": {
       "type": "location",
-      "label": "Location of the project"
+      "label": "Location of the facility"
     }
   },
   "itemView": {
     "default": {
-      "sectionsOrder": ["main", "facilities", "administration"],
+      "sectionsOrder": ["main", "services", "administration"],
       "sections": {
         "main": {
-          "read": ["name", "shortName", "code", "parent", "location"],
-          "edit": ["name", "shortName", "code", "parent", "location"]
+          "read": ["name", "shortName", "parent", "location"],
+          "edit": ["name", "shortName", "parent", "location"]
         },
-        "facilities": {
-          "title": "Facilities",
+        "services": {
+          "title": "Services",
           "read": ["children"]
         }
       }
@@ -61,23 +61,11 @@
   },
   "collectionView": {
     "default": {
-      "title": "Projects",
+      "title": "Facilities",
       "subtitle": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }",
-      "filters": [[":_schema", "==", "project"]],
+      "filters": [[":_schema", "==", "facility"]],
       "media": {
         "property": "location"
-      }
-    },
-    "member": {},
-    "editor": {},
-    "manager": {
-      "create": {
-        "title": "New project"
-      }
-    },
-    "admin": {
-      "create": {
-        "title": "New project"
       }
     }
   }

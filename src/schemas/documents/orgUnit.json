@@ -3,13 +3,20 @@
   "type": "document",
   "mixins": ["timestamp"],
   "collection": "orgUnits",
-  "title": "${ name }",
+  "title": "${ typeof shortName === 'undefined' ? name : shortName }",
   "properties": {
     "name": {
       "type": "string",
       "label": "Name",
       "validation": {
         "required": true,
+        "min": 3
+      }
+    },
+    "shortName": {
+      "type": "string",
+      "label": "Short name",
+      "validation": {
         "min": 3
       }
     },
@@ -85,13 +92,43 @@
       "sections": {
         "main": {
           "title": "General",
-          "read": ["name", "code", "location"],
-          "edit": ["name", "code", "location"]
+          "read": ["name", "shortName"],
+          "edit": ["name", "shortName"]
         },
         "applications": {
           "title": "Applications",
           "read": ["applicationUsages"],
-          "edit": [],
+          "edit": []
+        }
+      }
+    },
+    "member": {
+      "edit": false,
+      "delete": false
+    },
+    "editor": {
+      "edit": true,
+      "delete": false,
+      "sections": {
+        "applications": {
+          "create": "applicationUsages"
+        }
+      }
+    },
+    "manager": {
+      "edit": true,
+      "delete": true,
+      "sections": {
+        "applications": {
+          "create": "applicationUsages"
+        }
+      }
+    },
+    "admin": {
+      "edit": true,
+      "delete": true,
+      "sections": {
+        "applications": {
           "create": "applicationUsages"
         }
       }
@@ -100,11 +137,20 @@
   "collectionView": {
     "default": {
       "title": "Org Units",
-      "sort": [["name", "ASC"]],
+      "sort": [["name", "ASC"]]
+    },
+    "member": {},
+    "editor": {},
+    "manager": {
+      "create": {
+        "properties": ["name"]
+      }
+    },
+    "admin": {
       "create": {
         "properties": ["name"]
       }
     }
   },
-  "searchProperties": ["name"]
+  "searchProperties": ["name", "shortName", "parent.name", "parent.shortName"]
 }

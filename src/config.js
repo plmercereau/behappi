@@ -30,6 +30,14 @@ export const MENU = [
     schema: 'project'
   },
   {
+    icon: 'store_mall_directory',
+    schema: 'facility'
+  },
+  {
+    icon: 'local_hospital',
+    schema: 'service'
+  },
+  {
     icon: 'apps',
     schema: 'application'
   },

@@ -24,11 +24,36 @@
           "edit": ["name", "description"]
         }
       }
+    },
+    "member": {
+      "edit": false,
+      "delete": false
+    },
+    "editor": {
+      "edit": false,
+      "delete": false
+    },
+    "manager": {
+      "edit": true,
+      "delete": true
+    },
+    "admin": {
+      "edit": true,
+      "delete": true
     }
   },
   "collectionView": {
     "default": {
-      "title": "Technologies",
+      "title": "Technologies"
+    },
+    "admin" : {
+      "create": {
+        "title": "New technology",
+        "properties": ["name"]
+      }
+    },
+    "editor": {},
+    "manager": {
       "create": {
         "title": "New technology",
         "properties": ["name"]

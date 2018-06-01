@@ -1,5 +1,24 @@
 import * as firebase from 'firebase'
 
+function setUserData (commit, payload) {
+  commit('setUser', {
+    id: payload.uid,
+    name: payload.displayName,
+    email: payload.email,
+    role: 'member',
+    photoUrl: payload.photoURL
+  })
+  firebase.firestore().collection('users').doc(payload.uid).get().then(res => {
+    if (res.exists) {
+      let user = {
+        id: payload.uid,
+        ...res.data()
+      }
+      commit('setUser', user)
+    }
+  })
+}
+
 export default {
   state: {
     user: null
@@ -17,13 +36,7 @@ export default {
         .then(
           user => {
             commit('setLoading', false)
-            const newUser = {
-              id: user.uid,
-              name: user.displayName,
-              email: user.email,
-              photoUrl: user.photoURL
-            }
-            commit('setUser', newUser)
+            setUserData(commit, user)
             commit('showDrawer')
           }
         )
@@ -42,13 +55,7 @@ export default {
         .then(
           user => {
             commit('setLoading', false)
-            const newUser = {
-              id: user.uid,
-              name: user.displayName,
-              email: user.email,
-              photoUrl: user.photoURL
-            }
-            commit('setUser', newUser)
+            setUserData(commit, user)
             commit('showDrawer')
           }
         )
@@ -67,13 +74,7 @@ export default {
         .then(
           user => {
             commit('setLoading', false)
-            const newUser = {
-              id: user.uid,
-              name: user.displayName,
-              email: user.email,
-              photoUrl: user.photoURL
-            }
-            commit('setUser', newUser)
+            setUserData(commit, user)
             commit('showDrawer')
           }
         )
@@ -92,13 +93,7 @@ export default {
         .then(
           user => {
             commit('setLoading', false)
-            const newUser = {
-              id: user.uid,
-              name: user.displayName,
-              email: user.email,
-              photoUrl: user.photoURL
-            }
-            commit('setUser', newUser)
+            setUserData(commit, user)
             commit('showDrawer')
           }
         )
@@ -117,13 +112,7 @@ export default {
         .then(
           user => {
             commit('setLoading', false)
-            const newUser = {
-              id: user.uid,
-              name: user.displayName,
-              email: user.email,
-              photoUrl: user.photoURL
-            }
-            commit('setUser', newUser)
+            setUserData(commit, user)
             commit('showDrawer')
           }
         )
@@ -142,13 +131,7 @@ export default {
         .then(
           user => {
             commit('setLoading', false)
-            const newUser = {
-              id: user.uid,
-              name: user.displayName,
-              email: user.email,
-              photoUrl: user.photoURL
-            }
-            commit('setUser', newUser)
+            setUserData(commit, user)
             commit('showDrawer')
           }
         )
@@ -161,12 +144,7 @@ export default {
         )
     },
     autoSignIn ({commit}, payload) {
-      commit('setUser', {
-        id: payload.uid,
-        name: payload.displayName,
-        email: payload.email,
-        photoUrl: payload.photoURL
-      })
+      setUserData(commit, payload)
       commit('showDrawer')
     },
     logout ({commit}) {
