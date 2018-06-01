@@ -23,7 +23,7 @@
             :showButton="activeTab === sectionName",
             fab,
             :parentData="doc", :propertyName="view.sections[sectionName].create", :parentSchema="schema")
-          v-tabs(v-model="tab")
+          v-tabs(v-model="tab", slider-color="primary")
             v-tab(v-for="sectionName in view.sectionsOrder",
               :key="'tab-'+sectionName",
               v-show="isActiveTab(sectionName)",
