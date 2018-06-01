@@ -49,7 +49,7 @@
           "edit": ["code", "location"]
         },
         "projects": {
-          "subtitles": ["children"],
+          "hideLabels": ["children"],
           "title": "Projects",
           "read": ["children"]
         },

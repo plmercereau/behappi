@@ -26,7 +26,7 @@
   "collectionView": {
     "default": {
       "title": "Services",
-      "subtitle": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }${ (typeof parent.parent !== 'undefined') ? ', ' + (typeof parent.parent.shortName === 'undefined' ? parent.parent.name : parent.parent.shortName) : '' }",
+      "subtitle": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }${ (typeof parent.parent !== 'undefined') ? (typeof parent.parent.shortName === 'undefined' ? ', ' + (parent.parent.name || parent.parent.shortName || '') : '') : '' }",
       "filters": [[":_schema", "==", "service"]]
     },
     "manager": {

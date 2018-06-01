@@ -51,7 +51,7 @@
           "edit": ["location"]
         },
         "facilities": {
-          "subtitles": ["children"],
+          "hideLabels": ["children"],
           "title": "Health facilities",
           "read": ["children"]
         }

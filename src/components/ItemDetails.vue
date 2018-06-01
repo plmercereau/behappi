@@ -128,7 +128,7 @@
                               gmap-marker(v-if="schema.properties[name].markers && (typeof schema.properties[name].markers.self === 'boolean')" :position="form['reported'+name]")
                 v-card-text(v-else)
                   div(v-for="name in view.sections[sectionName].read" v-if="doc[name]" :key="name")
-                    div(:class="(view.sections[sectionName].subtitles && view.sections[sectionName].subtitles.includes(name)) ? 'title' : 'caption'") {{schema.properties[name].label || '' }}
+                    div(v-if="!(view.sections[sectionName].hideLabels && view.sections[sectionName].hideLabels.includes(name))") {{schema.properties[name].label || '' }}
                     div(class="subheading")
                       div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? doc[name]: doc[name] | labelEnum(schema.properties[name].enum)}}
                       a(v-else-if="schema.properties[name].type === 'link'" :href="doc[name].value" target="_blank") {{doc[name].text}}
@@ -257,7 +257,7 @@
       },
       subtitle (property, doc) {
         let withComputed = addComputedValues(property.schema, doc)
-        let template = property.subtitle || property.schema.collectionView.default.subtitle || ''
+        let template = _.has(property, 'subtitle') ? property.subtitle : property.schema.collectionView.default.subtitle || ''
         return _.template(template)(withComputed)
       },
       sectionTitle (tabName) {

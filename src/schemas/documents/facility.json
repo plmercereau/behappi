@@ -13,6 +13,7 @@
     },
     "children" : {
       "schemaName": "service",
+      "subtitle": "",
       "label": "Services of the facility",
       "create": {
         "title": "New service",
@@ -34,7 +35,7 @@
         },
         "services": {
           "title": "Services",
-          "subtitles": ["children"],
+          "hideLabels": ["children"],
           "read": ["children"]
         }
       }

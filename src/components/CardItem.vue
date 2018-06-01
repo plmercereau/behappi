@@ -7,7 +7,7 @@
       :doc="doc")
     v-card-title(primary-title)
       div
-        div(class="headline mb-0") {{title}}
+        h3(class="headline mb-0") {{title}}
         slot
       v-spacer
       i(v-if="schema.mixins && schema.mixins.includes('workflow')") {{doc.status}}
