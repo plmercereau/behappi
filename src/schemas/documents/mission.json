@@ -40,7 +40,6 @@
       "sectionsOrder": ["main", "coordination", "projects", "applications"],
       "sections": {
         "main": {
-          "subtitles": ["children"],
           "read": ["name", "shortName", "area"],
           "edit": ["name", "shortName", "area"]
         },
@@ -50,6 +49,7 @@
           "edit": ["code", "location"]
         },
         "projects": {
+          "subtitles": ["children"],
           "title": "Projects",
           "read": ["children"]
         },

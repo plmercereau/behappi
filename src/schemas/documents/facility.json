@@ -15,7 +15,8 @@
       "schemaName": "service",
       "label": "Services of the facility",
       "create": {
-        "title": "New service"
+        "title": "New service",
+        "inheritedProperties": ["location", "zoom"]
       }
     },
     "location": {
@@ -33,6 +34,7 @@
         },
         "services": {
           "title": "Services",
+          "subtitles": ["children"],
           "read": ["children"]
         }
       }

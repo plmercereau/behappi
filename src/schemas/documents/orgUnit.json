@@ -49,8 +49,7 @@
       "create": {
         "title": "New org Unit",
         "properties": ["name"],
-        "parentProperty": "parent",
-        "inheritedProperties": ["location", "zoom"]
+        "parentProperty": "parent"
       }
     },
     "nbChildren": {

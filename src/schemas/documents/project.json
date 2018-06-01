@@ -16,7 +16,8 @@
       "label": "Facilities in the project",
       "subtitle": "todo - type",
       "create": {
-        "title": "New facility"
+        "title": "New facility",
+        "inheritedProperties": ["location", "zoom"]
       }
     },
     "location": {
@@ -50,6 +51,7 @@
           "edit": ["location"]
         },
         "facilities": {
+          "subtitles": ["children"],
           "title": "Health facilities",
           "read": ["children"]
         }
