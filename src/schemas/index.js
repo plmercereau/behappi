@@ -188,5 +188,10 @@ export function addComputedValues (schema, doc) {
     .forEach(propName => {
       doc[propName] = computedPropertyValue(schema.properties[propName], doc)
     })
+  Object.keys(schema.properties)
+    .filter(propName => (schema.properties[propName].type === 'collection' && schema.properties[propName].options))
+    .forEach(propName => {
+      doc[`${propName}Item`] = schema.properties[propName].options[doc[propName]]
+    })
   return doc
 }

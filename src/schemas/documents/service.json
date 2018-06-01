@@ -43,5 +43,6 @@
 
       }
     }
-  }
+  },
+  "searchProperties": ["parent.parent.name", "parent.parent.shortName"]
 }

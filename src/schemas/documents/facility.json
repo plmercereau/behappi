@@ -23,6 +23,21 @@
     "location": {
       "type": "location",
       "label": "Location of the facility"
+    },
+    "type": {
+      "type": "collection",
+      "component": "select",
+      "label": "Type",
+      "description": "Type of facility",
+      "unique": true,
+      "create": false,
+      "options": {
+        "dispensary": "Dispensary",
+        "healthCentre": "Health Centre",
+        "nursingHome": "Nursing Home",
+        "maternityHome": "Maternity Home",
+        "hospital": "Hospital"
+      }
     }
   },
   "itemView": {
@@ -30,8 +45,8 @@
       "sectionsOrder": ["main", "services", "administration"],
       "sections": {
         "main": {
-          "read": ["name", "shortName", "parent", "location"],
-          "edit": ["name", "shortName", "parent", "location"]
+          "read": ["name", "shortName", "parent", "type", "location"],
+          "edit": ["name", "shortName", "parent", "type", "location"]
         },
         "services": {
           "title": "Services",
@@ -65,7 +80,7 @@
   "collectionView": {
     "default": {
       "title": "Health facilities",
-      "subtitle": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }",
+      "subtitle": "${typeof typeItem === 'undefined' ? '' : typeItem + ', '}${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }",
       "filters": [[":_schema", "==", "facility"]],
       "media": {
         "property": "location"
@@ -82,8 +97,8 @@
       "create": {
         "title": "New project",
         "properties": ["parent", "name"]
-
       }
     }
-  }
+  },
+  "searchProperties": ["typeItem"]
 }

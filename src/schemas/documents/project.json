@@ -14,7 +14,7 @@
     "children" : {
       "schemaName": "facility",
       "label": "Facilities in the project",
-      "subtitle": "todo - type",
+      "subtitle": "${typeof typeItem === 'undefined' ? '' : typeItem}",
       "create": {
         "title": "New facility",
         "inheritedProperties": ["location", "zoom"]
