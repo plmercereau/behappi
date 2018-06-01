@@ -126,7 +126,7 @@
               this.schema.searchProperties
                 .filter(path => _.get(doc, path))
                 .forEach(path => {
-                  if (_.get(doc, path).toLowerCase().includes(this.search.toLowerCase())) found = true
+                  if (_.deburr(_.get(doc, path).toLowerCase()).includes(_.deburr(this.search.toLowerCase()))) found = true
                 })
             }
             return found
