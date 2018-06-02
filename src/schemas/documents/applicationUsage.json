@@ -10,8 +10,8 @@
       "type": "collection",
       "component": "list",
       "schemaName": "application",
-      "label": "Application",
-      "description": "Application",
+      "label": "Data tool",
+      "description": "Data tool",
       "autocomplete": true,
       "unique": true,
       "create": false
@@ -21,7 +21,7 @@
       "component": "list",
       "schemaName": "orgUnit",
       "label": "Organisation Unit",
-      "description": "Org unit where the application is used",
+      "description": "Org unit where the tool is used",
       "autocomplete": true,
       "unique": true,
       "create": false
@@ -83,7 +83,7 @@
   },
   "collectionView": {
     "default": {
-      "title": "Application usage"
+      "title": "Data tool usage"
     }
   }
 }

@@ -9,7 +9,7 @@
     "name": {
       "type": "string",
       "label": "Name",
-      "description": "Name of the application",
+      "description": "Name of the data tool",
       "validation": {
         "required": true,
         "min": 3
@@ -21,7 +21,7 @@
       "schemaName": "applicationUsage",
       "label": "Application usages",
       "title": "${orgUnit.name}",
-      "description": "Usages of this application",
+      "description": "Usages of this data tool",
       "autocomplete": true,
       "unique": false,
       "create": {
@@ -35,7 +35,7 @@
       "component": "chip",
       "schemaName": "purpose",
       "label": "Primary purpose",
-      "description": "Primary purpose of the application",
+      "description": "Primary purpose of the data tool",
       "autocomplete": true,
       "unique": true,
       "create": true
@@ -245,20 +245,20 @@
   },
   "collectionView": {
     "default": {
-      "title": "Applications",
+      "title": "Data Tools",
       "subtitle": "${ nbUsages ? nbUsages + ' usage' : ''}${ nbUsages > 1 ? 's' : '' }"
     },
     "member": {},
     "editor": {},
     "manager": {
       "create": {
-        "title": "New application",
+        "title": "New data tool",
         "properties": ["name"]
       }
     },
     "admin": {
       "create": {
-        "title": "New application",
+        "title": "New data tool",
         "properties": ["name"]
       }
     }

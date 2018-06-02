@@ -61,13 +61,13 @@
       "type": "collection",
       "component": "dropdown",
       "schemaName": "applicationUsage",
-      "label": "Application usages",
+      "label": "Tool usages",
       "title": "${application.name}",
       "autocomplete": true,
-      "description": "Usages of this application",
+      "description": "Usages of this tool",
       "unique": false,
       "create": {
-        "title": "New application usage",
+        "title": "New tool usage",
         "parentProperty": "orgUnit",
         "properties": ["application"]
       }
@@ -103,7 +103,7 @@
           "edit": ["name", "shortName"]
         },
         "applications": {
-          "title": "Applications",
+          "title": "Data tools",
           "read": ["applicationUsages"],
           "edit": []
         }
