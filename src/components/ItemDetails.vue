@@ -179,7 +179,7 @@
   import * as firebase from 'firebase'
   import _ from 'lodash'
   import {formMixin} from '../mixins'
-  import {addComputedValues, filterCollection, sortCollection, testDocConditions, updateDocument} from '../schemas'
+  import {addComputedValues, sortCollection, testDocConditions, updateDocument} from '../schemas'
   import {MAP_TYPE} from '../config'
 
   export default {
