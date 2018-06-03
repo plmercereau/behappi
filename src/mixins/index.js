@@ -1,4 +1,4 @@
-import {filterCollection} from '../schemas'
+import {filterCollection, testDocConditions} from '../schemas'
 import * as firebase from 'firebase'
 import _ from 'lodash'
 import {DEFAULT_CHIP_PROPERTY, DEFAULT_LOCATION, DEFAULT_ZOOM} from '../config'
@@ -60,9 +60,11 @@ export var formMixin = {
               filterCollection(this.schema.properties[key].schema.collectionView.default.filters, snapshot.docs)
                 .forEach(doc => {
                   // TODO doc.data() ne charge pas les references firebase a l'interieur de doc.data()
+                  let data = doc.data()
                   form[`${key}Collection`].push({
                     value: doc.id,
-                    text: titleTemplate(doc.data())
+                    text: titleTemplate({doc: data}),
+                    ...data
                   })
                 })
             })
@@ -84,64 +86,71 @@ export var formMixin = {
       Object.keys(initialForm)
         .filter(key => (maskedProperties.indexOf(key) > -1))
         .map(key => {
-          let val = doc[key]
-          if (schema.properties[key].type === 'location') {
-            val = {
-              latitude: initialForm[`reported${key}`].lat,
-              longitude: initialForm[`reported${key}`].lng
-            }
-            const zoomProp = schema.properties[key].zoom
-            if (!_.isEqual(doc[zoomProp], initialForm[zoomProp])) {
-              cleanedForm[zoomProp] = initialForm[zoomProp]
-            }
-          } else if (schema.properties[key].type !== 'collection') {
-            val = initialForm[key]
-          }
-          if (schema.properties[key].type === 'collection') {
-            if (initialForm[key]) {
-              if (schema.properties[key].unique) {
-                if (schema.properties[key].schema) {
-                  val = firebase.firestore().collection(schema.properties[key].schema.collection).doc(initialForm[key].value || initialForm[key])
-                  if (((val || doc[key]) && (val !== doc[key])) || (!_.isEqual(val.id, doc[key].id))) cleanedForm[key] = val
-                } else {
-                  if (!_.isEqual(doc[key], initialForm[key])) cleanedForm[key] = initialForm[key]
-                }
-              } else {
-                val = initialForm[key].reduce((obj, id) => {
-                  let ref = true
-                  if (schema.properties[key].schema) {
-                    if (_.isObject(id)) {
-                      ref = firebase.firestore().collection(schema.properties[key].schema.collection).doc(id.value)
-                    } else if (schema.properties[key].component === 'chip') {
-                      ref = firebase.firestore().collection(schema.properties[key].schema.collection).doc()
-                      let propertyName = (schema.properties[key].schema.title && schema.properties[key].schema.title.property) || DEFAULT_CHIP_PROPERTY
-                      let newValue = { // TODO addDocument
-                        [propertyName]: id,
-                        userId: this.$store.getters.user.id
-                      }
-                      ref.set(newValue)
-                    } else {
-                      ref = firebase.firestore().collection(schema.properties[key].schema.collection).doc(id)
-                    }
-                  }
-                  obj[ref.id || id] = ref
-                  return obj
-                }, {})
-                doc[key] && Object.keys(doc[key]).forEach(id => {
-                  if (!val[id]) {
-                    val[id] = firebase.firestore.FieldValue.delete()
-                  } else {
-                    delete val[id]
-                  }
-                })
-                cleanedForm[key] = val
+          if (testDocConditions(initialForm, schema.properties[key].showConditions)) {
+            let val = doc[key]
+            if (schema.properties[key].type === 'location') {
+              val = {
+                latitude: initialForm[`reported${key}`].lat,
+                longitude: initialForm[`reported${key}`].lng
               }
+              const zoomProp = schema.properties[key].zoom
+              if (!_.isEqual(doc[zoomProp], initialForm[zoomProp])) {
+                cleanedForm[zoomProp] = initialForm[zoomProp]
+              }
+            } else if (schema.properties[key].type !== 'collection') {
+              val = initialForm[key]
+            }
+            if (schema.properties[key].type === 'collection') {
+              if (initialForm[key]) {
+                if (schema.properties[key].unique) {
+                  if (schema.properties[key].schema) {
+                    val = firebase.firestore().collection(schema.properties[key].schema.collection).doc(initialForm[key].value || initialForm[key])
+                    if (((val || doc[key]) && (val !== doc[key])) || (!_.isEqual(val.id, doc[key].id))) cleanedForm[key] = val
+                  } else {
+                    if (!_.isEqual(doc[key], initialForm[key])) cleanedForm[key] = initialForm[key]
+                  }
+                } else {
+                  val = initialForm[key].reduce((obj, id) => {
+                    let ref = true
+                    if (schema.properties[key].schema) {
+                      if (_.isObject(id)) {
+                        ref = firebase.firestore().collection(schema.properties[key].schema.collection).doc(id.value)
+                      } else if (schema.properties[key].component === 'chip') {
+                        ref = firebase.firestore().collection(schema.properties[key].schema.collection).doc()
+                        let propertyName = (schema.properties[key].schema.title && schema.properties[key].schema.title.property) || DEFAULT_CHIP_PROPERTY
+                        let newValue = { // TODO addDocument
+                          [propertyName]: id,
+                          userId: this.$store.getters.user.id
+                        }
+                        ref.set(newValue)
+                      } else {
+                        ref = firebase.firestore().collection(schema.properties[key].schema.collection).doc(id)
+                      }
+                    }
+                    obj[ref.id || id] = ref
+                    return obj
+                  }, {})
+                  doc[key] && Object.keys(doc[key]).forEach(id => {
+                    if (!val[id]) {
+                      val[id] = firebase.firestore.FieldValue.delete()
+                    } else {
+                      delete val[id]
+                    }
+                  })
+                  cleanedForm[key] = val
+                }
+              }
+            } else {
+              if (!_.isEqual(doc[key], val)) cleanedForm[key] = val
             }
           } else {
-            if (!_.isEqual(doc[key], val)) cleanedForm[key] = val
+            cleanedForm[key] = firebase.firestore.FieldValue.delete()
           }
         })
       return cleanedForm
+    },
+    options (propertyName) {
+      return filterCollection(_.get(this.schema, `properties[${propertyName}].filters`), this.form[`${propertyName}Collection`])
     },
     updateMapCenter (fieldName) { // TODO move map editor into a dedicated component
       this.form[fieldName] = _.clone(this.form[`reported${fieldName}`])

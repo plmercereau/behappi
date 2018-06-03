@@ -15,7 +15,7 @@
     computed: {
       title () {
         let titleTemplate = _.template(this.property.title || this.schema.title)
-        return _.isObject(this.doc) && this.doc.id ? titleTemplate(this.doc) : ''
+        return _.isObject(this.doc) && this.doc.id ? titleTemplate({doc: this.doc}) : ''
       }
     }
     // TODO create a card-media that can be used in other cards (e.g. project or mission list)

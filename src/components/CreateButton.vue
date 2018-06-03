@@ -25,7 +25,7 @@
               autofocus
               v-if="schema.properties[name].type==='collection'"
               v-model="form[name]",
-              :items="form[name+'Collection']"
+              :items="options(name)"
               :label="schema.properties[name].placeholder || schema.properties[name].label",
               single-line,
               :required="schema.properties[name].validation && schema.properties[name].validation.required",

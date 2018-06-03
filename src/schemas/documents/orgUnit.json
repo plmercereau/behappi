@@ -3,7 +3,7 @@
   "type": "document",
   "mixins": ["timestamp"],
   "collection": "orgUnits",
-  "title": "${ typeof shortName === 'undefined' ? name : shortName }",
+  "title": "${ doc.shortName || doc.name }",
   "properties": {
     "name": {
       "type": "string",
@@ -53,9 +53,8 @@
       }
     },
     "nbChildren": {
-      "type": "computed",
-      "aggregation": "count",
-      "path": "children"
+      "type": "number",
+      "computed": "${doc.children ? Object.keys(doc.children).length : 0}"
     },
     "applicationUsages": {
       "type": "collection",

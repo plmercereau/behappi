@@ -3,7 +3,7 @@
   "mixins": ["timestamp"],
   "type": "document",
   "collection": "users",
-  "title": "${name || email}",
+  "title": "${ doc.name || doc.email}",
   "versionable": true,
   "properties": {
     "name": {
@@ -94,7 +94,7 @@
   "collectionView": {
     "default" : {
       "title": "Users",
-      "subtitle": "${ typeof role === 'undefined' ? '' : role }",
+      "subtitle": "${ _.get(doc, 'role') }",
       "uri": "/users/{id}"
     },
     "admin" : {

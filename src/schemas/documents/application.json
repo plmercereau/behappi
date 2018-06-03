@@ -3,7 +3,7 @@
   "type": "document",
   "mixins": ["timestamp"],
   "collection": "applications",
-  "title": "${name}",
+  "title": "${doc.name}",
   "versionable": true,
   "properties": {
     "name": {
@@ -20,7 +20,7 @@
       "component": "dropdown",
       "schemaName": "applicationUsage",
       "label": "Application usages",
-      "title": "${orgUnit.name}",
+      "title": "${doc.orgUnit.name}",
       "description": "Usages of this data tool",
       "autocomplete": true,
       "unique": false,
@@ -166,13 +166,17 @@
     "supported": {
       "type": "boolean",
       "label": "Supported by OCB ",
-      "description": "Currently supported by OCB (Ehealth or other, see contact)"
+      "description": "Currently supported by OCB (Ehealth or other, see contact)",
+      "options": {
+        "true": "Yes",
+        "false": "No"
+      }
     },
     "supportOrgUnit": {
       "type": "collection",
       "component": "dropdown",
       "schemaName": "orgUnit",
-      "visible": [[":supported", "==", true]],
+      "showConditions": [[":supported", "==", true]],
       "label": "Support contact",
       "description": "Support contact",
       "autocomplete": true,
@@ -185,14 +189,14 @@
       "schemaName": "medicalActivity",
       "label": "Medical activities",
       "description": "Medical activities",
+      "filters": [[":name", "==", "jkbk"]],
       "autocomplete": true,
       "unique": false,
       "create": true
     },
     "nbUsages": {
-      "type": "computed",
-      "aggregation": "count",
-      "path": "applicationUsages"
+      "type": "number",
+      "computed": "${doc.applicationUsages ? Object.keys(doc.applicationUsages).length : 0}"
     }
   },
   "itemView": {
@@ -246,7 +250,7 @@
   "collectionView": {
     "default": {
       "title": "Data Tools",
-      "subtitle": "${ nbUsages ? nbUsages + ' usage' : ''}${ nbUsages > 1 ? 's' : '' }"
+      "subtitle": "${ doc.nbUsages ? doc.nbUsages + ' usage' + (doc.nbUsages > 1 ? 's' : '') : ''}"
     },
     "member": {},
     "editor": {},

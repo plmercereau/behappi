@@ -28,7 +28,7 @@
     "children" : {
       "schemaName": "project",
       "label": "Projects of the mission",
-      "subtitle": "${ nbChildren ? nbChildren + (nbChildren > 1 ? ' health facilities' : ' health facility'): ''}",
+      "subtitle": "${ doc.nbChildren ? doc.nbChildren + (doc.nbChildren > 1 ? ' health facilities' : ' health facility'): ''}",
       "create": {
         "title": "New project",
         "inheritedProperties": ["location", "zoom", "area", "zoomArea"]
@@ -80,7 +80,7 @@
   "collectionView": {
     "default": {
       "title": "Missions",
-      "subtitle": "${ nbChildren ? nbChildren + ' project' : ''}${ nbChildren > 1 ? 's' : '' }",
+      "subtitle": "${doc.nbChildren ? (doc.nbChildren + ' project' + (doc.nbChildren > 1 ? 's' : '')) : ''}",
       "filters": [[":_schema", "==", "mission"]],
       "media": {
         "property": "area"

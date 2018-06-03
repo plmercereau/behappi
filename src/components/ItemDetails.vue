@@ -34,7 +34,7 @@
               v-card
                 v-card-text(v-if="editToggle")
                   form(@submit.prevent="saveItem")
-                    template(v-for="name in view.sections[sectionName].edit")
+                    template(v-for="name in view.sections[sectionName].edit" v-if="isVisibleField(name)")
                       v-text-field(v-if="schema.properties[name].type==='string'",
                         :hint="schema.properties[name].description",
                         v-model="form[name]",
@@ -44,6 +44,15 @@
                         v-validate.initial="schema.properties[name].validation",
                         :error-messages="errors.collect(name)",
                         :data-vv-name="name")
+                      v-radio-group(v-else-if="schema.properties[name].type==='boolean'",
+                        :label="schema.properties[name].label",
+                        v-model="form[name]",
+                        :required="schema.properties[name].validation && schema.properties[name].validation.required",
+                        v-validate.initial="schema.properties[name].validation",
+                        :error-messages="errors.collect(name)",
+                        :data-vv-name="name")
+                        v-radio(key="true" :label="schema.properties[name].options['true'] || 'True'" :value="true")
+                        v-radio(key="false" :label="schema.properties[name].options['false'] || 'False'" :value="false")
                       link-field(v-else-if="schema.properties[name].type==='link'",
                         :required="schema.properties[name].required",
                         v-model="form[name]",
@@ -61,9 +70,9 @@
                           v-validate.initial="schema.properties[name].validation",
                           :error-messages="errors.collect(name)",
                           :data-vv-name="name")
-                            v-radio(v-for="item in form[name+'Collection']" :key="item.value" :label="item.text" :value="item.value")
+                            v-radio(v-for="item in options(name)" :key="item.value" :label="item.text" :value="item.value")
                           div(v-else) {{schema.properties[name].label || '' }}
-                            v-checkbox(v-for="item in form[name+'Collection']",
+                            v-checkbox(v-for="item in options(name)",
                               :key="name + (item.value || item)",
                               :label="item.text || schema.properties[name].options[item]",
                               :required="schema.properties[name].validation && schema.properties[name].validation.required",
@@ -82,14 +91,14 @@
                           :deletable-chips="schema.properties[name].component === 'chip'",
                           :autocomplete="exists(schema.properties[name].autocomplete) ? schema.properties[name].autocomplete : true",
                           v-model="form[name]",
-                          :items="form[name+'Collection']"
+                          :items="options(name)"
                           :label="schema.properties[name].label",
                           :required="schema.properties[name].validation && schema.properties[name].validation.required",
                           :clearable="!(schema.properties[name].validation && schema.properties[name].validation.required)",
                           v-validate.initial="schema.properties[name].validation",
                           :error-messages="errors.collect(name)",
                           :data-vv-name="name")
-                      v-container(v-else-if="schema.properties[name].type==='location'", fluid ,grid-list-md)
+                      v-container(v-else-if="schema.properties[name].type==='location'", fluid, grid-list-md)
                         v-layout(row, wrap)
                           v-flex(d-flex xs12 sm6 md4)
                             v-container(fluid)
@@ -127,10 +136,12 @@
                             style="width: 480px; height: 300px")
                               gmap-marker(v-if="schema.properties[name].markers && (typeof schema.properties[name].markers.self === 'boolean')" :position="form['reported'+name]")
                 v-card-text(v-else)
-                  div(v-for="name in view.sections[sectionName].read" v-if="doc[name]" :key="name")
+                  div(v-for="name in view.sections[sectionName].read" v-if="typeof doc[name] !== 'undefined'" :key="name")
                     div(v-if="!(view.sections[sectionName].hideLabels && view.sections[sectionName].hideLabels.includes(name))" class="grey--text") {{schema.properties[name].label || '' }}
                     div(class="subheading")
-                      div(v-if="schema.properties[name].type === 'string'") {{!schema.properties[name].enum ? doc[name]: doc[name] | labelEnum(schema.properties[name].enum)}}
+                      div(v-if="schema.properties[name].type === 'string'") {{doc[name]}}
+                      div(v-else-if="schema.properties[name].type === 'number'") {{doc[name]}}
+                      div(v-else-if="schema.properties[name].type === 'boolean'") {{doc[name] ? schema.properties[name].options['true'] || 'True' : schema.properties[name].options['false'] || 'False'}}
                       a(v-else-if="schema.properties[name].type === 'link'" :href="doc[name].value" target="_blank") {{doc[name].text}}
                       div(v-else-if="schema.properties[name].type === 'date'") {{doc[name] | moment('DD/MM/YYYY')}}
                       template(v-else-if="schema.properties[name].type === 'collection'")
@@ -168,7 +179,7 @@
   import * as firebase from 'firebase'
   import _ from 'lodash'
   import {formMixin} from '../mixins'
-  import {addComputedValues, sortCollection, updateDocument} from '../schemas'
+  import {addComputedValues, filterCollection, sortCollection, testDocConditions, updateDocument} from '../schemas'
   import {MAP_TYPE} from '../config'
 
   export default {
@@ -187,8 +198,7 @@
       }
     },
     methods: {
-      sortedCollection (collectionName) {
-        // TODO other than string compare
+      sortedCollection (collectionName) { // TODO other than string compare
         let collection = []
         if (this.schema.properties[collectionName].schema) {
           let sortProperties = _.get(this.schema.properties[collectionName].schema, 'collectionView.default.sort')
@@ -229,14 +239,19 @@
             let docRef = firebase.firestore().collection(this.schema.collection).doc(this.id)
             let form = this.constructDataWithProperties(Object.keys(this.schema.properties))
             if (!_.isEmpty(form)) {
-              updateDocument(docRef, form)
+              updateDocument(docRef, form).then(() => {
+                this.reset()
+              })
             }
             this.editToggle = false
-            this.reset()
           } else {
             alert('Some inputs of the form are not valid. Please correct them before saving the document')
           }
         })
+      },
+      isVisibleField (fieldName) {
+        if (_.get(this.schema, `properties[${fieldName}].computed`)) return false
+        return testDocConditions(this.form, this.schema.properties[fieldName].showConditions)
       },
       deleteItem () {
         firebase.firestore().collection(this.schema.collection).doc(this.id).delete().then(() => {
@@ -245,12 +260,12 @@
           console.log(error)
         })
       },
-      title (propertyName, value) {
+      title (propertyName, value) { // TODO set as a filter value | title(property) and include boolean components
         if (this.schema.properties[propertyName].schema) { // TODO a bit messy and not correct for options
           let fromRootDoc = Boolean(this.schema.properties[propertyName].title)
           let titleString = fromRootDoc ? this.schema.properties[propertyName].title : _.get(this.schema.properties[propertyName], 'schema.title')
           let titleTemplate = _.template(titleString)
-          return titleTemplate(value ? this.doc[propertyName][value.id || value] : (fromRootDoc ? this.doc : this.doc[propertyName]))
+          return titleTemplate({doc: value ? this.doc[propertyName][value.id || value] : (fromRootDoc ? this.doc : this.doc[propertyName])})
         } else if (this.schema.properties[propertyName].options) {
           return value ? this.schema.properties[propertyName].options[value.id || value] : this.schema.properties[propertyName].options[this.doc[propertyName]]
         } else return this.doc[propertyName]
@@ -258,10 +273,10 @@
       subtitle (property, doc) {
         let withComputed = addComputedValues(property.schema, doc)
         let template = _.has(property, 'subtitle') ? property.subtitle : property.schema.collectionView.default.subtitle || ''
-        return _.template(template)(withComputed)
+        return _.template(template)({doc: withComputed})
       },
       sectionTitle (tabName) {
-        return _.isObject(this.doc) && this.doc.id ? _.template(this.view.sections[tabName].title)(this.doc) : ''
+        return _.isObject(this.doc) && this.doc.id ? _.template(this.view.sections[tabName].title)({doc: this.doc}) : ''
       },
       sectionErrors (tabName) {
         let properties = _.isObject(this.doc) && this.doc.id && this.view.sections[tabName].edit
@@ -273,7 +288,7 @@
     },
     computed: {
       docTitle () {
-        return _.isObject(this.doc) && this.doc.id ? _.template(this.schema.title)(this.doc) : ''
+        return _.isObject(this.doc) && this.doc.id ? _.template(this.schema.title)({doc: this.doc}) : ''
       },
       activeTab () {
         return this.view.sectionsOrder[Number(this.tab)]

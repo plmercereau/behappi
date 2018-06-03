@@ -3,7 +3,7 @@
   "type": "document",
   "mixins": ["timestamp"],
   "collection": "medicalActivities",
-  "title": "${name}",
+  "title": "${doc.name}",
   "properties": {
     "name": {
       "type": "string",

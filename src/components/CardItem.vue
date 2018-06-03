@@ -26,7 +26,7 @@
       },
       title () { // TODO merge with other title methods?
         let title = _.template(this.schema.title)
-        return _.isObject(this.doc) && this.doc.id ? title(this.doc) : ''
+        return _.isObject(this.doc) && this.doc.id ? title({doc: this.doc}) : ''
       }
     }
     // TODO create a card-media that can be used in other cards (e.g. project or mission list)

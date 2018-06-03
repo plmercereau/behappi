@@ -3,7 +3,7 @@
   "type": "document",
   "mixins": ["timestamp", "workflow"],
   "collection": "applicationUsages",
-  "title": "${ application.name } in ${ orgUnit.name }",
+  "title": "${ doc.application.name } in ${ doc.orgUnit.name }",
   "versionable": true,
   "properties": {
     "application": {

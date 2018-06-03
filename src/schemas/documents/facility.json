@@ -9,7 +9,7 @@
     "parent": {
       "schemaName": "project",
       "label": "Project",
-      "title": "${typeof parent.shortName === 'undefined' ? parent.name : parent.shortName}"
+      "title": "${_.get(doc, 'parent.shortName') || _.get(doc, 'parent.name')}"
     },
     "children" : {
       "schemaName": "service",
@@ -80,7 +80,7 @@
   "collectionView": {
     "default": {
       "title": "Health facilities",
-      "subtitle": "${typeof typeItem === 'undefined' ? '' : typeItem + ', '}${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }",
+      "subtitle": "${ _.get(doc, 'parent.shortName') || _.get(doc, 'parent.name')}, ${ _.get(doc, 'parent.parent.shortName') || _.get(doc, 'parent.parent.name')}${ doc.nbChildren ? ', ' + doc.nbChildren + ' service' + (doc.nbChildren > 1 ? 's' : ''): ''}",
       "filters": [[":_schema", "==", "facility"]],
       "media": {
         "property": "location"
@@ -100,5 +100,5 @@
       }
     }
   },
-  "searchProperties": ["typeItem"]
+  "searchProperties": ["parent.parent.name", "parent.parent.shortName"]
 }

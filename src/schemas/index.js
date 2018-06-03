@@ -123,27 +123,38 @@ export function addDocument (schema, data, property) {
   return firebase.firestore().collection(schema.collection).add(getInitialDefaultData(schema, data, property))
 }
 
+function testCondition (source, operator, destination) {
+  const op = operator.toLowerCase()
+  const operations = {
+    '==': (src, dest) => (src === dest),
+    '': (src, dest) => (src !== dest),
+    '>': (src, dest) => (src > dest),
+    '>=': (src, dest) => (src >= dest),
+    '<': (src, dest) => (src < dest),
+    '<=': (src, dest) => (src <= dest),
+    'in': (src, dest) => (_.includes(dest, src))
+  }
+  return operations[op] ? operations[op](source, destination) : true
+}
+
+export function testDocCondition (doc, condition) {
+  let [source, operator, destination] = condition
+  if (_.isString(source) && source.charAt(0) === ':') source = _.get(doc, source.substr(1))
+  if (_.isString(destination) && destination.charAt(0) === ':') destination = _.get(doc, destination.substr(1))
+  if (_.isString(destination) && destination === '{userId}') destination = this.$store.getters.user.id
+  return testCondition(source, operator, destination)
+}
+
+export function testDocConditions (doc, conditions) {
+  if (_.isArray(conditions)) {
+    return conditions.some(filter => testDocCondition(doc, filter))
+  } else return true
+}
+
 export function filterCollection (filters, collection) {
   return _.isArray(collection) ? collection.filter(doc => {
-    let test = true
-    if (_.isArray(filters)) {
-      filters.forEach(filter => {
-        let docData = _.isFunction(doc.data) ? doc.data() : doc
-        let [source, operator, destination] = filter
-        if (_.isString(source) && source.charAt(0) === ':') source = _.get(docData, source.substr(1))
-        if (_.isString(destination) && destination.charAt(0) === ':') destination = _.get(docData, destination.substr(1))
-        if (_.isString(destination) && destination === '{userId}') destination = this.$store.getters.user.id
-        switch (operator) {
-          case '==': test = (source === destination); break
-          case '!=': test = (source !== destination); break
-          case '>': test = (source > destination); break
-          case '>=': test = (source >= destination); break
-          case '<': test = (source < destination); break
-          case '<=': test = (source <= destination); break
-        }
-      })
-    }
-    return test
+    let docData = _.isFunction(doc.data) ? doc.data() : doc
+    return testDocConditions(docData, filters)
   }) : []
 }
 
@@ -172,26 +183,24 @@ export function propertyValue (schema, path, doc) { // TODO remove?
 }
 
 function computedPropertyValue (property, doc) {
-  let value = ''
-  let rootValue = _.get(doc, property.path)
-  if (rootValue && property.aggregation) {
-    if (property.aggregation.toLowerCase() === 'count') {
-      value = _.keys(rootValue).length
-    }
+  let value = _.template(property.computed)({doc})
+  const types = {
+    'boolean': (val) => (val.toLowerCase() === 'true'),
+    'number': (val) => Number(val)
   }
-  return value
+  return types[property.type] ? types[property.type](value) : value
 }
 
 export function addComputedValues (schema, doc) {
   Object.keys(schema.properties)
-    .filter(propName => (schema.properties[propName].type === 'computed'))
+    .filter(propName => (schema.properties[propName].computed))
     .forEach(propName => {
       doc[propName] = computedPropertyValue(schema.properties[propName], doc)
     })
   Object.keys(schema.properties)
     .filter(propName => (schema.properties[propName].type === 'collection' && schema.properties[propName].options))
     .forEach(propName => {
-      doc[`${propName}Item`] = schema.properties[propName].options[doc[propName]]
+      doc[`${propName}Collection`] = schema.properties[propName].options[doc[propName]]
     })
   return doc
 }

@@ -65,7 +65,7 @@ let config = {
   messagingSenderId: '248401610335'
 }
 
-Vue.filter('labelEnum', function (value, enumeration) {
+Vue.filter('labelEnum', function (value, enumeration) { // TODO not used anymore
   if (value && enumeration) {
     let index = enumeration.findIndex((el) => {
       return (el.value === value)

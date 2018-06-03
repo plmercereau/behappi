@@ -30,9 +30,9 @@
       }
     },
     methods: {
-      subtitle (item) {
+      subtitle (doc) {
         let template = this.schema.collectionView.default.subtitle || ''
-        return _.template(template)(item)
+        return _.template(template)({doc})
       },
       denormalizeDocument (sheets, schema, doc, recursive = true) {
         // TODO forget about recursive param and test if doc already present in 'sheets'?

@@ -9,7 +9,7 @@
     "parent": {
       "schemaName": "facility",
       "label": "Facility",
-      "title": "${typeof parent.shortName === 'undefined' ? parent.name : parent.shortName}"
+      "title": "${_.get(doc, 'parent.shortName') || _.get(doc, 'parent.name')}"
     }
   },
   "itemView": {
@@ -26,7 +26,7 @@
   "collectionView": {
     "default": {
       "title": "Services",
-      "subtitle": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }${ (typeof parent.parent !== 'undefined') ? (typeof parent.parent.shortName === 'undefined' ? ', ' + (parent.parent.name || parent.parent.shortName || '') : '') : '' }",
+      "subtitle": "${ _.get(doc, 'parent.shortName') || _.get(doc, 'parent.name')}, ${ _.get(doc, 'parent.parent.shortName') || _.get(doc, 'parent.parent.name')}",
       "filters": [[":_schema", "==", "service"]]
     },
     "manager": {

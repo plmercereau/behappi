@@ -24,7 +24,12 @@
     inject: [ 'parentValidator' ],
     props: {
       value: {
-        default: {},
+        default () {
+          return {
+            value: '',
+            text: ''
+          }
+        },
         type: Object
       },
       label: {

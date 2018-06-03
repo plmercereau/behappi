@@ -9,12 +9,12 @@
     "parent": {
       "schemaName": "mission",
       "label": "Mission",
-      "title": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }"
+      "title": "${ _.get(doc, 'parent.shortName') ||  _.get(doc, 'parent.name')}"
     },
     "children" : {
       "schemaName": "facility",
       "label": "Facilities in the project",
-      "subtitle": "${typeof typeItem === 'undefined' ? '' : typeItem}",
+      "subtitle": "${ doc.nbChildren ? doc.nbChildren + ' service' + (doc.nbChildren > 1 ? 's' : ''): ''}",
       "create": {
         "title": "New facility",
         "inheritedProperties": ["location", "zoom"]
@@ -82,7 +82,7 @@
   "collectionView": {
     "default": {
       "title": "Projects",
-      "subtitle": "${ typeof parent.shortName === 'undefined' ? parent.name : parent.shortName }",
+      "subtitle": "${ _.get(doc, 'parent.shortName') ||  _.get(doc, 'parent.name')}${ doc.nbChildren ? ', ' + doc.nbChildren + ' health ' + (doc.nbChildren > 1 ? 'facilities' : 'facility'): ''}",
       "filters": [[":_schema", "==", "project"]],
       "media": {
         "property": "area"
